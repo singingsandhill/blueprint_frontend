@@ -1,11 +1,14 @@
-name: Vue build test
+name: Vue build and deploy
 
 # master 브랜치로의 PR이 있으면 workflow를 실행함 
 # paths 설정이 있으므로 -> my-garden-fe의 하위 파일들이 변경된 경우에만 실행됨
 on:
+  push:
+    branches:
+      - main  # Add any other branches where you want the action to run on push
   pull_request:
     branches:
-      - main
+      - main  # Add any other branches where you want the action to run on PR
 
 # 환경 변수 정의
 env:
