@@ -5,9 +5,7 @@ name: Vue build test
 on:
   pull_request:
     branches:
-      - master
-    paths:
-      - my-garden-fe/**
+      - main
 
 # 환경 변수 정의
 env:
@@ -20,7 +18,7 @@ jobs:
     # steps에 대한 기본 작업 디렉토리 설정
     defaults:
       run:
-        working-directory: ./my-garden-fe
+        working-directory: ./frontend
 
     steps:
       # 저장소 코드를 체크아웃합니다. (PR 올린 코드를 가져오는 행위)
