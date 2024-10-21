@@ -21,7 +21,7 @@ jobs:
     # steps에 대한 기본 작업 디렉토리 설정
     defaults:
       run:
-        working-directory: ./frontend
+        working-directory: .
 
     steps:
       # 저장소 코드를 체크아웃합니다. (PR 올린 코드를 가져오는 행위)
@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }} # 지정된 Node.js 버전 사용
           cache: npm # setup-node 의 캐시 기능을 사용함 (저는 npm을 사용하므로 npm을 썼습니다. -> 본인의 세팅에 맞춰서 변경해야 합니다.)
-          cache-dependency-path: ./frontend/package-lock.json # 캐시 기능을 사용할 때 캐시의 기준이 될 파일을 지정
+          cache-dependency-path: package-lock.json # 캐시 기능을 사용할 때 캐시의 기준이 될 파일을 지정
 
       - name: Install Dependencies
         run: npm install
