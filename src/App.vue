@@ -1,16 +1,15 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
-import DefaultLayout from "./components/layouts/DefaultLayout.vue";
+import { RouterLink, RouterView } from 'vue-router';
+import DefaultLayout from './components/layouts/DefaultLayout.vue';
 </script>
 
 <template>
   <DefaultLayout>
-        <RouterView />
-    </DefaultLayout>
+    <RouterView />
+  </DefaultLayout>
 </template>
 
 <style scoped>
-
 @media (min-width: 1024px) {
   header {
     display: flex;
