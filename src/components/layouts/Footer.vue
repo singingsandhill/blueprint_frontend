@@ -1,8 +1,25 @@
-<script setup>
-</script>
+<script setup></script>
+
 <template>
-    <div class="my-5 p-3 text-center">
-        <i class="fa-regular fa-copyright"></i>
-        COPYRIGHTS Chpater1. ALL RIGHTS RESERVED.
+  <div
+    class="footer flex flex-col justify-center items-center mt-16 min-h-72 text-gray-500 text-sm font-pretendard-regular"
+  >
+    <div>Chapter 1</div>
+
+    <div class="flex space-x-3 mt-5">
+      <div>이용 약관</div>
+      <div>|</div>
+      <div>개인 정보 처리 방침</div>
     </div>
+  </div>
 </template>
+
+<style scoped>
+img {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+.footer {
+  background-color: #f5f6f7;
+}
+</style>
