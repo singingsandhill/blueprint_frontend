@@ -62,12 +62,12 @@ const join = async () => {
   <div class="mt-5 mx-auto w-[500px]">
     <h1 class="my-5">
       <i class="fa-solid fa-user-plus"></i>
+      <font-awesome-icon :icon="['fas', 'user-plus']" class="mr-2" />
       회원 가입
     </h1>
     <form @submit.prevent="join">
       <div class="mb-3 mt-3">
         <label for="username" class="block mb-2">
-          <i class="fa-solid fa-user"></i>
           사용자 ID:
           <button
             type="button"
@@ -90,10 +90,7 @@ const join = async () => {
         />
       </div>
       <div class="mb-3 mt-3">
-        <label for="email" class="block mb-2">
-          <i class="fa-solid fa-envelope"></i>
-          email
-        </label>
+        <label for="email" class="block mb-2"> email </label>
         <input
           type="email"
           class="w-full px-3 py-2 border rounded-md"
@@ -103,9 +100,7 @@ const join = async () => {
         />
       </div>
       <div class="mb-3">
-        <label for="password" class="block mb-2">
-          <i class="fa-solid fa-lock"></i> 비밀번호:
-        </label>
+        <label for="password" class="block mb-2">비밀번호: </label>
         <input
           type="password"
           class="w-full px-3 py-2 border rounded-md"
@@ -115,9 +110,7 @@ const join = async () => {
         />
       </div>
       <div class="mb-3">
-        <label for="password2" class="block mb-2">
-          <i class="fa-solid fa-lock"></i> 비밀번호 확인:
-        </label>
+        <label for="password2" class="block mb-2">비밀번호 확인: </label>
         <input
           type="password"
           class="w-full px-3 py-2 border rounded-md"
@@ -131,7 +124,6 @@ const join = async () => {
         class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="disableSubmit"
       >
-        <i class="fa-solid fa-user-plus"></i>
         확인
       </button>
     </form>
