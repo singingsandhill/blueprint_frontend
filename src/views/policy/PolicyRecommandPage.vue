@@ -40,7 +40,7 @@ onMounted(async () => {
         <h2 class="text-lg font-bold mb-2 text-gray-800">{{ policy.name }}</h2>
         <div class="text-gray-600 text-sm space-y-1">
           <p><strong>인덱스:</strong> {{ policy.idx }}</p>
-          <p><strong>위치:</strong> {{ policy.city }}</p>
+          <p><strong>지역:</strong> {{ policy.city }}</p>
           <p><strong>지역:</strong> {{ policy.district }}</p>
           <p><strong>정책 유형:</strong> {{ policy.type }}</p>
           <p><strong>운영 기관:</strong> {{ policy.offerInst }}</p>
