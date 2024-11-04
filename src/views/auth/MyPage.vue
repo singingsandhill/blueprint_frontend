@@ -6,7 +6,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const auth = useAuthStore();
 const avatar = ref(null);
-const avatarPath = `/api/member/${auth.username}/avatar`;
+const avatarPath = `/member/${auth.username}/avatar`;
 const member = reactive({
   username: auth.username,
   email: auth.email,
@@ -71,7 +71,7 @@ const onSubmit = async () => {
         </button>
         <router-link
           class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md inline-block"
-          to="/auth/changepassword"
+          to="/member/changepassword"
         >
           비밀번호 변경
         </router-link>

@@ -1,5 +1,6 @@
 import "./assets/main.css";
 import "vue-awesome-paginate/dist/style.css";
+import './assets/tailwind.css';
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
