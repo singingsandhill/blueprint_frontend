@@ -22,7 +22,7 @@ const login = async () => {
   isLoading.value = true;
   try {
     const isValidMemberId = await auth.checkMemberId(member.memberId);
-    if (!isValidMemberId) {
+    if (isValidMemberId) {
       error.value = "존재하지 않는 아이디 입니다.";
       return;
     }
@@ -32,9 +32,10 @@ const login = async () => {
     
     if (response.success) {
     
-      auth.token = response.response.response.data.accessToken;
-      auth.isAuthenticated = true;             
-      auth.member = response.response.response.data;
+      auth.token = auth.token;  
+      auth.isAuthenticated = auth.isAuthenticated;
+
+      auth.setMemberFromToken();
       
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`;
       

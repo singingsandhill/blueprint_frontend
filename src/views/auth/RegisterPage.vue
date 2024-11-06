@@ -18,32 +18,48 @@ const member = reactive({
   birth: ''
 })
 
-const agreedToTerms = ref(false)
 const isStrongPassword = ref(false)
 const isIdChecked = ref(false)
 const isEmailVerified = ref(false)
 const disableSubmit = ref(true)
 const emailVerificationSent = ref(false)
 const passwordStrengthMessage = ref('비밀번호는 8자 이상, 대소문자, 숫자, 특수문자를 포함해야 합니다.')
+const agreedToTerms = reactive({
+  service: false,
+  info: false,
+});
 
 watch(
-  () => member,
-  (newMember) => {
+  () => ({
+    memberId: member.memberId,
+    password: member.password,
+    confirmPassword: member.confirmPassword,
+    memberName: member.memberName,
+    email: member.email,
+    gender: member.gender,
+    birth: member.birth,
+    isIdChecked: isIdChecked.value,
+    isEmailVerified: isEmailVerified.value,
+    agreementService: agreedToTerms.service,
+    agreementInfo: agreedToTerms.info,
+  }),
+  (newValues) => {
     disableSubmit.value = !(
-      newMember.memberId &&
-      newMember.password &&
-      newMember.confirmPassword &&
-      newMember.memberName &&
-      newMember.email &&
-      isIdChecked.value &&
-      isEmailVerified.value &&
-      newMember.gender &&
-      newMember.birth &&
-      agreedToTerms.value
-    )
+      newValues.memberId &&
+      newValues.password &&
+      newValues.confirmPassword &&
+      newValues.memberName &&
+      newValues.email &&
+      newValues.gender &&
+      newValues.birth &&
+      newValues.isIdChecked &&
+      newValues.isEmailVerified &&
+      newValues.agreementService &&
+      newValues.agreementInfo
+    );
   },
   { deep: true }
-)
+);
 
 const enhancedSecurityPassword = (password) => {
   const minLength = 8
@@ -109,23 +125,29 @@ const verifyEmailCode = async () => {
   alert(isValidCode ? '이메일 인증 완료' : '인증 코드가 올바르지 않습니다.')
 }
 
-const setAgreement = (isAgreed) => {
-  agreedToTerms.value = isAgreed
-}
+const setAgreement = (agreement) => {
+  agreedToTerms.service = agreement.agreementService;
+  agreedToTerms.info = agreement.agreementInfo;
+};
 
 const register = async () => {
   if (member.password !== member.confirmPassword) {
-    alert('비밀번호가 일치하지 않습니다.')
-    return
+    alert('비밀번호가 일치하지 않습니다.');
+    return;
   }
 
-  if (!agreedToTerms.value) {
-    alert('약관에 동의해야 합니다.')
-    return
+  if (!agreedToTerms.service || !agreedToTerms.info) {
+    alert('모든 약관에 동의해야 합니다.');
+    return;
   }
 
-  const birthYear = member.birth.split('-')[0]
-  const birthDate = member.birth
+  if (disableSubmit.value) {
+    alert('모든 필드를 작성해 주세요.');
+    return;
+  }
+
+  const birthYear = member.birth.split('-')[0];
+  const birthDate = member.birth;
 
   const memberToSend = {
     memberId: member.memberId,
@@ -135,22 +157,23 @@ const register = async () => {
     gender: member.gender,
     birthYear: parseInt(birthYear),
     birth: birthDate,
-    agreementService: agreedToTerms.value,
-    agreementInfo: agreedToTerms.value
-  }
+    agreementService: agreedToTerms.service,
+    agreementInfo: agreedToTerms.info,
+  };
 
   try {
-    const registerResponse = await auth.register(memberToSend)
+    const registerResponse = await auth.register(memberToSend);
     if (registerResponse.success) {
-      router.push('/')
+      auth.memberName = member.memberName;
+      router.push('/');
     } else {
-      alert(registerResponse.error || '회원가입에 실패했습니다. 다시 시도하세요.')
+      alert(registerResponse.error || '회원가입에 실패했습니다. 다시 시도하세요.');
     }
   } catch (error) {
-    alert('회원가입에 실패했습니다. 다시 시도하세요.')
-    console.error('Signup error:', error)
+    alert('회원가입에 실패했습니다. 다시 시도하세요.');
+    console.error('Signup error:', error);
   }
-}
+};
 </script>
 
 <template>

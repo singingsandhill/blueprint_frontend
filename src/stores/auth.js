@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/util/axiosInstance';
+import { jwtDecode } from 'jwt-decode';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -7,44 +8,56 @@ export const useAuthStore = defineStore('auth', {
     member: null,
     isAuthenticated: false,
   }),
-  
+
   actions: {
     async login(memberId, password) {
-        try {
-          const response = await axiosInstance.post('/member/login', { memberId, password });
-          console.log('API 응답:', response);
-          if (response.data.success) {
-            this.token = response.data.accessToken;
-            this.member = response.data;
-            this.isAuthenticated = true;
-      
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
-            return { success: true, response: response.data};
-          } else {
-            return { success: false, error: response.data.message };
-          }
-        } catch (error) {
-          console.error('로그인 요청 오류:', error);
-          return { success: false, error: '로그인 실패' };
-        }
-      },
-     
-    async register(memberToSend) {
       try {
-        const response = await axiosInstance.post('/member/register', memberToSend);
+        const response = await axiosInstance.post('/member/login', { memberId, password });
+        console.log("login API 응답: ", response)
         if (response.data.success) {
-          this.token = response.data.response.accessToken;
-          this.refreshToken = response.data.response.refreshToken;
+          this.token = response.data.response.data.accessToken;
           this.isAuthenticated = true;
-      
+
+          this.setMemberFromToken();
           axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+
           return { success: true };
         } else {
           return { success: false, error: response.data.message };
         }
       } catch (error) {
+        console.error('로그인 요청 오류:', error);
+        return { success: false, error: '로그인 실패' };
+      }
+    },
+
+    async register(memberToSend) {
+      try {
+        const response = await axiosInstance.post('/member/register', memberToSend);
+        console.log("register API 응답: ", response)
+        if (response.data.success) {
+          this.token = response.data.response.data.accessToken;
+          this.isAuthenticated = true;
+
+          this.setMemberFromToken();
+          axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+
+          return { success: true };
+        } else {
+          return { success: false, error: response.data.message };
+        }
+      } catch (error) {
+        console.error('회원가입 요청 오류:', error);
         return { success: false, error: '회원가입 실패' };
       }
+    },
+
+    setMemberFromToken() {
+        const decoded = jwtDecode(this.token);
+        this.member = {
+          memberName: decoded.memberName,
+          memberId: decoded.memberId,
+        };
     },
 
     async checkMemberId(memberId) {
@@ -91,7 +104,37 @@ export const useAuthStore = defineStore('auth', {
       this.token = null;
       this.member = null;
       this.isAuthenticated = false;
+      localStorage.removeItem('token');
       delete axiosInstance.defaults.headers.common['Authorization'];
-    }
-  }
+    },
+
+    async fetchMyPage() {
+      try {
+        const response = await axiosInstance.get('/member/mypage');
+        if (response.data.success) {
+          this.member = response.data.member;
+        } else {
+          console.error('사용자 정보를 가져오지 못했습니다.');
+        }
+      } catch (error) {
+        console.error('사용자 정보 요청 오류:', error);
+      }
+    },
+  },
+  
+  getters: {
+    isLoggedIn() {
+      return this.isAuthenticated;
+    },
+  },
+  
+  persist: {
+    enabled: true,
+    strategies: [
+      {
+        storage: localStorage,
+        paths: ['token'],
+      },
+    ],
+  },
 });

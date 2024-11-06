@@ -1,12 +1,16 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
-const agreed = ref(false)
+const agreementInfo = ref(false)
+const agreementService = ref(false)
 
 const emit = defineEmits(['agreementChanged'])
 
 const updateAgreement = () => {
-  emit('agreementChanged', agreed.value)
+  emit('agreementChanged', {
+    agreementInfo: agreementInfo.value,
+    agreementService: agreementService.value
+  })
 }
 
 const viewTerms = () => {
@@ -22,8 +26,12 @@ const viewTerms = () => {
     </p>
     <div class="flex items-center space-x-4">
       <label class="flex items-center">
-        <input type="checkbox" v-model="agreed" @change="updateAgreement" />
-        <span class="ml-2 text-sm">약관에 동의합니다.</span>
+        <input type="checkbox" v-model="agreementService" @change="updateAgreement" />
+        <span class="ml-2 text-sm">서비스 약관에 동의합니다.</span>
+      </label>
+      <label class="flex items-center">
+        <input type="checkbox" v-model="agreementInfo" @change="updateAgreement" />
+        <span class="ml-2 text-sm">정보 제공 약관에 동의합니다.</span>
       </label>
       <button @click="viewTerms" class="text-blue-500 underline text-sm">자세히 보기</button>
     </div>
