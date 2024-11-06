@@ -1,47 +1,58 @@
 <script setup>
-import authApi from "@/api/authApi";
 import { useAuthStore } from "@/stores/auth";
 import { computed, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
+import axiosInstance from "@/util/axiosInstance";
 const router = useRouter();
 const auth = useAuthStore();
-const avatar = ref(null);
-const avatarPath = `/api/member/${auth.username}/avatar`;
+
 const member = reactive({
-  username: auth.username,
-  email: auth.email,
+  memberName: auth.member?.memberName,
+  email: auth.member?.email,
   password: "",
-  avatar: null,
 });
+
 const error = ref("");
 const disableSubmit = computed(() => !member.email || !member.password);
+
 const onSubmit = async () => {
   if (!confirm("수정하시겠습니까?")) return;
-  if (avatar.value.files.length > 0) {
-    member.avatar = avatar.value.files[0];
-  }
-  try {
-    await authApi.update(member);
-    error.value = "";
-    auth.changeProfile(member);
-    alert("정보를 수정하였습니다.");
 
-    router.go();
+  try {
+    const formData = new FormData();
+    formData.append("email", member.email);
+    formData.append("password", member.password);
+
+    const response = await axiosInstance.put("/member/update", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${auth.token}`,
+      },
+    });
+
+    if (response.data.success) {
+      error.value = "";
+      auth.member.email = member.email;
+      alert("정보를 수정하였습니다.");
+      router.go();
+    } else {
+      error.value = response.data.message;
+    }
   } catch (e) {
-    error.value = e.response.data;
+    error.value = e.response?.data?.message || "회원 정보 수정 중 오류가 발생했습니다.";
   }
 };
 </script>
+
 <template>
   <div class="mt-5 mx-auto w-[500px]">
     <h1 class="my-3">회원 정보</h1>
     <form @submit.prevent="onSubmit">
       <div class="mb-3 mt-3">
-        <img :src="avatarPath" class="w-16 h-16 rounded-full mr-4" />
-        {{ member.username }}
+        {{ member.memberName }}
       </div>
       <div class="mb-3 mt-3">
-        <label for="email" class="block mb-2"> email </label>
+        <label for="email" class="block mb-2"> 이메일 </label>
         <input
           type="email"
           class="w-full px-3 py-2 border rounded-md"
@@ -51,7 +62,7 @@ const onSubmit = async () => {
         />
       </div>
       <div class="mb-3">
-        <label for="password" class="block mb-2"> 비밀번호: </label>
+        <label for="password" class="block mb-2"> 비밀번호 </label>
         <input
           type="password"
           class="w-full px-3 py-2 border rounded-md"
@@ -71,7 +82,7 @@ const onSubmit = async () => {
         </button>
         <router-link
           class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md inline-block"
-          to="/auth/changepassword"
+          to="/member/changepassword"
         >
           비밀번호 변경
         </router-link>
