@@ -65,7 +65,7 @@
                 class="text-blue-500 underline"
                 target="_blank"
                 rel="noopener noreferrer"
-              >신청 페이지</a>
+              >상세 정보 페이지</a>
             </div>
           </div>
         </div>
@@ -104,6 +104,5 @@
   </script>
   
   <style scoped>
-  @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css");
   </style>
   
