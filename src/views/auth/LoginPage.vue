@@ -31,7 +31,6 @@ const login = async () => {
     console.log('로그인 응답:', response); 
     
     if (response.success) {
-      console.log("response.success가 도대체 뭐냐: ", response.success);
     
       auth.token = response.response.response.data.accessToken;
       auth.isAuthenticated = true;             
