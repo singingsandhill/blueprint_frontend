@@ -23,7 +23,7 @@ const onSubmit = async () => {
   try {
     await authApi.update(member);
     error.value = "";
-    auth.changeProfile(member);
+    auth.changemypage(member);
     alert("정보를 수정하였습니다.");
 
     router.go();

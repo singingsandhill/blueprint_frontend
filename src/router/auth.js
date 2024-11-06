@@ -10,8 +10,8 @@ export default [
         component: () => import("../views/auth/RegisterPage.vue"),
     },
     {
-        path: "/member/profile",
-        name: "profile",
+        path: "/member/mypage",
+        name: "mypage",
         component: () => import("../views/auth/MyPage.vue"),
     },
     {

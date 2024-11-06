@@ -50,7 +50,7 @@ export const useAuthStore = defineStore('auth', {
     async checkMemberId(memberId) {
       try {
         const response = await axiosInstance.get(`/member/checkMemberId?memberId=${memberId}`);
-        return response.data === true;
+        return response.data === false;
       } catch (error) {
         console.error('아이디 확인 중 오류 발생:', error);
         return false;
