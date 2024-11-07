@@ -69,12 +69,7 @@ export default {
         <div v-if="message" class="mt-4 text-center text-sm text-gray-600" v-html="message"></div>
   
         <div v-if="message" class="mt-2 text-center">
-          <a
-            href="/member/find/password"
-            class="text-blue-500 hover:underline text-sm"
-          >
-            비밀번호 찾기
-          </a>
+          <router-link to="/member/find/password" class="text-sm hover:underline">비밀번호 찾기</router-link>
         </div>
       </div>
     </div>
