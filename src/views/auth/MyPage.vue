@@ -3,12 +3,13 @@ import { useAuthStore } from "@/stores/auth";
 import { computed, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import axiosInstance from "@/util/axiosInstance";
+
 const router = useRouter();
 const auth = useAuthStore();
 
 const member = reactive({
-  memberName: auth.member?.memberName,
-  email: auth.member?.email,
+  memberName: auth.member?.memberName || "",
+  email: auth.member?.email || "",
   password: "",
 });
 
@@ -49,7 +50,7 @@ const onSubmit = async () => {
     <h1 class="my-3">회원 정보</h1>
     <form @submit.prevent="onSubmit">
       <div class="mb-3 mt-3">
-        {{ member.memberName }}
+        <span>{{ member.memberName }}</span>
       </div>
       <div class="mb-3 mt-3">
         <label for="email" class="block mb-2"> 이메일 </label>
@@ -90,3 +91,21 @@ const onSubmit = async () => {
     </form>
   </div>
 </template>
+
+<style scoped>
+button {
+  cursor: pointer;
+}
+input {
+  transition: border-color 0.2s;
+}
+input:focus {
+  border-color: #3b82f6;
+}
+.disabled:opacity-50 {
+  opacity: 0.5;
+}
+.disabled:cursor-not-allowed {
+  cursor: not-allowed;
+}
+</style>
