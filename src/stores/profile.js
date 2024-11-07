@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axiosInstance from "@/util/axiosInstance";
+import { useAuthStore } from "@/stores/auth";
 
 export const useProfileStore = defineStore("profile", {
   state: () => ({
@@ -18,11 +19,12 @@ export const useProfileStore = defineStore("profile", {
   actions: {
     async getProfileInfo(memberId) {
       try {
+        const token = useAuthStore().token;
         const response = await axiosInstance.get(
           `/member/profile/${memberId}`,
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0ZXIwMSIsInVpZCI6IlB6b1hZQzIwWCtXeDZhTUh3UTBQWVE9PSIsInJvbGUiOiJST0xFX01FTUJFUiIsIm1lbWJlck5hbWUiOiJ0ZXN0ZXIwMSIsImVtYWlsIjoidGVzdEB0ZXN0IiwidG9rZW5UeXBlIjoiQUNDRVNTIiwiaWF0IjoxNzMwODczNDc2LCJleHAiOjE3MzA5NTk4NzZ9.KX1j6hlb-_wRuE8rB3JvBeRjS5BekpDLHOQku_xoGzXPAwfw2Rpo59txUWqNUiq3`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -35,13 +37,13 @@ export const useProfileStore = defineStore("profile", {
 
     async updateProfileInfo(memberId) {
       try {
+        const token = useAuthStore().token;
         await axiosInstance.post(
           `/member/profile/${memberId}`,
           this.ProfileInfo,
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0ZXIwMSIsInVpZCI6IlB6b1hZQzIwWCtXeDZhTUh3UTBQWVE9PSIsInJvbGUiOiJST0xFX01FTUJFUiIsIm1lbWJlck5hbWUiOiJ0ZXN0ZXIwMSIsImVtYWlsIjoidGVzdEB0ZXN0IiwidG9rZW5UeXBlIjoiQUNDRVNTIiwiaWF0IjoxNzMwODczNDc2LCJleHAiOjE3MzA5NTk4NzZ9.KX1j6hlb-_wRuE8rB3JvBeRjS5BekpDLHOQku_xoGzXPAwfw2Rpo59txUWqNUiq3`,
-              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
           }
         );

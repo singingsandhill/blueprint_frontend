@@ -33,13 +33,10 @@ function decodeJWT(token) {
   return decodedPayload;
 }
 
-// 토큰에서 정보 가져오기
 const getTokenInfo = () => {
   if (auth.token) {
     const decodedToken = decodeJWT(auth.token);
     console.log("디코딩된 토큰:", decodedToken);
-
-    // 디코딩된 정보를 member 객체에 저장
     memberId.value = decodedToken.sub;
   }
 };
