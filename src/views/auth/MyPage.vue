@@ -2,14 +2,12 @@
 import { useAuthStore } from "@/stores/auth";
 import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import axiosInstance from "@/util/axiosInstance";
-import { useProfileStore } from "@/stores/profile";
+import { useMyPageStore } from "@/stores/myPage";
 
 const router = useRouter();
 const auth = useAuthStore();
-const profileStore = useProfileStore();
+const myPageStore = useMyPageStore();
 
-// const memberId = auth.member.memberId;
 const memberId = ref(null);
 
 const member = reactive({
@@ -46,9 +44,9 @@ const onSubmit = async () => {
   if (!confirm("수정하시겠습니까?")) return;
 
   try {
-    Object.assign(profileStore.ProfileInfo, member);
+    Object.assign(myPageStore.MyPageInfo, member);
 
-    await profileStore.updateProfileInfo(memberId.value);
+    await myPageStore.updateMyPageInfo();
     alert("정보를 수정하였습니다.");
     router.go();
   } catch (e) {
@@ -57,23 +55,23 @@ const onSubmit = async () => {
   }
 };
 
-const fetchProfileInfo = async () => {
-  await profileStore.getProfileInfo(memberId.value);
-  const profileData = profileStore.ProfileInfo;
-  member.email = profileData.email;
-  member.income = profileData.income;
-  member.occupation = profileData.occupation;
-  member.residence = profileData.residence;
-  member.maritalStatus = profileData.maritalStatus;
-  member.hasChildren = profileData.hasChildren;
-  member.housingType = profileData.housingType;
+const fetchMyPageInfo = async () => {
+  await myPageStore.getMyPageInfo();
+  const myPageData = myPageStore.MyPageInfo;
+  member.email = myPageData.email;
+  member.income = myPageData.income;
+  member.occupation = myPageData.occupation;
+  member.residence = myPageData.residence;
+  member.maritalStatus = myPageData.maritalStatus;
+  member.hasChildren = myPageData.hasChildren;
+  member.housingType = myPageData.housingType;
 };
 
 onMounted(async () => {
   getTokenInfo();
   // console.log(memberId);
   console.log(memberId.value);
-  await fetchProfileInfo();
+  await fetchMyPageInfo();
 });
 </script>
 
@@ -89,6 +87,7 @@ onMounted(async () => {
             v-model="member.email"
             type="email"
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
+            readOnly
           />
         </div>
       </div>
@@ -102,12 +101,14 @@ onMounted(async () => {
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
           />
         </div>
-        <router-link
-          class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md inline-block"
-          to="/auth/changepassword"
-        >
-          비밀번호 변경
-        </router-link>
+        <div class="text-center">
+          <button
+            type="submit"
+            class="mt-4 mr-3 px-4 py-2 bg-midBlue text-white rounded-md"
+          >
+            확인
+          </button>
+        </div>
       </div>
 
       <div class="flex items-center mb-6">
@@ -208,7 +209,7 @@ onMounted(async () => {
       <div class="text-center">
         <button
           type="submit"
-          class="mt-4 mr-3 px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+          class="mt-4 mr-3 px-4 py-2 bg-midBlue text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
           @click="onSubmit"
         >
           확인
