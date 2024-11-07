@@ -1,11 +1,11 @@
 <script setup>
-import { reactive, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import TermsAgreement from '@/components/register/TermsAgreement.vue'
+import { reactive, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+import TermsAgreement from '@/components/register/TermsAgreement.vue';
 
-const router = useRouter()
-const auth = useAuthStore()
+const router = useRouter();
+const auth = useAuthStore();
 
 const member = reactive({
   memberId: '',
@@ -16,14 +16,14 @@ const member = reactive({
   emailVerificationCode: '',
   gender: '',
   birth: ''
-})
+});
 
-const isStrongPassword = ref(false)
-const isIdChecked = ref(false)
-const isEmailVerified = ref(false)
-const disableSubmit = ref(true)
-const emailVerificationSent = ref(false)
-const passwordStrengthMessage = ref('비밀번호는 8자 이상, 대소문자, 숫자, 특수문자를 포함해야 합니다.')
+const isStrongPassword = ref(false);
+const isIdChecked = ref(false);
+const isEmailVerified = ref(false);
+const disableSubmit = ref(true);
+const emailVerificationSent = ref(false);
+const passwordStrengthMessage = ref('비밀번호는 8자 이상, 대소문자, 숫자, 특수문자를 포함해야 합니다.');
 const agreedToTerms = reactive({
   service: false,
   info: false,
@@ -62,68 +62,68 @@ watch(
 );
 
 const enhancedSecurityPassword = (password) => {
-  const minLength = 8
-  const specialChars = /[~!@#$%^&*]/
-  const upperCase = /[A-Z]/
-  const lowerCase = /[a-z]/
+  const minLength = 8;
+  const specialChars = /[~!@#$%^&*]/;
+  const upperCase = /[A-Z]/;
+  const lowerCase = /[a-z]/;
 
   return (
     password.length >= minLength &&
     specialChars.test(password) &&
     upperCase.test(password) &&
     lowerCase.test(password)
-  )
-}
+  );
+};
 
 const checkPasswordStrength = () => {
-  isStrongPassword.value = enhancedSecurityPassword(member.password)
+  isStrongPassword.value = enhancedSecurityPassword(member.password);
   passwordStrengthMessage.value = isStrongPassword.value
     ? '비밀번호가 강합니다.'
     : member.password.length > 0
       ? '비밀번호가 약합니다.'
-      : '대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.'
-}
+      : '대소문자, 숫자, 특수문자를 모두 포함한 8글자 이상이어야 합니다.';
+};
 
 const checkId = async () => {
   if (!member.memberId.trim()) {
-    alert('아이디를 입력하세요.')
-    return
+    alert('아이디를 입력하세요.');
+    return;
   }
 
-  const isAvailable = await auth.checkMemberId(member.memberId)
-  isIdChecked.value = isAvailable
-  alert(isAvailable ? '사용 가능한 아이디입니다.' : '이미 사용 중인 아이디입니다.')
-}
+  const isAvailable = await auth.checkMemberId(member.memberId);
+  isIdChecked.value = isAvailable;
+  alert(isAvailable ? '사용 가능한 아이디입니다.' : '이미 사용 중인 아이디입니다.');
+};
 
 const sendEmailVerification = async () => {
   if (!member.email.trim()) {
-    alert('이메일을 입력하세요.')
-    return
+    alert('이메일을 입력하세요.');
+    return;
   }
 
-  const isDuplicate = await auth.checkEmailDuplicate(member.email)
+  const isDuplicate = await auth.checkEmailDuplicate(member.email);
   if (isDuplicate) {
-    alert('이미 존재하는 이메일입니다.')
-    return
+    alert('이미 존재하는 이메일입니다.');
+    return;
   }
 
-  const result = await auth.sendEmailVerification(member.email)
+  const result = await auth.sendEmailVerification(member.email);
   if (result) {
-    emailVerificationSent.value = true
-    alert('인증 코드가 발송되었습니다.')
+    emailVerificationSent.value = true;
+    alert('인증 코드가 발송되었습니다.');
   }
-}
+};
 
 const verifyEmailCode = async () => {
   if (!member.emailVerificationCode.trim()) {
-    alert('인증 코드를 입력하세요.')
-    return
+    alert('인증 코드를 입력하세요.');
+    return;
   }
 
-  const isValidCode = await auth.verifyEmailCode(member.email, member.emailVerificationCode)
-  isEmailVerified.value = isValidCode
-  alert(isValidCode ? '이메일 인증 완료' : '인증 코드가 올바르지 않습니다.')
-}
+  const isValidCode = await auth.verifyEmailCode(member.email, member.emailVerificationCode);
+  isEmailVerified.value = isValidCode;
+  alert(isValidCode ? '이메일 인증 완료' : '인증 코드가 올바르지 않습니다.');
+};
 
 const setAgreement = (agreement) => {
   agreedToTerms.service = agreement.agreementService;
@@ -164,7 +164,7 @@ const register = async () => {
   try {
     const registerResponse = await auth.register(memberToSend);
     if (registerResponse.success) {
-      auth.memberName = member.memberName;
+      alert('회원가입이 완료되었습니다.');
       router.push('/');
     } else {
       alert(registerResponse.error || '회원가입에 실패했습니다. 다시 시도하세요.');
@@ -181,7 +181,8 @@ const register = async () => {
     <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
       <h2 class="text-2xl font-semibold text-center mb-6">회원가입</h2>
 
-      <div class="my-4">
+      <form @submit.prevent="register" class="space-y-4">
+        <div>
           <label for="memberName" class="block text-sm font-medium text-gray-700">이름</label>
           <input
             type="text"
@@ -193,7 +194,6 @@ const register = async () => {
           />
         </div>
 
-      <form @submit.prevent="register" class="space-y-4">
         <div>
           <label for="memberId" class="block text-sm font-medium text-gray-700">아이디</label>
           <div class="flex items-center space-x-2">
@@ -304,3 +304,20 @@ const register = async () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+body {
+  font-family: 'pretendard', sans-serif;
+}
+button {
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+::placeholder {
+  color: #999999;
+  opacity: 1;
+}
+</style>

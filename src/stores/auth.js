@@ -1,25 +1,29 @@
 import { defineStore } from 'pinia';
 import axiosInstance from '@/util/axiosInstance';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: null,
+    token: localStorage.getItem('token') || null,
     member: null,
-    isAuthenticated: false,
+    isLoggedIn: !!localStorage.getItem('token'),
   }),
 
   actions: {
     async login(memberId, password) {
       try {
         const response = await axiosInstance.post('/member/login', { memberId, password });
-        console.log("login API 응답: ", response)
+        console.log("login API 응답: ", response);
         if (response.data.success) {
           this.token = response.data.response.data.accessToken;
-          this.isAuthenticated = true;
+          this.isLoggedIn = true;
 
-          this.setMemberFromToken();
+          localStorage.setItem('token', this.token);
           axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+
+          this.initializeMemberFromToken();
+
+          console.log("로그인 후 member 상태: ", this.member);
 
           return { success: true };
         } else {
@@ -34,13 +38,15 @@ export const useAuthStore = defineStore('auth', {
     async register(memberToSend) {
       try {
         const response = await axiosInstance.post('/member/register', memberToSend);
-        console.log("register API 응답: ", response)
+        console.log("register API 응답: ", response);
         if (response.data.success) {
           this.token = response.data.response.data.accessToken;
-          this.isAuthenticated = true;
+          this.isLoggedIn = true;
 
-          this.setMemberFromToken();
+          localStorage.setItem('token', this.token);
           axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+
+          this.initializeMemberFromToken();
 
           return { success: true };
         } else {
@@ -52,12 +58,40 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    setMemberFromToken() {
-        const decoded = jwtDecode(this.token);
-        this.member = {
-          memberName: decoded.memberName,
-          memberId: decoded.memberId,
-        };
+    initializeMemberFromToken() {
+      if (this.token) {
+        try {
+          const decoded = jwtDecode(this.token);
+          console.log("디코딩된 토큰 내용: ", decoded);
+          if (decoded && decoded.memberName) {
+            this.member = { memberName: decoded.memberName };
+            this.isLoggedIn = true;
+            console.log("authStore에 설정된 member: ", this.member);
+          } else {
+            console.warn("디코딩된 토큰에 memberName이 없습니다.");
+          }
+        } catch (error) {
+          console.error('토큰 디코딩 중 오류:', error);
+          this.isLoggedIn = false;
+        }
+      }
+    },
+
+    async fetchMyPage() {
+      if (this.token) {
+        try {
+          const { data } = await axiosInstance.get('/member/mypage', {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          });
+          this.member = data.response.data;
+          this.isLoggedIn = true;
+        } catch (error) {
+          console.error('프로필을 가져오는 데 실패했습니다:', error);
+          this.isLoggedIn = false;
+        }
+      }
     },
 
     async checkMemberId(memberId) {
@@ -103,38 +137,19 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.token = null;
       this.member = null;
-      this.isAuthenticated = false;
+      this.isLoggedIn = false;
       localStorage.removeItem('token');
       delete axiosInstance.defaults.headers.common['Authorization'];
     },
+  },
 
-    async fetchMyPage() {
-      try {
-        const response = await axiosInstance.get('/member/mypage');
-        if (response.data.success) {
-          this.member = response.data.member;
-        } else {
-          console.error('사용자 정보를 가져오지 못했습니다.');
-        }
-      } catch (error) {
-        console.error('사용자 정보 요청 오류:', error);
-      }
-    },
-  },
-  
   getters: {
-    isLoggedIn() {
-      return this.isAuthenticated;
+    isUserLoggedIn() {
+      return this.isLoggedIn;
     },
-  },
-  
-  persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-        paths: ['token'],
-      },
-    ],
+    getMemberName() {
+      return this.member ? this.member.memberName : null;
+    },
   },
 });
+

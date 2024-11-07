@@ -2,6 +2,7 @@
 import { useAuthStore } from "@/stores/auth";
 import { reactive, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import axiosInstance from "@/util/axiosInstance";
 import { useProfileStore } from "@/stores/profile";
 
 const router = useRouter();
@@ -216,3 +217,21 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+button {
+  cursor: pointer;
+}
+input {
+  transition: border-color 0.2s;
+}
+input:focus {
+  border-color: #3b82f6;
+}
+.disabled:opacity-50 {
+  opacity: 0.5;
+}
+.disabled:cursor-not-allowed {
+  cursor: not-allowed;
+}
+</style>
