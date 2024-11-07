@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import axiosInstance from "@/util/axiosInstance";
 
 export const usePolicyStore = defineStore("policy", {
   state: () => ({
@@ -20,7 +20,7 @@ export const usePolicyStore = defineStore("policy", {
   actions: {
     async getPolicyInfo() {
       try {
-        const response = await axios.get("http://localhost:8080/policy/list");
+        const response = await axiosInstance.get("/policy/list");
         this.PolicyInfoList = response.data.response.data;
       } catch (error) {
         console.error("Failed to fetch policy List : ", error);
@@ -30,9 +30,7 @@ export const usePolicyStore = defineStore("policy", {
 
     async getPolicyDetail(idx) {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/policy/detail/${idx}`
-        );
+        const response = await axiosInstance.get(`/policy/detail/${idx}`);
         this.PolicyDetail = response.data.response.data;
       } catch (error) {
         console.error("Failed to fetch Policy Detail : ", error);
