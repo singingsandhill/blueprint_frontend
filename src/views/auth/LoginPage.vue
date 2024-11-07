@@ -102,9 +102,9 @@ onMounted(() => {
       </button>
 
       <div class="text-blue-700 text-center mb-6 my-2">
-        <router-link to="/member/findid" class="text-sm hover:underline">아이디 찾기</router-link>
+        <router-link to="/member/find/memberId" class="text-sm hover:underline">아이디 찾기</router-link>
         <span class="mx-2 text-gray-400">|</span>
-        <router-link to="/member/findpassword" class="text-sm hover:underline">비밀번호 찾기</router-link>
+        <router-link to="/member/find/password" class="text-sm hover:underline">비밀번호 찾기</router-link>
       </div>
 
       <div class="text-blue-700 text-center mt-6">
