@@ -67,11 +67,19 @@ export default {
         </form>
   
         <div v-if="message" class="mt-4 text-center text-sm text-gray-600" v-html="message"></div>
+  
+        <div v-if="message" class="mt-2 text-center">
+          <a
+            href="/member/find/password"
+            class="text-blue-500 hover:underline text-sm"
+          >
+            비밀번호 찾기
+          </a>
+        </div>
       </div>
     </div>
 </template>
   
 <style scoped>
-
 </style>
   
