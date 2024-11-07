@@ -6,7 +6,6 @@ export const useMyPageStore = defineStore("myPage", {
   state: () => ({
     MyPageInfo: {
       email: null,
-      password: null,
       income: null,
       occupation: null,
       residence: null,
@@ -14,6 +13,8 @@ export const useMyPageStore = defineStore("myPage", {
       hasChildren: null,
       housingType: null,
     },
+    password: "",
+    checkPassword: "",
   }),
 
   actions: {
@@ -42,6 +43,25 @@ export const useMyPageStore = defineStore("myPage", {
         });
       } catch (error) {
         console.error("Failed to update MyPage info : ", error);
+        throw error;
+      }
+    },
+
+    async verifyPassword() {
+      try {
+        const token = useAuthStore().token;
+        const response = await axiosInstance.post(
+          "/member/verification/password",
+          { password: this.password },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        this.checkPassword = response.data.response.data;
+      } catch (error) {
+        console.error("Failed to verify password : ", error);
         throw error;
       }
     },

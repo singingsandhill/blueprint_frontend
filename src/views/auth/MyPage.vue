@@ -10,9 +10,10 @@ const myPageStore = useMyPageStore();
 
 const memberId = ref(null);
 
+const inputPassword = ref(null);
+
 const member = reactive({
   email: "",
-  password: "",
   income: "",
   occupation: "",
   residence: "",
@@ -38,6 +39,18 @@ const getTokenInfo = () => {
     console.log("디코딩된 토큰:", decodedToken);
     memberId.value = decodedToken.sub;
   }
+};
+
+const verifyPassword = async () => {
+  try {
+    myPageStore.password = inputPassword;
+    await myPageStore.verifyPassword();
+    if (myPageStore.checkPassword) {
+      alert("패스워드 일치");
+    } else {
+      alert("패스워드 불일치");
+    }
+  } catch (e) {}
 };
 
 const onSubmit = async () => {
@@ -96,7 +109,7 @@ onMounted(async () => {
         <div class="w-2/5 text-end mr-10">비밀번호</div>
         <div class="w-3/5">
           <input
-            v-model="member.password"
+            v-model="inputPassword"
             type="password"
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 w-full p-4"
           />
@@ -105,6 +118,7 @@ onMounted(async () => {
           <button
             type="submit"
             class="mt-4 mr-3 px-4 py-2 bg-midBlue text-white rounded-md"
+            @click="verifyPassword"
           >
             확인
           </button>
