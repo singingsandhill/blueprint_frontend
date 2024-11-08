@@ -15,6 +15,7 @@ export const useMyPageStore = defineStore("myPage", {
     },
     password: "",
     checkPassword: "",
+    newPassword: "",
   }),
 
   actions: {
@@ -62,6 +63,24 @@ export const useMyPageStore = defineStore("myPage", {
         this.checkPassword = response.data.response.data;
       } catch (error) {
         console.error("Failed to verify password : ", error);
+        throw error;
+      }
+    },
+
+    async updatePassword() {
+      try {
+        const token = useAuthStore().token;
+        await axiosInstance.post(
+          "/member/change/password",
+          { password: this.newPassword },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Failed to update password : ", error);
         throw error;
       }
     },
