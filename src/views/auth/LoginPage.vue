@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 import axiosInstance from '@/util/axiosInstance';
@@ -21,27 +21,15 @@ const login = async () => {
   }
   isLoading.value = true;
   try {
-    const isValidMemberId = await auth.checkMemberId(member.memberId);
-    if (isValidMemberId) {
-      error.value = "존재하지 않는 아이디 입니다.";
-      return;
-    }
-
     const response = await auth.login(member.memberId, member.password);
-    console.log('로그인 응답:', response); 
+    console.log('로그인 응답:', response);
     
     if (response.success) {
-    
-      auth.token = auth.token;  
-      auth.isAuthenticated = auth.isAuthenticated;
-
-      auth.setMemberFromToken();
-      
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`;
-      
-      router.push(auth.member.auth === "ROLE_ADMIN" ? "/admin" : "/");
+
+      router.push(auth.member?.auth === "ROLE_ADMIN" ? "/admin" : "/");
     } else {
-      error.value = response.error; 
+      error.value = response.error;
     }
   } catch (err) {
     console.error('로그인 오류:', err.response ? err.response : err);
@@ -51,10 +39,15 @@ const login = async () => {
   }
 };
 
-
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
+
+onMounted(() => {
+  if (auth.token) {
+    auth.fetchMyPage();
+  }
+});
 </script>
 
 <template>
@@ -109,9 +102,9 @@ const togglePassword = () => {
       </button>
 
       <div class="text-blue-700 text-center mb-6 my-2">
-        <router-link to="/member/findid" class="text-sm hover:underline">아이디 찾기</router-link>
+        <router-link to="/member/find/memberId" class="text-sm hover:underline">아이디 찾기</router-link>
         <span class="mx-2 text-gray-400">|</span>
-        <router-link to="/member/findpassword" class="text-sm hover:underline">비밀번호 찾기</router-link>
+        <router-link to="/member/find/password" class="text-sm hover:underline">비밀번호 찾기</router-link>
       </div>
 
       <div class="text-blue-700 text-center mt-6">

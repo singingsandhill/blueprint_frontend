@@ -1,6 +1,15 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import DefaultLayout from "./components/layouts/DefaultLayout.vue";
+
+import { onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
+
+onMounted(() => {
+  authStore.initializeMemberFromToken();
+});
 </script>
 
 <template>
