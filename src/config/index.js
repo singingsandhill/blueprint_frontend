@@ -14,18 +14,18 @@ export default {
     },
     {
       title: "금융",
-      url: "/economy",
+      url: "/finance",
       icon: ["fas", "money-bill"],
     },
   ],
   accountMenus: {
     login: {
-      url: "/auth/login",
+      url: "/member/login",
       title: "로그인",
       icon: ["far", "user"],
     },
-    join: {
-      url: "/auth/join",
+    register: {
+      url: "/member/register",
       title: "회원가입",
       icon: ["fas", "user-plus"],
     },

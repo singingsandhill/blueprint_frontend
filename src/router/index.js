@@ -2,9 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import authRotes from "./auth";
 import policyRotes from "./policy";
-import economyRoutes from "./economy";
+import financeRoutes from "./finance";
 import subscriptionRoutes from './subscription';
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,7 +15,7 @@ const router = createRouter({
     },
     ...authRotes,
     ...policyRotes,
-    ...economyRoutes,
+    ...financeRoutes,
     ...subscriptionRoutes
   ]
 })
