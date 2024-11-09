@@ -6,10 +6,11 @@ const policyStore = usePolicyStore();
 const policyList = ref([]);
 const isModalOpen = ref(false);
 
-const selectedRegion = ref(null);
+const selectedCity = ref(null);
+const district = ref(null);
 const selectedPolicyType = ref(null);
 
-const regions = [
+const cities = [
   "서울",
   "부산",
   "대구",
@@ -55,8 +56,23 @@ const closeModal = () => {
 };
 
 const applyFilters = async () => {
-  policyStore.filterCondition.district = selectedRegion.value;
-  policyStore.filterCondition.type = selectedPolicyType.value;
+  console.log("Selected City:", selectedCity.value);
+  console.log("Selected District:", district.value);
+  console.log("Selected Policy Type:", selectedPolicyType.value);
+
+  // policyStore.filterCondition.city = selectedCity.value;
+  // policyStore.filterCondition.district = district.value;
+  // policyStore.filterCondition.type = selectedPolicyType.value;
+  policyStore.filterCondition.city =
+    selectedCity.value === "전체" || selectedCity.value === "null"
+      ? null
+      : selectedCity.value;
+  policyStore.filterCondition.district =
+    district.value === "" || district.value === "null" ? null : district.value;
+  policyStore.filterCondition.type =
+    selectedPolicyType.value === "전체" || selectedPolicyType.value === "null"
+      ? null
+      : selectedPolicyType.value;
   await policyStore.getPolicyFilter();
   policyList.value = policyStore.PolicyInfoList;
 };
@@ -72,19 +88,31 @@ const applyFilters = async () => {
     <h2 class="text-lg font-semibold mb-4">정책 필터</h2>
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <div>
-        <label for="region" class="block text-sm font-medium text-gray-700"
+        <label for="city" class="block text-sm font-medium text-gray-700"
           >지역 선택</label
         >
         <select
-          v-model="selectedRegion"
-          id="region"
+          v-model="selectedCity"
+          id="city"
           class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
         >
           <option value="null">전체</option>
-          <option v-for="region in regions" :key="region" :value="region">
-            {{ region }}
+          <option v-for="city in cities" :key="city" :value="city">
+            {{ city }}
           </option>
         </select>
+      </div>
+
+      <div>
+        <label for="district" class="block text-sm font-medium text-gray-700"
+          >지역구 선택</label
+        >
+        <input
+          v-model="district"
+          id="district"
+          type="text"
+          class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+        />
       </div>
 
       <div>

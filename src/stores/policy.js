@@ -5,6 +5,7 @@ export const usePolicyStore = defineStore("policy", {
   state: () => ({
     PolicyInfoList: [],
     filterCondition: {
+      city: null,
       district: null,
       type: null,
     },
