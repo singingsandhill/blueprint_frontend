@@ -14,7 +14,7 @@ export default {
     },
     {
       title: "금융",
-      url: "/economy",
+      url: "/finance",
       icon: ["fas", "money-bill"],
     },
   ],

@@ -1,4 +1,17 @@
-<script setup></script>
+<script setup>
+import PolicySection from '@/components/home/PolicySection.vue';
+import SubscriptionSection from '@/components/home/SubscriptionSection.vue';
+import FinanceSection from '@/components//home/FinanceSection.vue';
+</script>
+
 <template>
-    <h1>첫번째 페이지</h1>
+  <div class="homepage container mx-auto p-4">
+    <PolicySection />
+    <SubscriptionSection />
+    <FinanceSection />
+  </div>
 </template>
+
+<style scoped>
+
+</style>
