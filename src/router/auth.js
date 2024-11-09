@@ -15,11 +15,6 @@ export default [
         component: () => import("../views/auth/MyPage.vue"),
     },
     {
-        path: "/member/changepassword",
-        name: "changepassword",
-        component: () => import("../views/auth/ChangePasswordPage.vue"),
-    },
-    {
         path: "/member/find/memberId",
         name: "findMemberId",
         component: () => import("../views/auth/FindMemberId.vue"),
