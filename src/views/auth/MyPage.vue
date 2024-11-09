@@ -9,6 +9,7 @@ const auth = useAuthStore();
 const myPageStore = useMyPageStore();
 
 const memberId = ref(null);
+const error = ref("");
 
 const oldPassword = ref(null);
 const newPassword = ref(null);
@@ -30,7 +31,25 @@ const member = reactive({
   housingType: "",
 });
 
-const error = ref("");
+const regions = [
+  "서울",
+  "부산",
+  "대구",
+  "인천",
+  "광주",
+  "대전",
+  "울산",
+  "세종",
+  "경기",
+  "강원",
+  "충북",
+  "충남",
+  "전북",
+  "전남",
+  "경상북도",
+  "경남",
+  "제주",
+];
 
 function decodeJWT(token) {
   const payload = token.split(".")[1];
@@ -220,13 +239,9 @@ onMounted(async () => {
             v-model="member.residence"
           >
             <option value="null" disabled>거주지 선택</option>
-            <option value="서울">서울</option>
-            <option value="경기도">경기도</option>
-            <option value="강원도">강원도</option>
-            <option value="충청도">충청도</option>
-            <option value="전라도">전라도</option>
-            <option value="경상도">경상도</option>
-            <option value="제주도">제주도</option>
+            <option v-for="region in regions" :key="region" :value="region">
+              {{ region }}
+            </option>
           </select>
         </div>
       </div>
