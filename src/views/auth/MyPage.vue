@@ -81,7 +81,10 @@ const verifyPassword = async () => {
     } else {
       alert("기존 비밀번호와 일치하지 않습니다.");
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error("비밀번호 검증 중 에러 발생: ", e);
+    alert("비밀번호 검증 중 문제가 발생했습니다. 다시 시도해 주세요.");
+  }
 };
 
 const enhancedSecurityPassword = (newPassword) => {
