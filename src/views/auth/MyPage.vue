@@ -25,7 +25,7 @@ const member = reactive({
   email: "",
   income: "",
   occupation: "",
-  residence: null,
+  region: null,
   district: null,
   local: null,
   maritalStatus: "",
@@ -149,7 +149,7 @@ const fetchMyPageInfo = async () => {
   member.email = myPageData.email;
   member.income = myPageData.income;
   member.occupation = myPageData.occupation;
-  member.residence = myPageData.residence;
+  member.region = myPageData.region;
   member.maritalStatus = myPageData.maritalStatus;
   member.hasChildren = myPageData.hasChildren;
   member.housingType = myPageData.housingType;
@@ -180,7 +180,7 @@ const fetchCity = async () => {
 };
 
 watch(
-  () => member.residence,
+  () => member.region,
   async (newResidence) => {
     if (newResidence) {
       await myPageStore.getDistrict(newResidence);
@@ -192,8 +192,8 @@ watch(
 watch(
   () => member.district,
   async (newDistrict) => {
-    if (newDistrict && member.residence) {
-      myPageStore.selectedCity = member.residence;
+    if (newDistrict && member.region) {
+      myPageStore.selectedCity = member.region;
       myPageStore.selectedDistrict = newDistrict;
       await myPageStore.getLocal();
       locals.value = myPageStore.locals;
@@ -292,7 +292,7 @@ onMounted(async () => {
         <div class="w-4/5">
           <select
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            v-model="member.residence"
+            v-model="member.region"
           >
             <option value="null" disabled>지역 선택</option>
             <option v-for="city in cities" :key="city" :value="city">

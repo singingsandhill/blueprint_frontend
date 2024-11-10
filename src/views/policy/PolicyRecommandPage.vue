@@ -1,7 +1,7 @@
 <script setup>
 import { usePolicyStore } from "@/stores/policy.js";
 import { ref, computed, onMounted } from "vue";
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
@@ -59,12 +59,17 @@ const policyTypes = [
 ];
 
 const applyFilters = async () => {
+  console.log("Selected City:", selectedCity.value);
+  console.log("Selected District:", district.value);
+  console.log("Selected Policy Type:", selectedPolicyType.value);
   policyStore.filterCondition.city =
     selectedCity.value === "전체" || selectedCity.value === "null"
       ? null
       : selectedCity.value;
+
   policyStore.filterCondition.district =
     district.value === "" || district.value === "null" ? null : district.value;
+
   policyStore.filterCondition.type =
     selectedPolicyType.value === "전체" || selectedPolicyType.value === "null"
       ? null
@@ -73,15 +78,6 @@ const applyFilters = async () => {
   await policyStore.getPolicyFilter();
   policyList.value = policyStore.PolicyInfoList;
   currentPage.value = 1;
-
-  router.push({
-    path: '/policy',
-    query: {
-      city: selectedCity.value,
-      district: district.value,
-      type: selectedPolicyType.value,
-    },
-  });
 };
 
 const changePage = (page) => {
@@ -89,21 +85,6 @@ const changePage = (page) => {
     currentPage.value = page;
   }
 };
-
-onMounted(async () => {
-  if (route.query.city || route.query.district || route.query.type) {
-    selectedCity.value = route.query.city || null;
-    district.value = route.query.district || null;
-    selectedPolicyType.value = route.query.type || null;
-
-    policyStore.filterCondition.city = selectedCity.value;
-    policyStore.filterCondition.district = district.value;
-    policyStore.filterCondition.type = selectedPolicyType.value;
-
-    await policyStore.getPolicyFilter();
-    policyList.value = policyStore.PolicyInfoList;
-  }
-});
 </script>
 
 <template>
