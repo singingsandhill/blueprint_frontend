@@ -53,6 +53,6 @@ export const usePolicyStore = defineStore("policy", {
         console.error("Failed to filter policy : ", error);
         throw error;
       }
-    }
+    },
   },
 });
