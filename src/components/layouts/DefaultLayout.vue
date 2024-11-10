@@ -10,6 +10,6 @@ import Footer from "./Footer.vue";
         <div class="my-5 px-3">
             <slot></slot>
         </div>
-        <Footer />
+        <Footer class="mt-auto"/>
     </div>
 </template>
