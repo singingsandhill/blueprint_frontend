@@ -191,7 +191,7 @@ onMounted(() => {
             class="hover:bg-gray-100 cursor-pointer"
             @click="
               $router.push({
-                name: 'policyDetail',
+                name: 'PolicyDetail',
                 params: { idx: policy.idx },
               })
             "
