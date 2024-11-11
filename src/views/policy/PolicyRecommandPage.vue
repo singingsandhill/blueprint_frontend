@@ -1,6 +1,6 @@
 <script setup>
 import { usePolicyStore } from "@/stores/policy.js";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
@@ -158,15 +158,15 @@ const formatDate = (dateString) => {
       <table class="w-full table-auto border-collapse">
         <thead>
           <tr class="bg-darkBlue text-white">
-            <th class="border border-gray-300 px-4 py-2">이름</th>
-            <th class="border border-gray-300 px-4 py-2">지역</th>
-            <th class="border border-gray-300 px-4 py-2">지역구</th>
-            <th class="border border-gray-300 px-4 py-2">정책 유형</th>
-            <th class="border border-gray-300 px-4 py-2">운영 기관</th>
-            <th class="border border-gray-300 px-4 py-2">정책 시작 날짜</th>
-            <th class="border border-gray-300 px-4 py-2">정책 마감 날짜</th>
-            <th class="border border-gray-300 px-4 py-2">신청 시작 날짜</th>
-            <th class="border border-gray-300 px-4 py-2">신청 마감 날짜</th>
+            <th class="border border-gray-300 px-4 py-4 w-60">이름</th>
+            <th class="border border-gray-300 px-4 py-4 w-20">지역</th>
+            <th class="border border-gray-300 px-4 py-4 w-24">지역구</th>
+            <th class="border border-gray-300 px-4 py-4 w-20">정책 유형</th>
+            <th class="border border-gray-300 px-4 py-4 w-24">운영 기관</th>
+            <th class="border border-gray-300 px-4 py-4 w-20">정책 시작 날짜</th>
+            <th class="border border-gray-300 px-4 py-4 w-20">정책 마감 날짜</th>
+            <th class="border border-gray-300 px-4 py-4 w-20">신청 시작 날짜</th>
+            <th class="border border-gray-300 px-4 py-4 w-20">신청 마감 날짜</th>
           </tr>
         </thead>
         <tbody>
@@ -181,25 +181,31 @@ const formatDate = (dateString) => {
               })
             "
           >
-            <td class="border border-gray-300 px-4 py-2">{{ policy.name }}</td>
-            <td class="border border-gray-300 px-4 py-2">{{ policy.city }}</td>
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-4 py-3 text-center">
+              {{ policy.name }}
+            </td>
+            <td class="border border-gray-300 px-4 py-3 text-center">
+              {{ policy.city }}
+            </td>
+            <td class="border border-gray-300 px-4 py-5 text-center">
               {{ policy.district }}
             </td>
-            <td class="border border-gray-300 px-4 py-2">{{ policy.type }}</td>
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-4 py-3 text-center">
+              {{ policy.type }}
+            </td>
+            <td class="border border-gray-300 px-4 py-3 text-center">
               {{ policy.offerInst }}
             </td>
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-4 py-3 text-center">
               {{ formatDate(policy.startDate) }}
             </td>
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-4 py-3 text-center">
               {{ formatDate(policy.endDate) }}
             </td>
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-4 py-3 text-center">
               {{ formatDate(policy.applyStartDate) }}
             </td>
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-4 py-3 text-center">
               {{ formatDate(policy.applyEndDate) }}
             </td>
           </tr>
