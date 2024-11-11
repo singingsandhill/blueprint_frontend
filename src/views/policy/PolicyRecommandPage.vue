@@ -85,6 +85,12 @@ const changePage = (page) => {
     currentPage.value = page;
   }
 };
+
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toISOString().split("T")[0];
+};
 </script>
 
 <template>
@@ -185,16 +191,16 @@ const changePage = (page) => {
               {{ policy.offerInst }}
             </td>
             <td class="border border-gray-300 px-4 py-2">
-              {{ policy.startDate }}
+              {{ formatDate(policy.startDate) }}
             </td>
             <td class="border border-gray-300 px-4 py-2">
-              {{ policy.endDate }}
+              {{ formatDate(policy.endDate) }}
             </td>
             <td class="border border-gray-300 px-4 py-2">
-              {{ policy.applyStartDate }}
+              {{ formatDate(policy.applyStartDate) }}
             </td>
             <td class="border border-gray-300 px-4 py-2">
-              {{ policy.applyEndDate }}
+              {{ formatDate(policy.applyEndDate) }}
             </td>
           </tr>
         </tbody>
