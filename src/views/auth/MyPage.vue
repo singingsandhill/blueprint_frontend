@@ -123,6 +123,18 @@ const matchPassword = () => {
   }
 };
 
+const formatNumber = (value) => {
+  if (!value) return "";
+  return parseInt(value, 10).toLocaleString("en-US");
+};
+
+const onIncomeInput = (event) => {
+  const rawValue = event.target.value.replace(/,/g, "");
+  if (!isNaN(rawValue)) {
+    member.income = rawValue;
+  }
+};
+
 const onSubmit = async () => {
   if (!confirm("수정하시겠습니까?")) return;
 
@@ -157,25 +169,6 @@ const fetchMyPageInfo = async () => {
   member.housingType = myPageData.housingType;
 };
 
-// const fetchCity = async () => {
-//   await myPageStore.getCity();
-//   console.log("Fetched cities:", myPageStore.cities);
-//   cities.value = myPageStore.cities;
-
-//   if (member.residence) {
-//     await myPageStore.getDistrict(member.residence);
-//     districts.value = myPageStore.districts;
-//   }
-
-//   if (member.district) {
-//     myPageStore.selectedCity = member.city;
-//     myPageStore.selectedDistrict = member.district;
-
-//     await myPageStore.getLocal();
-//     locals.value = myPageStore.locals;
-//   }
-// };
-
 const fetchCity = async () => {
   await myPageStore.getCity();
   cities.value = myPageStore.cities;
@@ -183,9 +176,9 @@ const fetchCity = async () => {
 
 watch(
   () => member.region,
-  async (newResidence) => {
-    if (newResidence) {
-      await myPageStore.getDistrict(newResidence);
+  async (newRegion) => {
+    if (newRegion) {
+      await myPageStore.getDistrict(newRegion);
       districts.value = myPageStore.districts;
     }
   }
@@ -324,7 +317,7 @@ onMounted(async () => {
       </div>
 
       <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">동</div>
+        <div class="w-1/5 text-end mr-10">읍/면/동</div>
         <div class="w-4/5">
           <select
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
@@ -391,10 +384,11 @@ onMounted(async () => {
         <div class="w-1/5 text-end mr-10">소득</div>
         <div class="w-4/5">
           <input
-            v-model="member.income"
+            :value="formatNumber(member.income)"
             type="text"
             placeholder="소득을 입력해주세요."
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
+            @input="onIncomeInput"
           />
         </div>
       </div>
