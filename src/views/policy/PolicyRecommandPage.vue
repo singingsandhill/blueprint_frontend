@@ -59,10 +59,6 @@ const applyFilters = async () => {
   localStorage.setItem("district", district.value);
   localStorage.setItem("selectedPolicyType", selectedPolicyType.value);
 
-  console.log("Selected City:", selectedCity.value);
-  console.log("Selected District:", district.value);
-  console.log("Selected Policy Type:", selectedPolicyType.value);
-
   policyStore.filterCondition.city =
     selectedCity.value === "전체" || selectedCity.value === "null"
       ? null
