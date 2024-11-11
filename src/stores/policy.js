@@ -4,6 +4,11 @@ import axiosInstance from "@/util/axiosInstance";
 export const usePolicyStore = defineStore("policy", {
   state: () => ({
     PolicyInfoList: [],
+    filterCondition: {
+      city: null,
+      district: null,
+      type: null,
+    },
     PolicyDetail: {
       idx: null,
       subject: null,
@@ -19,7 +24,7 @@ export const usePolicyStore = defineStore("policy", {
 
   actions: {
     async getPolicyInfo() {
-      try {
+       try {
         const response = await axiosInstance.get("/policy/list");
         this.PolicyInfoList = response.data.response.data.map((policy) => ({
           idx: policy.idx,
@@ -57,6 +62,18 @@ export const usePolicyStore = defineStore("policy", {
         };
       } catch (error) {
         console.error("Failed to fetch Policy Detail: ", error);
+        throw error;
+      }
+    },
+
+    async getPolicyFilter() {
+      try {
+        const response = await axiosInstance.post(
+          "/policy/filter", this.filterCondition,
+        );
+        this.PolicyInfoList = response.data.response.data;
+      } catch (error) {
+        console.error("Failed to filter policy : ", error);
         throw error;
       }
     },
