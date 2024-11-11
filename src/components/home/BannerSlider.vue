@@ -29,7 +29,7 @@ const modules = [Autoplay, Pagination];
   <swiper
     :modules="modules"
     :autoplay="{
-      delay: 5000,
+      delay: 3000,
       disableOnInteraction: false
     }"
     :pagination="{ clickable: true }"
