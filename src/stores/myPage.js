@@ -9,6 +9,8 @@ export const useMyPageStore = defineStore("myPage", {
       income: null,
       occupation: null,
       region: null,
+      district: null,
+      local: null,
       maritalStatus: null,
       hasChildren: null,
       housingType: null,

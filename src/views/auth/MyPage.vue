@@ -150,6 +150,8 @@ const fetchMyPageInfo = async () => {
   member.income = myPageData.income;
   member.occupation = myPageData.occupation;
   member.region = myPageData.region;
+  member.district = myPageData.district;
+  member.local = myPageData.local;
   member.maritalStatus = myPageData.maritalStatus;
   member.hasChildren = myPageData.hasChildren;
   member.housingType = myPageData.housingType;
