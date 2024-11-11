@@ -37,6 +37,7 @@ onMounted(() => {
         <div class="container mx-auto px-6 rounded-xl bg-[#002842]">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
+                    
                     <!-- 좌측: 로고와 메뉴그룹 -->
                     <router-link 
                         class="text-white py-4 text-2xl font-semibold flex items-center hover:text-gray-200 transition-colors duration-200 mr-8" 
