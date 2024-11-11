@@ -1,10 +1,6 @@
 <script setup>
 import { usePolicyStore } from "@/stores/policy.js";
-import { ref, computed } from "vue";
-import { useRouter, useRoute } from "vue-router";
-
-const router = useRouter();
-const route = useRoute();
+import { ref, computed, onMounted } from "vue";
 
 const policyStore = usePolicyStore();
 const policyList = ref([]);
@@ -59,9 +55,14 @@ const policyTypes = [
 ];
 
 const applyFilters = async () => {
+  localStorage.setItem("selectedCity", selectedCity.value);
+  localStorage.setItem("district", district.value);
+  localStorage.setItem("selectedPolicyType", selectedPolicyType.value);
+
   console.log("Selected City:", selectedCity.value);
   console.log("Selected District:", district.value);
   console.log("Selected Policy Type:", selectedPolicyType.value);
+
   policyStore.filterCondition.city =
     selectedCity.value === "전체" || selectedCity.value === "null"
       ? null
@@ -91,6 +92,16 @@ const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toISOString().split("T")[0];
 };
+
+onMounted(() => {
+  selectedCity.value = localStorage.getItem("selectedCity") || null;
+  district.value = localStorage.getItem("district") || "";
+  selectedPolicyType.value = localStorage.getItem("selectedPolicyType") || null;
+
+  if (selectedCity.value || district.value || selectedPolicyType.value) {
+    applyFilters();
+  }
+});
 </script>
 
 <template>
@@ -163,10 +174,18 @@ const formatDate = (dateString) => {
             <th class="border border-gray-300 px-4 py-4 w-24">지역구</th>
             <th class="border border-gray-300 px-4 py-4 w-20">정책 유형</th>
             <th class="border border-gray-300 px-4 py-4 w-24">운영 기관</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">정책 시작 날짜</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">정책 마감 날짜</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">신청 시작 날짜</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">신청 마감 날짜</th>
+            <th class="border border-gray-300 px-4 py-4 w-20">
+              정책 시작 날짜
+            </th>
+            <th class="border border-gray-300 px-4 py-4 w-20">
+              정책 마감 날짜
+            </th>
+            <th class="border border-gray-300 px-4 py-4 w-20">
+              신청 시작 날짜
+            </th>
+            <th class="border border-gray-300 px-4 py-4 w-20">
+              신청 마감 날짜
+            </th>
           </tr>
         </thead>
         <tbody>
