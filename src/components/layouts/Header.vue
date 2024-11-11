@@ -3,11 +3,12 @@ import config from "@/config";
 </script>
 
 <template>
-    <div class="mt-8">  <!-- 상단 여백 추가 -->
-        <h1 class="text-blue-600 text-4xl font-bold mb-4">{{ config.title }}</h1>
-        <p class="text-blue-600 text-xl mb-6">{{ config.subtitle }}</p>
-        <!-- <div class="bg-blue-600 text-white p-8">
-        </div> -->
+    <div class="mt-8 flex flex-col items-center">
+        <img 
+            src="@/assets/blueprint_logo_B_투명.png" 
+            alt="BluePrint Logo" 
+            class="w-32 sm:w-48 md:w-64 lg:w-80 mb-4" 
+        />
     </div>
 </template>
 

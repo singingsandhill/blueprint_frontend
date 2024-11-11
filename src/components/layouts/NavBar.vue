@@ -14,8 +14,8 @@ const toggleNavShow = () => (state.isNavShow = !state.isNavShow);
 </script>
 
 <template>
-    <nav class="bg-blue-600 text-white shadow-lg rounded-xl">
-        <div class="container mx-auto px-6 rounded-xl bg-blue-700">
+    <nav class="bg-[#002842] text-white shadow-lg rounded-xl">
+        <div class="container mx-auto px-6 rounded-xl bg-[#002842]">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <!-- 좌측: 로고와 메뉴그룹 -->
@@ -41,7 +41,7 @@ const toggleNavShow = () => (state.isNavShow = !state.isNavShow);
                     
                     <!-- 모바일 메뉴 버튼 -->
                     <button
-                        class="md:hidden p-3 hover:bg-blue-700 rounded-lg transition-colors duration-200"
+                        class="md:hidden p-3 hover:bg-[#002842] rounded-lg transition-colors duration-200"
                         type="button"
                         @click="toggleNavShow"
                     >
@@ -53,7 +53,7 @@ const toggleNavShow = () => (state.isNavShow = !state.isNavShow);
  
                 <!-- 모바일 메뉴 -->
                 <div 
-                    :class="[navClass, 'md:hidden absolute top-16 left-0 right-0 bg-blue-600 w-full shadow-lg z-50']"
+                    :class="[navClass, 'md:hidden absolute top-16 left-0 right-0 bg-[#002842] w-full shadow-lg z-50']"
                     id="collapsibleNavbar"
                 >
                     <div class="flex flex-col py-2">
@@ -64,6 +64,6 @@ const toggleNavShow = () => (state.isNavShow = !state.isNavShow);
             </div>
         </div>
     </nav>
- </template>
+</template>
 
 <style></style>

@@ -1,11 +1,26 @@
 <script setup>
+import { ref } from 'vue';
+import FilterSection from '@/components/home/FilterSection.vue';
+import FilterResult from '@/components/home/FilterResult.vue'; 
 import PolicySection from '@/components/home/PolicySection.vue';
 import SubscriptionSection from '@/components/home/SubscriptionSection.vue';
 import FinanceSection from '@/components//home/FinanceSection.vue';
+import BannerSlider from '@/components/home/BannerSlider.vue';
+
+const filteredPolicies = ref([]);
+const searchExecuted = ref(false);
+
+const handleFilterChanged = (policies) => {
+  filteredPolicies.value = policies;
+  searchExecuted.value = true;
+};
 </script>
 
 <template>
   <div class="homepage container mx-auto p-4">
+    <BannerSlider />
+    <FilterSection @filterChanged="handleFilterChanged" />
+    <FilterResult v-if="searchExecuted" :filteredPolicies="filteredPolicies" />
     <PolicySection />
     <SubscriptionSection />
     <FinanceSection />
@@ -13,5 +28,13 @@ import FinanceSection from '@/components//home/FinanceSection.vue';
 </template>
 
 <style scoped>
+.homepage {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
+section {
+  margin-top: 2rem;
+}
 </style>
