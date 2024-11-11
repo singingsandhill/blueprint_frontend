@@ -19,13 +19,14 @@ const handleFilterChanged = (policies) => {
 <template>
   <div class="homepage container mx-auto p-4">
     <BannerSlider />
-    <FilterSection @filterChanged="handleFilterChanged" />
-    <FilterResult v-if="searchExecuted" :filteredPolicies="filteredPolicies" />
-    <PolicySection />
-    <SubscriptionSection />
-    <FinanceSection />
+    <FilterSection @filterChanged="handleFilterChanged" class="mb-32" />
+    <FilterResult v-if="searchExecuted" :filteredPolicies="filteredPolicies" class="mb-32" />
+    <PolicySection class="mb-32" />
+    <SubscriptionSection class="mb-32" />
+    <FinanceSection class="mb-32" />
   </div>
 </template>
+
 
 <style scoped>
 .homepage {

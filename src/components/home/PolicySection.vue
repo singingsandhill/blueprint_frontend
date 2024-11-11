@@ -75,9 +75,7 @@ const slidePrev = () => {
 
 <template>
   <section class="mt-8 relative">
-    <h2 class="text-2xl font-bold mb-4">청년지원정보</h2>
-    <p class="text-gray-500 mb-6">서울 청년에게 필요한 다양한 정보 모아보기</p>
-
+    <h2 class="text-2xl font-bold mb-12">정책 정보</h2>
     <div class="flex items-center">
       <button 
         @click="slidePrev" 
@@ -124,9 +122,9 @@ const slidePrev = () => {
     <div class="flex justify-center mt-6">
       <button 
         @click="router.push('/policy')" 
-        class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white transition duration-200 font-semibold border border-blue-600"
+        class="px-4 py-2 rounded-lg hover:bg-blue-200 hover:transition duration-200 font-semibold border"
       >
-        청년지원정보 더보기 &gt;
+        청년지원정보 더보기
       </button>
     </div>
   </section>
