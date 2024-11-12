@@ -52,7 +52,7 @@ const handleLogout = () => {
       <!-- 우측: 계정 메뉴 -->
       <div class="hidden md:flex space-x-8 items-center">
         <li class="list-none">
-            <router-link to="/my-service" class="text-white hover:text-gray-200 transition-colors duration-200">
+            <router-link to="/myservice" class="text-white hover:text-gray-200 transition-colors duration-200">
               나만의 서비스
             </router-link>
           </li>
