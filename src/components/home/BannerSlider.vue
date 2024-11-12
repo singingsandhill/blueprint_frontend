@@ -35,7 +35,6 @@ const banners = ref([
 
 const modules = [Autoplay, Pagination];
 </script>
-
 <template>
   <swiper
     :modules="modules"
@@ -71,7 +70,9 @@ const modules = [Autoplay, Pagination];
 <style scoped>
 .mySwiper {
   width: 100%;
+  max-width: 100%;
   height: 300px;
+  margin: 0;
 }
 .swiper-slide {
   display: flex;
