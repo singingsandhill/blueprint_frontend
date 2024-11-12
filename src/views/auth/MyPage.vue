@@ -283,7 +283,7 @@ onMounted(async () => {
 
     <h2 class="text-xl font-semibold mb-2 mt-10">추가 정보</h2>
     <p class="text-gray-600 text-sm mb-4">
-      추가정보는 BluePrint 사이트의 맞춤형 정보에 반영됩니다.
+      추가정보는 BluePrint 사이트의 '나만의 서비스'에 반영됩니다.
     </p>
     <div class="flex items-center justify-between border-t border-b py-4">
       <span class="w-1/5 font-semibold">지역</span>
