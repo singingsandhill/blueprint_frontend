@@ -1,6 +1,6 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth";
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useMyPageStore } from "@/stores/myPage";
 
@@ -9,6 +9,7 @@ const auth = useAuthStore();
 const myPageStore = useMyPageStore();
 
 const memberId = ref(null);
+const error = ref("");
 
 const oldPassword = ref(null);
 const newPassword = ref(null);
@@ -24,13 +25,37 @@ const member = reactive({
   email: "",
   income: "",
   occupation: "",
-  residence: "",
+  region: null,
+  district: null,
+  local: null,
   maritalStatus: "",
   hasChildren: "",
   housingType: "",
 });
 
-const error = ref("");
+const cities = ref(null);
+const districts = ref(null);
+const locals = ref(null);
+
+// const regions = [
+//   "서울",
+//   "부산",
+//   "대구",
+//   "인천",
+//   "광주",
+//   "대전",
+//   "울산",
+//   "세종",
+//   "경기",
+//   "강원",
+//   "충북",
+//   "충남",
+//   "전북",
+//   "전남",
+//   "경상북도",
+//   "경남",
+//   "제주",
+// ];
 
 function decodeJWT(token) {
   const payload = token.split(".")[1];
@@ -43,7 +68,6 @@ function decodeJWT(token) {
 const getTokenInfo = () => {
   if (auth.token) {
     const decodedToken = decodeJWT(auth.token);
-    console.log("디코딩된 토큰:", decodedToken);
     memberId.value = decodedToken.sub;
   }
 };
@@ -57,7 +81,10 @@ const verifyPassword = async () => {
     } else {
       alert("기존 비밀번호와 일치하지 않습니다.");
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error("비밀번호 검증 중 에러 발생: ", e);
+    alert("비밀번호 검증 중 문제가 발생했습니다. 다시 시도해 주세요.");
+  }
 };
 
 const enhancedSecurityPassword = (newPassword) => {
@@ -96,15 +123,30 @@ const matchPassword = () => {
   }
 };
 
+const formatNumber = (value) => {
+  if (!value) return "";
+  return parseInt(value, 10).toLocaleString("en-US");
+};
+
+const onIncomeInput = (event) => {
+  const rawValue = event.target.value.replace(/,/g, "");
+  if (!isNaN(rawValue)) {
+    member.income = rawValue;
+  }
+};
+
 const onSubmit = async () => {
   if (!confirm("수정하시겠습니까?")) return;
 
   try {
     Object.assign(myPageStore.MyPageInfo, member);
-    myPageStore.newPassword = newPassword.value;
+
+    if (newPassword.value) {
+      myPageStore.newPassword = newPassword.value;
+      await myPageStore.updatePassword();
+    }
 
     await myPageStore.updateMyPageInfo();
-    await myPageStore.updatePassword();
     alert("정보를 수정하였습니다.");
     router.go();
   } catch (e) {
@@ -119,17 +161,45 @@ const fetchMyPageInfo = async () => {
   member.email = myPageData.email;
   member.income = myPageData.income;
   member.occupation = myPageData.occupation;
-  member.residence = myPageData.residence;
+  member.region = myPageData.region;
+  member.district = myPageData.district;
+  member.local = myPageData.local;
   member.maritalStatus = myPageData.maritalStatus;
   member.hasChildren = myPageData.hasChildren;
   member.housingType = myPageData.housingType;
 };
 
+const fetchCity = async () => {
+  await myPageStore.getCity();
+  cities.value = myPageStore.cities;
+};
+
+watch(
+  () => member.region,
+  async (newRegion) => {
+    if (newRegion) {
+      await myPageStore.getDistrict(newRegion);
+      districts.value = myPageStore.districts;
+    }
+  }
+);
+
+watch(
+  () => member.district,
+  async (newDistrict) => {
+    if (newDistrict && member.region) {
+      myPageStore.selectedCity = member.region;
+      myPageStore.selectedDistrict = newDistrict;
+      await myPageStore.getLocal();
+      locals.value = myPageStore.locals;
+    }
+  }
+);
+
 onMounted(async () => {
   getTokenInfo();
-  // console.log(memberId);
-  console.log(memberId.value);
   await fetchMyPageInfo();
+  await fetchCity();
 });
 </script>
 
@@ -213,20 +283,50 @@ onMounted(async () => {
       </div>
 
       <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">거주지</div>
+        <div class="w-1/5 text-end mr-10">지역</div>
         <div class="w-4/5">
           <select
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            v-model="member.residence"
+            v-model="member.region"
           >
-            <option value="null" disabled>거주지 선택</option>
-            <option value="서울">서울</option>
-            <option value="경기도">경기도</option>
-            <option value="강원도">강원도</option>
-            <option value="충청도">충청도</option>
-            <option value="전라도">전라도</option>
-            <option value="경상도">경상도</option>
-            <option value="제주도">제주도</option>
+            <option value="null" disabled>지역 선택</option>
+            <option v-for="city in cities" :key="city" :value="city">
+              {{ city }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-6">
+        <div class="w-1/5 text-end mr-10">지역구</div>
+        <div class="w-4/5">
+          <select
+            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
+            v-model="member.district"
+          >
+            <option value="null" disabled>지역구 선택</option>
+            <option
+              v-for="district in districts"
+              :key="district"
+              :value="district"
+            >
+              {{ district }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-6">
+        <div class="w-1/5 text-end mr-10">읍/면/동</div>
+        <div class="w-4/5">
+          <select
+            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
+            v-model="member.local"
+          >
+            <option value="null" disabled>동 선택</option>
+            <option v-for="local in locals" :key="local" :value="local">
+              {{ local }}
+            </option>
           </select>
         </div>
       </div>
@@ -284,10 +384,11 @@ onMounted(async () => {
         <div class="w-1/5 text-end mr-10">소득</div>
         <div class="w-4/5">
           <input
-            v-model="member.income"
+            :value="formatNumber(member.income)"
             type="text"
             placeholder="소득을 입력해주세요."
             class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
+            @input="onIncomeInput"
           />
         </div>
       </div>
