@@ -37,7 +37,7 @@ const getRecommendations = async () => {
         <!-- Title -->
         <div class="flex items-center space-x-2 bg-[#002842] text-white px-3 py-2 rounded-lg md:rounded-l-lg w-full md:w-auto">
             <i class="fas fa-users"></i>
-            <strong class="text-lg font-semibold">나만의 정책</strong>
+            <strong class="text-lg font-semibold">통합 정책 검색</strong>
         </div>
 
         <!-- 지역 필터 -->
