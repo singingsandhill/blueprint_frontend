@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePolicyStore } from '@/stores/policy';
 
@@ -10,7 +10,21 @@ const policies = ref([]);
 const currentIndex = ref(0);
 const itemsPerPage = ref(4);
 
+const updateItemsPerPage = () => {
+  const screenWidth = window.innerWidth;
+  if (screenWidth < 640) {
+    itemsPerPage.value = 1;
+  } else if (screenWidth < 1024) {
+    itemsPerPage.value = 2;
+  } else {
+    itemsPerPage.value = 4; 
+  }
+};
+
 onMounted(async () => {
+  updateItemsPerPage(); 
+  window.addEventListener('resize', updateItemsPerPage); 
+
   try {
     await policyStore.getPolicyInfo();
     const allPolicies = policyStore.PolicyInfoList.map(policy => {
@@ -31,6 +45,10 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error fetching policy data:', error);
   }
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateItemsPerPage); 
 });
 
 const getStatus = (startDate, endDate) => {
@@ -91,7 +109,7 @@ const slidePrev = () => {
           :key="policy.idx" 
           @click="goToDetails(policy.idx)"
           class="card cursor-pointer bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200 p-4"
-          style="width: calc(25% - 1rem);"
+          :class="{ 'w-full': itemsPerPage === 1, 'w-1/2': itemsPerPage === 2, 'w-1/4': itemsPerPage === 4 }"
         >
           <div>
             <span 

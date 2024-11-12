@@ -177,95 +177,115 @@ const register = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4 md:p-0">
-    <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-      <h2 class="text-2xl font-semibold text-center mb-6">회원가입</h2>
+  <div class="flex justify-center items-center min-h-screen bg-gray-50 p-4 font-pretendard-regular">
+    <div class="w-full max-w-2xl p-8 bg-white border rounded-lg shadow">
+      <h2 class="text-2xl font-semibold text-center mb-6 text-[#002842]">회원가입</h2>
 
-      <form @submit.prevent="register" class="space-y-4">
-        <div>
-          <label for="memberName" class="block text-sm font-medium text-gray-700">이름</label>
-          <input
-            type="text"
-            v-model="member.memberName"
-            id="memberName"
-            class="block w-full p-3 border rounded-md md:p-2"
-            placeholder="이름을 입력하세요"
-            required
-          />
+      <form @submit.prevent="register" class="space-y-6">
+        <div class="flex flex-col space-y-1">
+          <div class="flex items-center space-x-4">
+            <label for="memberName" class="w-24 text-sm font-medium text-gray-700">이름</label>
+            <input
+              type="text"
+              v-model="member.memberName"
+              id="memberName"
+              class="flex-grow px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
+              placeholder="이름을 입력하세요"
+              required
+            />
+          </div>
         </div>
 
-        <div>
-          <label for="memberId" class="block text-sm font-medium text-gray-700">아이디</label>
-          <div class="flex items-center space-x-2">
+        <!-- 아이디 입력 필드 -->
+        <div class="flex flex-col md:flex-row items-center md:space-x-4 mt-4">
+          <div class="flex items-center space-x-4 w-full md:w-auto">
+            <label for="memberId" class="w-24 text-sm font-medium text-gray-700">아이디</label>
             <input
               type="text"
               v-model="member.memberId"
               id="memberId"
-              class="block w-full p-3 border rounded-md md:p-2"
+              class="flex-grow px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
               placeholder="아이디를 입력하세요"
               required
             />
-            <button @click="checkId" type="button" class="p-2 bg-blue-500 text-white rounded-md text-xs md:text-sm">ID 중복 확인</button>
+          </div>
+          <div class="w-full md:w-auto">
+            <button 
+              @click="checkId" 
+              type="button" 
+              class="responsive-button px-4 py-2 bg-[#002842] text-white rounded hover:bg-[#0E429D] text-sm mt-2 md:mt-0 md:ml-auto w-full md:w-auto">
+              ID 중복 확인
+            </button>
           </div>
         </div>
 
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">비밀번호</label>
-          <input
-            type="password"
-            v-model="member.password"
-            id="password"
-            class="block w-full p-3 border rounded-md md:p-2"
-            placeholder="비밀번호를 입력하세요"
-            required
-            @input="checkPasswordStrength"
-          />
-          <p :class="isStrongPassword ? 'text-green-500' : 'text-red-500'" class="text-sm">{{ passwordStrengthMessage }}</p>
+        <!-- 비밀번호 입력 필드 -->
+        <div class="flex flex-col space-y-1">
+          <div class="flex items-center space-x-4">
+            <label for="password" class="w-24 text-sm font-medium text-gray-700">비밀번호</label>
+            <input
+              type="password"
+              v-model="member.password"
+              id="password"
+              class="flex-grow px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
+              placeholder="비밀번호를 입력하세요"
+              required
+              @input="checkPasswordStrength"
+            />
+          </div>
+          <p v-if="passwordStrengthMessage && member.password.length > 0" 
+             :class="isStrongPassword ? 'text-green-500' : 'text-red-500'" 
+             class="text-sm mt-1 ml-28">
+            {{ passwordStrengthMessage }}
+          </p>
         </div>
 
-        <div>
-          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">비밀번호 확인</label>
-          <input
-            type="password"
-            v-model="member.confirmPassword"
-            id="confirmPassword"
-            class="block w-full p-3 border rounded-md md:p-2"
-            placeholder="비밀번호를 다시 입력하세요"
-            required
-          />
-          <p v-if="member.password !== member.confirmPassword" class="text-red-500 text-sm">비밀번호가 일치하지 않습니다.</p>
+        <!-- 비밀번호 확인 필드 -->
+        <div class="flex flex-col space-y-1">
+          <div class="flex items-center space-x-4">
+            <label for="confirmPassword" class="w-24 text-sm font-medium text-gray-700">비밀번호 확인</label>
+            <input
+              type="password"
+              v-model="member.confirmPassword"
+              id="confirmPassword"
+              class="flex-grow px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
+              placeholder="비밀번호를 다시 입력하세요"
+              required
+            />
+          </div>
+          <p v-if="member.password !== member.confirmPassword && member.confirmPassword.length > 0" 
+             class="text-red-500 text-sm mt-1 ml-28">
+            비밀번호가 일치하지 않습니다.
+          </p>
         </div>
 
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">이메일</label>
-          <div class="flex items-center space-x-2">
+        <!-- 이메일 입력 필드 -->
+        <div class="flex flex-col md:flex-row items-center md:space-x-4 mt-4">
+          <div class="flex items-center space-x-4 w-full md:w-auto">
+            <label for="email" class="w-24 text-sm font-medium text-gray-700">이메일</label>
             <input
               type="email"
               v-model="member.email"
               id="email"
-              class="block w-full p-3 border rounded-md md:p-2"
+              class="flex-grow px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
               placeholder="이메일을 입력하세요"
               required
             />
-            <button @click="sendEmailVerification" type="button" class="p-2 bg-blue-500 text-white rounded-md text-xs md:text-sm">인증 코드 발송</button>
           </div>
-          <div v-if="emailVerificationSent" class="mt-2">
-            <label for="emailVerificationCode" class="block text-sm font-medium text-gray-700">인증 코드</label>
-            <input
-              type="text"
-              v-model="member.emailVerificationCode"
-              id="emailVerificationCode"
-              class="block w-full p-3 border rounded-md md:p-2"
-              placeholder="인증 코드를 입력하세요"
-              required
-            />
-            <button @click="verifyEmailCode" type="button" class="p-2 mt-2 bg-blue-500 text-white rounded-md text-xs md:text-sm">인증 확인</button>
+          <div class="w-full md:w-auto">
+            <button 
+              @click="sendEmailVerification" 
+              type="button" 
+              class="responsive-button px-4 py-2 bg-[#002842] text-white rounded hover:bg-[#0E429D] text-sm mt-2 md:mt-0 md:ml-auto w-full md:w-auto">
+              인증 코드 발송
+            </button>
           </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 my-4">성별</label>
-          <div class="flex space-x-4">
+        <!-- 성별 선택 필드 -->
+        <div class="flex items-center space-x-4">
+          <label class="w-24 text-sm font-medium text-gray-700">성별</label>
+          <div class="flex space-x-6">
             <label class="inline-flex items-center">
               <input type="radio" v-model="member.gender" value="M" required />
               <span class="ml-2">남성</span>
@@ -277,25 +297,26 @@ const register = async () => {
           </div>
         </div>
 
-        <div>
-          <label for="birth" class="block text-sm font-medium text-gray-700 my-2 mt-6">생년월일</label>
+        <!-- 생년월일 입력 필드 -->
+        <div class="flex items-center space-x-4">
+          <label for="birth" class="w-24 text-sm font-medium text-gray-700">생년월일</label>
           <input
             type="date"
             v-model="member.birth"
             id="birth"
-            class="block w-full p-3 border rounded-md md:p-2"
-            placeholder="생년월일을 입력하세요"
+            class="flex-grow px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
             required
           />
         </div>
 
         <TermsAgreement @agreementChanged="setAgreement" />
 
-        <div class="mt-6">
+        <!-- 회원가입 버튼 -->
+        <div class="mt-8">
           <button
             type="submit"
             :disabled="disableSubmit"
-            class="w-full p-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:bg-gray-400 text-sm md:text-base"
+            class="w-full py-3 bg-[#002842] text-white font-semibold rounded hover:bg-[#0E429D] disabled:bg-gray-400"
           >
             회원가입
           </button>
@@ -320,4 +341,15 @@ a {
   color: #999999;
   opacity: 1;
 }
+
+@media (max-width: 640px) {
+  .responsive-button {
+    display: block;
+    width: 70%;
+    margin-left: auto;
+  }
+}
+
 </style>
+
+
