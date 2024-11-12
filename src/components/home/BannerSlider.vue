@@ -55,7 +55,7 @@ const modules = [Autoplay, Pagination];
         v-if="banner.backgroundImage"
         :src="banner.backgroundImage.src"
         :alt="banner.backgroundImage.alt"
-        class="absolute inset-0 w-full h-full object-cover -z-10"
+        class="absolute inset-0 w-full h-full object-fill -z-10"
       />
       
       <div class="text" :class="{'text-red-500': banner.backgroundImage}">
