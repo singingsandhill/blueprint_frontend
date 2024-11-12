@@ -10,8 +10,12 @@ export default {
     {
       title: "청약",
       url: "/subscription",
-      icon: ["fas", "building"],
+      icon: ["fas", "scroll"],
     },
+    {
+      title: "부동산",
+      url: "/realestate",
+      icon: ["fas", "building"],},
     {
       title: "금융",
       url: "/finance",

@@ -26,7 +26,6 @@ const login = async () => {
     
     if (response.success) {
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`;
-
       router.push(auth.member?.auth === "ROLE_ADMIN" ? "/admin" : "/");
     } else {
       error.value = response.error;
@@ -51,16 +50,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center h-[70vh] font-pretendard-regular bg-gray-100 p-4 sm:p-6">
-    <form class="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white p-4 sm:p-6 rounded-lg shadow-md mx-auto" @submit.prevent="login">
-      <div class="mb-4">
-        <label for="memberId" class="block text-gray-700 text-sm font-bold mb-2">아이디</label>
+  <div class="flex flex-col items-center justify-center h-[60vh] font-pretendard-regular bg-gray-100 p-4 sm:p-6">
+    <form class="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white p-6 rounded-lg shadow-lg mx-auto" @submit.prevent="login">
+      <div class="mb-6">
+        <label for="memberId" class="block text-gray-700 font-semibold mb-2">아이디</label>
         <div class="relative">
           <input
             type="text"
             v-model="member.memberId"
             id="memberId"
-            class="w-full px-10 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-10 py-3 rounded border border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
             placeholder="아이디를 입력해주세요."
             aria-label="아이디 입력"
             required
@@ -69,14 +68,14 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="mb-4">
-        <label for="password" class="block text-gray-700 text-sm font-bold mb-2">비밀번호</label>
+      <div class="mb-6">
+        <label for="password" class="block text-gray-700 font-semibold mb-2">비밀번호</label>
         <div class="relative">
           <input
             :type="showPassword ? 'text' : 'password'"
             v-model="member.password"
             id="password"
-            class="w-full px-10 py-3 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-10 py-3 rounded border border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
             placeholder="비밀번호를 입력해주세요."
             aria-label="비밀번호 입력"
             required
@@ -95,21 +94,22 @@ onMounted(() => {
 
       <button
         type="submit"
-        class="w-full bg-blue-600 text-white font-semibold py-3 rounded hover:bg-blue-700 focus:outline-none"
+        class="w-full bg-[#002842] text-white font-semibold py-3 rounded hover:bg-[#0E429D] focus:outline-none"
         :disabled="isLoading"
       >
         <span v-if="isLoading" class="loader-spinner mr-2"></span> 로그인
       </button>
 
-      <div class="text-blue-700 text-center mb-6 my-2">
-        <router-link to="/member/find/memberId" class="text-sm hover:underline">아이디 찾기</router-link>
+      <div class="text-[#002842] text-center mb-6 mt-4">
+        <router-link to="/member/find/memberId" class="text-sm hover:underline hover:text-[#0E429D]">아이디 찾기</router-link>
         <span class="mx-2 text-gray-400">|</span>
-        <router-link to="/member/find/password" class="text-sm hover:underline">비밀번호 찾기</router-link>
+        <router-link to="/member/find/password" class="text-sm hover:underline hover:text-[#0E429D]">비밀번호 찾기</router-link>
       </div>
-
-      <div class="text-blue-700 text-center mt-6">
-        <p class="text-gray-500 my-2">아직 계정이 없나요?</p>
-        <router-link to="/member/register" class="text-sm font-semibold hover:underline">회원가입</router-link>
+      <div class="text-[#002842] text-center mt-6">
+        <span class="text-gray-500">아직 계정이 없나요?</span>
+        <router-link to="/member/register" class="text-base font-semibold hover:underline hover:text-[#0E429D] ml-1">
+          회원가입
+        </router-link>
       </div>
     </form>
   </div>
@@ -146,6 +146,9 @@ a {
   .text-sm {
     font-size: 0.875rem;
   }
+  .text-lg {
+    font-size: 1rem;
+  }
   .w-full {
     width: 100%;
   }
@@ -154,10 +157,6 @@ a {
   }
   .absolute.left-3 {
     left: 1rem;
-  }
-  .bg-blue-600 {
-    padding: 0.75rem;
-    font-size: 0.875rem;
   }
 }
 </style>
