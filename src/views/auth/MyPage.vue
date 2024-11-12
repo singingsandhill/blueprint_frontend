@@ -204,35 +204,31 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center mt-5 mx-auto w-full">
-    <div class="w-[500px]">
-      <h1 class="my-3 text-center">마이 페이지</h1>
-
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">이메일</div>
-        <div class="w-4/5">
-          <input
-            v-model="member.email"
-            type="email"
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            readOnly
-          />
-        </div>
+  <div class="max-w-3xl mx-auto mt-10 bg-white p-8 shadow-lg">
+    <div>
+      <h2 class="text-xl font-semibold mb-2">기본정보</h2>
+      <p class="text-gray-600 text-sm mb-4">
+        기본정보는 BluePrint 사이트 재 로그인시에 반영됩니다.
+      </p>
+      <div class="flex items-center justify-between border-t border-b py-4">
+        <span class="w-1/5 font-semibold">이메일</span>
+        <input v-model="member.email" type="email" class="w-4/5" readOnly />
       </div>
 
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">비밀번호</div>
-        <div class="w-3/5">
-          <input
-            v-model="oldPassword"
-            type="password"
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-          />
-        </div>
-        <div class="w-1/5 text-center">
+      <div
+        class="flex items-center justify-between border-t border-b py-4 mt-3"
+      >
+        <span class="w-1/5 font-semibold">비밀번호</span>
+        <input
+          v-model="oldPassword"
+          type="password"
+          class="w-2/5 py-2"
+          placeholder="비밀번호를 입력해주세요."
+        />
+        <div class="w-2/5 text-center">
           <button
             type="submit"
-            class="ml-3 px-4 py-2 bg-midBlue text-white text-sm rounded-md"
+            class="ml-3 px-4 py-2 bg-darkBlue text-white text-sm rounded-md"
             @click="verifyPassword"
           >
             확인
@@ -240,183 +236,148 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div v-if="myPageStore.checkPassword">
-        <div class="flex items-center mb-6">
-          <div class="w-1/5 text-end mr-10">새 비밀번호</div>
-          <div class="w-4/5">
-            <input
-              v-model="newPassword"
-              type="password"
-              placeholder="새 비밀번호를 입력해주세요."
-              @input="checkPasswordStrength"
-              class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            />
-            <p
-              :class="isStrongPassword ? 'text-green-500' : 'text-red-500'"
-              class="text-sm mt-2"
-            >
-              {{ passwordStrengthMessage }}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="passwordStrengthMessage === '비밀번호가 강합니다.'">
-        <div class="flex items-center mb-6">
-          <div class="w-1/5 text-end mr-10">새 비밀번호 확인</div>
-          <div class="w-4/5">
-            <input
-              v-model="checkNewPassword"
-              type="password"
-              placeholder="새 비밀번호를 확인해주세요."
-              @input="matchPassword"
-              class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            />
-            <p
-              :class="isPasswordMatched ? 'text-green-500' : 'text-red-500'"
-              class="text-sm mt-2"
-            >
-              {{ matchPasswordMessage }}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">지역</div>
-        <div class="w-4/5">
-          <select
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            v-model="member.region"
-          >
-            <option value="null" disabled>지역 선택</option>
-            <option v-for="city in cities" :key="city" :value="city">
-              {{ city }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">지역구</div>
-        <div class="w-4/5">
-          <select
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            v-model="member.district"
-          >
-            <option value="null" disabled>지역구 선택</option>
-            <option
-              v-for="district in districts"
-              :key="district"
-              :value="district"
-            >
-              {{ district }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">읍/면/동</div>
-        <div class="w-4/5">
-          <select
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            v-model="member.local"
-          >
-            <option value="null" disabled>동 선택</option>
-            <option v-for="local in locals" :key="local" :value="local">
-              {{ local }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">주거 형태</div>
-        <div class="w-4/5">
-          <select
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            v-model="member.housingType"
-          >
-            <option value="null" disabled>주거 형태 선택</option>
-            <option value="아파트">아파트</option>
-            <option value="오피스텔">오피스텔</option>
-            <option value="연립 주택">연립 주택</option>
-            <option value="단독 주택">단독 주택</option>
-            <option value="기타">기타</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">직업</div>
-        <div class="w-4/5">
-          <select
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            v-model="member.occupation"
-          >
-            <option value="null" disabled>직업 선택</option>
-            <option value="직장인">직장인</option>
-            <option value="사업가">사업가</option>
-            <option value="프리랜서">프리랜서</option>
-            <option value="취업 준비생">취업 준비생</option>
-            <option value="학생">학생</option>
-            <option value="기타">기타</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">결혼 여부</div>
-        <div class="w-4/5">
-          <select
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            v-model="member.maritalStatus"
-          >
-            <option value="null" disabled>결혼 여부 선택</option>
-            <option value="1">O</option>
-            <option value="0">X</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">소득</div>
+      <div
+        v-if="myPageStore.checkPassword"
+        class="flex items-center justify-between border-t border-b py-4 mt-3"
+      >
+        <span class="w-1/5 font-semibold">새 비밀번호</span>
         <div class="w-4/5">
           <input
-            :value="formatNumber(member.income)"
-            type="text"
-            placeholder="소득을 입력해주세요."
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            @input="onIncomeInput"
+            v-model="newPassword"
+            type="password"
+            placeholder="새 비밀번호를 입력해주세요."
+            @input="checkPasswordStrength"
+            class="w-4/5"
           />
-        </div>
-      </div>
-
-      <div class="flex items-center mb-6">
-        <div class="w-1/5 text-end mr-10">자녀 유무</div>
-        <div class="w-4/5">
-          <select
-            class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 w-full p-4"
-            v-model="member.hasChildren"
+          <p
+            :class="isStrongPassword ? 'text-green-500' : 'text-red-500'"
+            class="text-sm mt-2"
           >
-            <option value="null" disabled>자녀 유무 선택</option>
-            <option value="1">O</option>
-            <option value="0">X</option>
-          </select>
+            {{ passwordStrengthMessage }}
+          </p>
         </div>
       </div>
 
-      <div v-if="error" class="text-red-600">{{ error }}</div>
-      <div class="text-center">
-        <button
-          type="submit"
-          class="mt-4 mr-3 px-10 py-2 bg-midBlue text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-          @click="onSubmit"
-        >
-          저장
-        </button>
+      <div
+        v-if="passwordStrengthMessage === '비밀번호가 강합니다.'"
+        class="flex items-center justify-between border-t border-b py-4 mt-3"
+      >
+        <span class="w-1/5 font-semibold">새 비밀번호 확인</span>
+        <div class="w-4/5">
+          <input
+            v-model="checkNewPassword"
+            type="password"
+            placeholder="새 비밀번호를 확인해주세요."
+            @input="matchPassword"
+            class="w-4/5"
+          />
+          <p
+            :class="isPasswordMatched ? 'text-green-500' : 'text-red-500'"
+            class="text-sm mt-2"
+          >
+            {{ matchPasswordMessage }}
+          </p>
+        </div>
       </div>
+    </div>
+
+    <h2 class="text-xl font-semibold mb-2 mt-10">추가 정보</h2>
+    <p class="text-gray-600 text-sm mb-4">
+      추가정보는 BluePrint 사이트의 맞춤형 정보에 반영됩니다.
+    </p>
+    <div class="flex items-center justify-between border-t border-b py-4">
+      <span class="w-1/5 font-semibold">지역</span>
+      <select class="w-4/5" v-model="member.region">
+        <option value="null" disabled>지역 선택</option>
+        <option v-for="city in cities" :key="city" :value="city">
+          {{ city }}
+        </option>
+      </select>
+    </div>
+
+    <div class="flex items-center justify-between border-t border-b py-4 mt-3">
+      <span class="w-1/5 font-semibold">지역구</span>
+      <select class="w-4/5" v-model="member.district">
+        <option value="null" disabled>지역구 선택</option>
+        <option v-for="district in districts" :key="district" :value="district">
+          {{ district }}
+        </option>
+      </select>
+    </div>
+
+    <div class="flex items-center justify-between border-t border-b py-4 mt-3">
+      <span class="w-1/5 font-semibold">읍/면/동</span>
+      <select class="w-4/5" v-model="member.local">
+        <option value="null" disabled>동 선택</option>
+        <option v-for="local in locals" :key="local" :value="local">
+          {{ local }}
+        </option>
+      </select>
+    </div>
+
+    <div class="flex items-center justify-between border-t border-b py-4 mt-3">
+      <span class="w-1/5 font-semibold">주거 형태</span>
+      <select class="w-4/5" v-model="member.housingType">
+        <option value="null" disabled>주거 형태 선택</option>
+        <option value="아파트">아파트</option>
+        <option value="오피스텔">오피스텔</option>
+        <option value="연립 주택">연립 주택</option>
+        <option value="단독 주택">단독 주택</option>
+        <option value="기타">기타</option>
+      </select>
+    </div>
+
+    <div class="flex items-center justify-between border-t border-b py-4 mt-3">
+      <span class="w-1/5 font-semibold">직업</span>
+      <select class="w-4/5" v-model="member.occupation">
+        <option value="null" disabled>직업 선택</option>
+        <option value="직장인">직장인</option>
+        <option value="사업가">사업가</option>
+        <option value="프리랜서">프리랜서</option>
+        <option value="취업 준비생">취업 준비생</option>
+        <option value="학생">학생</option>
+        <option value="기타">기타</option>
+      </select>
+    </div>
+
+    <div class="flex items-center justify-between border-t border-b py-4 mt-3">
+      <span class="w-1/5 font-semibold">결혼 여부</span>
+      <select class="w-4/5" v-model="member.maritalStatus">
+        <option value="null" disabled>결혼 여부 선택</option>
+        <option value="1">O</option>
+        <option value="0">X</option>
+      </select>
+    </div>
+
+    <div class="flex items-center justify-between border-t border-b py-4 mt-3">
+      <span class="w-1/5 font-semibold">소득</span>
+      <input
+        :value="formatNumber(member.income)"
+        type="text"
+        placeholder="소득을 입력해주세요."
+        class="w-4/5"
+        @input="onIncomeInput"
+      />
+    </div>
+
+    <div class="flex items-center justify-between border-t border-b py-4 mt-3">
+      <span class="w-1/5 font-semibold">자녀 유무</span>
+      <select class="w-4/5" v-model="member.hasChildren">
+        <option value="null" disabled>자녀 유무 선택</option>
+        <option value="1">O</option>
+        <option value="0">X</option>
+      </select>
+    </div>
+
+    <div v-if="error" class="text-red-600">{{ error }}</div>
+    <div class="text-center">
+      <button
+        type="submit"
+        class="mt-4 mr-3 px-10 py-2 bg-darkBlue text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+        @click="onSubmit"
+      >
+        저장
+      </button>
     </div>
   </div>
 </template>
