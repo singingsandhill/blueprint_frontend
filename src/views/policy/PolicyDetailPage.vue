@@ -107,7 +107,7 @@ onMounted(async () => {
     <h3 class="text-xl font-semibold mb-4 border-b pb-2">신청 방법</h3>
     <p class="py-3 px-4 bg-gray-50 border mb-2">{{ policyDetail.way }}</p>
 
-    <router-link to="/" class="text-blue-500 mt-4 inline-block">뒤로 가기</router-link>
+    <router-link to="/policy" class="text-blue-500 mt-4 inline-block"> < 다른 정책 보기</router-link>
   </div>
   <div v-else class="text-center py-8">
     <p>해당 정책의 세부 정보를 찾을 수 없습니다.</p>

@@ -101,7 +101,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-4 bg-white shadow-md rounded-lg">
+  <div class="p-4 bg-white shadow-md rounded-lg max-w-[900px] mx-auto">
     <h2 class="text-lg font-semibold mb-4">정책 필터</h2>
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <div>
@@ -159,75 +159,42 @@ onMounted(() => {
       </button>
     </div>
   </div>
-  <div class="container mx-auto p-4">
-    <p class="text-2xl font-bold mb-4 text-[32px]">정책 리스트</p>
-    <div class="overflow-hidden rounded-md border border-gray-300">
-      <table class="w-full table-auto border-collapse">
-        <thead>
-          <tr class="bg-darkBlue text-white">
-            <th class="border border-gray-300 px-4 py-4 w-60">이름</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">지역</th>
-            <th class="border border-gray-300 px-4 py-4 w-24">지역구</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">정책 유형</th>
-            <th class="border border-gray-300 px-4 py-4 w-24">운영 기관</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">
-              정책 시작 날짜
-            </th>
-            <th class="border border-gray-300 px-4 py-4 w-20">
-              정책 마감 날짜
-            </th>
-            <th class="border border-gray-300 px-4 py-4 w-20">
-              신청 시작 날짜
-            </th>
-            <th class="border border-gray-300 px-4 py-4 w-20">
-              신청 마감 날짜
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(policy, index) in paginatedPolicies"
-            :key="index"
-            class="hover:bg-gray-100 cursor-pointer"
-            @click="
-              $router.push({
-                name: 'PolicyDetail',
-                params: { idx: policy.idx },
-              })
-            "
-          >
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ policy.name }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ policy.city }}
-            </td>
-            <td class="border border-gray-300 px-4 py-5 text-center">
-              {{ policy.district }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ policy.type }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ policy.offerInst }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ formatDate(policy.startDate) }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ formatDate(policy.endDate) }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ formatDate(policy.applyStartDate) }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ formatDate(policy.applyEndDate) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
 
+  <div class="mx-auto p-4 max-w-4xl">
+    <p class="text-2xl font-bold mb-4 text-[32px]">검색한 정책</p>
+    <div class="flex border-t-4 border-darkBlue py-4"></div>
+
+    <ul>
+      <li
+        v-for="(policy, index) in paginatedPolicies"
+        :key="index"
+        class="hover:bg-gray-100 cursor-pointer flex items-center space-x-4 border-t border-gray-200 p-2"
+        @click="
+          $router.push({
+            name: 'PolicyDetail',
+            params: { idx: policy.idx },
+          })
+        "
+      >
+        <div
+          class="w-24 bg-lightBlue text-black text-center font-medium px-3 py-1 rounded-md text-xs"
+        >
+          {{ policy.type }}
+        </div>
+        <div class="p-2">
+          <p class="policy-title text-lg font-semibold">
+            {{ policy.name }}
+          </p>
+          <span class="text-gray-600 text-sm">
+            {{ formatDate(policy.startDate) }}
+          </span>
+          <span> ~ </span>
+          <span class="text-gray-600 text-sm">
+            {{ formatDate(policy.startDate) }}
+          </span>
+        </div>
+      </li>
+    </ul>
     <div class="flex justify-center mt-4">
       <button
         class="px-4 py-2 mx-1 bg-darkBlue text-white rounded-md"

@@ -247,7 +247,7 @@ onMounted(async () => {
             type="password"
             placeholder="새 비밀번호를 입력해주세요."
             @input="checkPasswordStrength"
-            class="w-4/5"
+            class="w-4/5 py-2"
           />
           <p
             :class="isStrongPassword ? 'text-green-500' : 'text-red-500'"
@@ -269,7 +269,7 @@ onMounted(async () => {
             type="password"
             placeholder="새 비밀번호를 확인해주세요."
             @input="matchPassword"
-            class="w-4/5"
+            class="w-4/5 py-2"
           />
           <p
             :class="isPasswordMatched ? 'text-green-500' : 'text-red-500'"
@@ -287,7 +287,7 @@ onMounted(async () => {
     </p>
     <div class="flex items-center justify-between border-t border-b py-4">
       <span class="w-1/5 font-semibold">지역</span>
-      <select class="w-4/5" v-model="member.region">
+      <select class="w-4/5 py-2" v-model="member.region">
         <option value="null" disabled>지역 선택</option>
         <option v-for="city in cities" :key="city" :value="city">
           {{ city }}
@@ -297,7 +297,7 @@ onMounted(async () => {
 
     <div class="flex items-center justify-between border-t border-b py-4 mt-3">
       <span class="w-1/5 font-semibold">지역구</span>
-      <select class="w-4/5" v-model="member.district">
+      <select class="w-4/5 py-2" v-model="member.district">
         <option value="null" disabled>지역구 선택</option>
         <option v-for="district in districts" :key="district" :value="district">
           {{ district }}
@@ -307,7 +307,7 @@ onMounted(async () => {
 
     <div class="flex items-center justify-between border-t border-b py-4 mt-3">
       <span class="w-1/5 font-semibold">읍/면/동</span>
-      <select class="w-4/5" v-model="member.local">
+      <select class="w-4/5 py-2" v-model="member.local">
         <option value="null" disabled>동 선택</option>
         <option v-for="local in locals" :key="local" :value="local">
           {{ local }}
@@ -317,7 +317,7 @@ onMounted(async () => {
 
     <div class="flex items-center justify-between border-t border-b py-4 mt-3">
       <span class="w-1/5 font-semibold">주거 형태</span>
-      <select class="w-4/5" v-model="member.housingType">
+      <select class="w-4/5 py-2" v-model="member.housingType">
         <option value="null" disabled>주거 형태 선택</option>
         <option value="아파트">아파트</option>
         <option value="오피스텔">오피스텔</option>
@@ -329,7 +329,7 @@ onMounted(async () => {
 
     <div class="flex items-center justify-between border-t border-b py-4 mt-3">
       <span class="w-1/5 font-semibold">직업</span>
-      <select class="w-4/5" v-model="member.occupation">
+      <select class="w-4/5 py-2" v-model="member.occupation">
         <option value="null" disabled>직업 선택</option>
         <option value="직장인">직장인</option>
         <option value="사업가">사업가</option>
@@ -342,7 +342,7 @@ onMounted(async () => {
 
     <div class="flex items-center justify-between border-t border-b py-4 mt-3">
       <span class="w-1/5 font-semibold">결혼 여부</span>
-      <select class="w-4/5" v-model="member.maritalStatus">
+      <select class="w-4/5 py-2" v-model="member.maritalStatus">
         <option value="null" disabled>결혼 여부 선택</option>
         <option value="1">O</option>
         <option value="0">X</option>
@@ -355,14 +355,14 @@ onMounted(async () => {
         :value="formatNumber(member.income)"
         type="text"
         placeholder="소득을 입력해주세요."
-        class="w-4/5"
+        class="w-4/5 py-2"
         @input="onIncomeInput"
       />
     </div>
 
     <div class="flex items-center justify-between border-t border-b py-4 mt-3">
       <span class="w-1/5 font-semibold">자녀 유무</span>
-      <select class="w-4/5" v-model="member.hasChildren">
+      <select class="w-4/5 py-2" v-model="member.hasChildren">
         <option value="null" disabled>자녀 유무 선택</option>
         <option value="1">O</option>
         <option value="0">X</option>
