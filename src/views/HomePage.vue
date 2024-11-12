@@ -17,8 +17,10 @@ const handleFilterChanged = (policies) => {
 </script>
 
 <template>
-  <div class="homepage container mx-auto p-4">
+  <div>
     <BannerSlider />
+  </div>
+  <div class="homepage container mx-auto p-4">
     <FilterSection @filterChanged="handleFilterChanged" class="mb-32" />
     <FilterResult v-if="searchExecuted" :filteredPolicies="filteredPolicies" class="mb-32" />
     <PolicySection class="mb-32" />

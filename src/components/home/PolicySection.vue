@@ -93,7 +93,7 @@ const slidePrev = () => {
 
 <template>
   <section class="mt-8 relative">
-    <h2 class="text-2xl font-bold mb-12">정책 정보</h2>
+    <h2 class="text-2xl font-bold mb-12 text-center">정책 정보</h2>
     <div class="flex items-center">
       <button 
         @click="slidePrev" 
@@ -103,15 +103,15 @@ const slidePrev = () => {
         <i class="fas fa-chevron-left"></i>
       </button>
 
-      <div class="flex overflow-hidden w-full mx-4">
+      <div class="flex overflow-hidden w-full mx-4 space-x-4">
         <div 
           v-for="(policy, index) in policies.slice(currentIndex, currentIndex + itemsPerPage)" 
           :key="policy.idx" 
           @click="goToDetails(policy.idx)"
-          class="card cursor-pointer bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200 p-4"
+          class="card cursor-pointer bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200 p-4 border border-gray-300"
           :class="{ 'w-full': itemsPerPage === 1, 'w-1/2': itemsPerPage === 2, 'w-1/4': itemsPerPage === 4 }"
         >
-          <div>
+          <div class="text-center">
             <span 
               :class="{
                 'bg-[#0E429D] text-white px-2 py-1 rounded': policy.status === '모집중',
@@ -123,8 +123,8 @@ const slidePrev = () => {
               {{ policy.status }}
             </span>
           </div>
-          <h2 class="title text-lg font-bold mb-2">{{ policy.name }}</h2>
-          <div class="description text-sm text-gray-500">{{ policy.city ? policy.city + ', ' : '' }}{{ policy.district }}</div>
+          <h2 class="title text-lg font-bold mb-2 text-center">{{ policy.name }}</h2>
+          <div class="description text-sm text-gray-500 text-center">{{ policy.city ? policy.city + ', ' : '' }}{{ policy.district }}</div>
         </div>
       </div>
 
@@ -142,22 +142,24 @@ const slidePrev = () => {
         @click="router.push('/policy')" 
         class="px-4 py-2 rounded-lg hover:bg-blue-200 hover:transition duration-200 font-semibold border"
       >
-        청년지원정보 더보기
+        더보기
       </button>
     </div>
   </section>
 </template>
 
 <style scoped>
-.card-slider {
-  display: flex;
-  overflow: hidden;
-  gap: 1rem;
-}
 .card {
   min-width: 250px;
+  min-height: 200px;
   flex-shrink: 0;
   scroll-snap-align: start;
+  border: 1px solid #d1d5db;
+  transition: transform 0.3s;
+  text-align: center;
+}
+.card:hover {
+  transform: translateY(-5px);
 }
 button:disabled {
   opacity: 0.5;
@@ -167,9 +169,6 @@ button:disabled {
   .card {
     width: 100%;
     margin-bottom: 1rem;
-  }
-  .card-slider {
-    flex-direction: column;
   }
 }
 </style>

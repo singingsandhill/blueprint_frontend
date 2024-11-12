@@ -7,8 +7,8 @@ const financeCards = [
 </script>
 
 <template>
-  <div class="section mb-8">
-    <h2 class="text-2xl font-bold mb-12">금융 정보</h2>
+  <div class="section mt-20">
+    <h2 class="text-2xl font-bold mb-12 text-center">금주의 금융 상품 추천</h2>
     <div class="flex items-center">
       <button class="p-2 bg-gray-200 rounded-full shadow hover:bg-gray-300">
         <i class="fas fa-chevron-left"></i>
@@ -32,7 +32,7 @@ const financeCards = [
 
     <div class="flex justify-center mt-6">
       <router-link to="/finance" class="px-4 py-2 rounded-lg hover:bg-blue-200 hover:transition duration-200 font-semibold border">
-        금융 정보 더보기
+        더보기
       </router-link>
     </div>
   </div>

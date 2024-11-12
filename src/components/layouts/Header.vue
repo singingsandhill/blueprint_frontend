@@ -1,5 +1,5 @@
 <script setup>
-import config from "@/config";
+
 </script>
 
 <template>

@@ -6,6 +6,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
+import richableImage from '@/assets/richable-home-bg.png';
 
 const banners = ref([
     {
@@ -20,11 +21,20 @@ const banners = ref([
     link: "#",
     backgroundColor: 'bg-yellow-500',
   },
+  {
+    subtitle: "자산 관리 서비스",
+    title: "Richable",
+    link: "https://www.richable.site/",
+    backgroundImage: {
+      src: richableImage,
+      alt: 'Richable Background'
+    },
+  },
+  
 ]);
 
 const modules = [Autoplay, Pagination];
 </script>
-
 <template>
   <swiper
     :modules="modules"
@@ -41,10 +51,17 @@ const modules = [Autoplay, Pagination];
       :key="index"
       :class="['slide-content', banner.backgroundColor, 'text-white', 'p-4', 'rounded-lg']"
     >
-      <div class="text">
+    <img
+        v-if="banner.backgroundImage"
+        :src="banner.backgroundImage.src"
+        :alt="banner.backgroundImage.alt"
+        class="absolute inset-0 w-full h-full object-cover -z-10"
+      />
+      
+      <div class="text" :class="{'text-red-500': banner.backgroundImage}">
         <em class="block text-sm mb-2">{{ banner.subtitle }}</em>
         <strong class="block text-2xl font-bold mb-4">{{ banner.title }}</strong>
-        <a :href="banner.link" target="_blank" class="text-white underline">자세히보기 &gt;</a>
+        <a :href="banner.link" target="_blank" class="['underline', banner.backgroundImage ? 'text-red-500' : 'text-white']">자세히보기 &gt;</a>
       </div>
     </swiper-slide>
   </swiper>
@@ -53,7 +70,9 @@ const modules = [Autoplay, Pagination];
 <style scoped>
 .mySwiper {
   width: 100%;
+  max-width: 100%;
   height: 300px;
+  margin: 0;
 }
 .swiper-slide {
   display: flex;
