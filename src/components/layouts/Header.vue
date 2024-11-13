@@ -1,5 +1,5 @@
 <script setup>
-import blueprintLogo from '@/assets/blueprint_logo_B_transparent.png';
+import blueprintLogo from '@/assets/BluePrint_logo_B_transparent.png';
 </script>
 
 <template>
