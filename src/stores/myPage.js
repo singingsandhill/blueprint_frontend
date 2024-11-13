@@ -8,7 +8,9 @@ export const useMyPageStore = defineStore("myPage", {
       email: null,
       income: null,
       occupation: null,
-      residence: null,
+      region: null,
+      district: null,
+      local: null,
       maritalStatus: null,
       hasChildren: null,
       housingType: null,
@@ -16,6 +18,11 @@ export const useMyPageStore = defineStore("myPage", {
     password: "",
     checkPassword: "",
     newPassword: "",
+    cities: [],
+    districts: [],
+    locals: [],
+    selectedCity: "",
+    selectedDistrict: "",
   }),
 
   actions: {
@@ -81,6 +88,41 @@ export const useMyPageStore = defineStore("myPage", {
         );
       } catch (error) {
         console.error("Failed to update password : ", error);
+        throw error;
+      }
+    },
+
+    async getCity() {
+      try {
+        const response = await axiosInstance.get("/subscription/city");
+        this.cities = response.data.response.data;
+      } catch (error) {
+        console.error("Failed to get city : ", error);
+        throw error;
+      }
+    },
+
+    async getDistrict(selectedCity) {
+      try {
+        const response = await axiosInstance.post("/subscription/district", {
+          city: selectedCity,
+        });
+        this.districts = response.data.response.data;
+      } catch (error) {
+        console.error("Failed to get district : ", error);
+        throw error;
+      }
+    },
+
+    async getLocal() {
+      try {
+        const response = await axiosInstance.post("/subscription/local", {
+          city: this.selectedCity,
+          district: this.selectedDistrict,
+        });
+        this.locals = response.data.response.data;
+      } catch (error) {
+        console.error("Failed to get local : ", error);
         throw error;
       }
     },
