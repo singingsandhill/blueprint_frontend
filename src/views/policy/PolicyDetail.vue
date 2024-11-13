@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { onMounted, ref } from "vue";
 import { usePolicyStore } from "@/stores/policy.js";
 import { useRoute } from "vue-router";
@@ -79,4 +79,4 @@ onMounted(async () => {
       돌아가기
     </button>
   </div>
-</template>
+</template> -->
