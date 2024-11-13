@@ -2,7 +2,7 @@ import axios from 'axios';
 import router from '@/router';
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/",
+  baseURL: "http://ec2-15-164-227-177.ap-northeast-2.compute.amazonaws.com:8080/",
   headers: {
     Authorization: `Bearer ${localStorage.getItem('authToken') || ''}`,
   },
