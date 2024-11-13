@@ -1,12 +1,12 @@
 <script setup>
-
+import blueprintLogo from '@/assets/blueprint_logo_B_투명.png';
 </script>
 
 <template>
     <div class="mt-8 flex flex-col items-center">
         <router-link to="/">
             <img 
-                src="@/assets/blueprint_logo_B_투명.png" 
+                : src="blueprintLogo" 
                 alt="BluePrint Logo" 
                 class="w-32 sm:w-48 md:w-64 lg:w-80 mb-4" 
             />
