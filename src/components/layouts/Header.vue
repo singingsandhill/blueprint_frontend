@@ -6,7 +6,7 @@ import blueprintLogo from '@/assets/blueprint_logo_B_transparent.png';
     <div class="mt-8 flex flex-col items-center">
         <router-link to="/">
             <img 
-                : src="blueprintLogo" 
+                :src="blueprintLogo" 
                 alt="BluePrint Logo" 
                 class="w-32 sm:w-48 md:w-64 lg:w-80 mb-4" 
             />
