@@ -8,6 +8,9 @@ export const usePolicyStore = defineStore("policy", {
       city: null,
       district: null,
       type: null,
+      age: null,
+      job: null,
+      name: null,
     },
     PolicyDetail: {
       idx: null,

@@ -8,6 +8,9 @@ const policyList = ref([]);
 const selectedCity = ref(null);
 const district = ref(null);
 const selectedPolicyType = ref(null);
+const selectedAge = ref(null);
+const selectedJob = ref(null);
+const selectedName = ref(null);
 
 const currentPage = ref(1);
 const itemsPerPage = 10;
@@ -58,6 +61,9 @@ const applyFilters = async () => {
   localStorage.setItem("selectedCity", selectedCity.value);
   localStorage.setItem("district", district.value);
   localStorage.setItem("selectedPolicyType", selectedPolicyType.value);
+  localStorage.setItem("selectedAge", selectedAge.value);
+  localStorage.setItem("selectedJob", selectedJob.value);
+  localStorage.setItem("selectedName", selectedName.value);
 
   policyStore.filterCondition.city =
     selectedCity.value === "전체" || selectedCity.value === "null"
@@ -71,6 +77,21 @@ const applyFilters = async () => {
     selectedPolicyType.value === "전체" || selectedPolicyType.value === "null"
       ? null
       : selectedPolicyType.value;
+
+  policyStore.filterCondition.age =
+    selectedAge.value === "" || selectedAge.value === "null"
+      ? null
+      : selectedAge.value;
+
+  policyStore.filterCondition.job =
+    selectedJob.value === "전체" || selectedJob.value === "null"
+      ? null
+      : selectedJob.value;
+
+  policyStore.filterCondition.name =
+    selectedName.value === "" || selectedName.value === "null"
+      ? null
+      : selectedName.value;
 
   await policyStore.getPolicyFilter();
   policyList.value = policyStore.PolicyInfoList;
@@ -93,141 +114,169 @@ onMounted(() => {
   selectedCity.value = localStorage.getItem("selectedCity") || null;
   district.value = localStorage.getItem("district") || "";
   selectedPolicyType.value = localStorage.getItem("selectedPolicyType") || null;
+  selectedAge.value = localStorage.getItem("selectedAge") || "";
+  selectedJob.value = localStorage.getItem("selectedJob") || null;
+  selectedName.value = localStorage.getItem("selectedName") || "";
 
-  if (selectedCity.value || district.value || selectedPolicyType.value) {
+  if (
+    selectedCity.value ||
+    district.value ||
+    selectedPolicyType.value ||
+    selectedAge.value ||
+    selectedJob.value ||
+    selectedName.value
+  ) {
     applyFilters();
   }
 });
 </script>
 
 <template>
-  <div class="p-4 bg-white shadow-md rounded-lg">
-    <h2 class="text-lg font-semibold mb-4">정책 필터</h2>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <div>
-        <label for="city" class="block text-sm font-medium text-gray-700"
-          >지역 선택</label
-        >
-        <select
-          v-model="selectedCity"
-          id="city"
-          class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-        >
-          <option value="null">전체</option>
-          <option v-for="city in cities" :key="city" :value="city">
-            {{ city }}
-          </option>
-        </select>
-      </div>
-
-      <div>
-        <label for="district" class="block text-sm font-medium text-gray-700"
-          >지역구 선택</label
-        >
-        <input
-          v-model="district"
-          id="district"
-          type="text"
-          placeholder="지역구를 입력해주세요."
-          class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-
-      <div>
-        <label for="policyType" class="block text-sm font-medium text-gray-700"
-          >정책 유형</label
-        >
-        <select
-          v-model="selectedPolicyType"
-          id="policyType"
-          class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-        >
-          <option value="null">전체</option>
-          <option v-for="type in policyTypes" :key="type" :value="type">
-            {{ type }}
-          </option>
-        </select>
-      </div>
+  <section
+    class="bg-gray-800 text-white p-4 rounded-lg mt-6 flex mx-auto flex-col items-center gap-4 md:gap-2 shadow-md w-[90%] md:flex-row md:flex-wrap md:justify-center"
+  >
+    <div
+      class="flex items-center space-x-2 bg-[#002842] text-white px-3 py-2 rounded-lg md:rounded-l-lg w-full md:w-auto"
+    >
+      <i class="fas fa-users"></i>
+      <strong class="text-lg font-semibold">정책 검색</strong>
     </div>
 
-    <div class="mt-6">
-      <button
-        @click="applyFilters"
-        class="w-full bg-darkBlue text-white py-2 px-4 rounded-md"
+    <div
+      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+    >
+      <i class="fas fa-map-marker-alt text-gray-500"></i>
+      <select
+        v-model="selectedCity"
+        class="bg-transparent w-full focus:outline-none"
       >
-        필터 적용
-      </button>
-    </div>
-  </div>
-  <div class="container mx-auto p-4">
-    <p class="text-2xl font-bold mb-4 text-[32px]">정책 리스트</p>
-    <div class="overflow-hidden rounded-md border border-gray-300">
-      <table class="w-full table-auto border-collapse">
-        <thead>
-          <tr class="bg-darkBlue text-white">
-            <th class="border border-gray-300 px-4 py-4 w-60">이름</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">지역</th>
-            <th class="border border-gray-300 px-4 py-4 w-24">지역구</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">정책 유형</th>
-            <th class="border border-gray-300 px-4 py-4 w-24">운영 기관</th>
-            <th class="border border-gray-300 px-4 py-4 w-20">
-              정책 시작 날짜
-            </th>
-            <th class="border border-gray-300 px-4 py-4 w-20">
-              정책 마감 날짜
-            </th>
-            <th class="border border-gray-300 px-4 py-4 w-20">
-              신청 시작 날짜
-            </th>
-            <th class="border border-gray-300 px-4 py-4 w-20">
-              신청 마감 날짜
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(policy, index) in paginatedPolicies"
-            :key="index"
-            class="hover:bg-gray-100 cursor-pointer"
-            @click="
-              $router.push({
-                name: 'policyDetail',
-                params: { idx: policy.idx },
-              })
-            "
-          >
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ policy.name }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ policy.city }}
-            </td>
-            <td class="border border-gray-300 px-4 py-5 text-center">
-              {{ policy.district }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ policy.type }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ policy.offerInst }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ formatDate(policy.startDate) }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ formatDate(policy.endDate) }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ formatDate(policy.applyStartDate) }}
-            </td>
-            <td class="border border-gray-300 px-4 py-3 text-center">
-              {{ formatDate(policy.applyEndDate) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <option value="null">전체</option>
+        <option v-for="city in cities" :key="city" :value="city">
+          {{ city }}
+        </option>
+      </select>
     </div>
 
+    <div
+      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+    >
+      <i class="fas fa-user text-gray-500"></i>
+      <input
+        v-model="district"
+        id="district"
+        type="text"
+        placeholder="지역구를 입력해 주세요."
+        class="bg-transparent w-full focus:outline-none"
+      />
+    </div>
+
+    <div
+      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+    >
+      <i class="fas fa-briefcase text-gray-500"></i>
+      <select
+        v-model="selectedJob"
+        class="bg-transparent w-full focus:outline-none"
+      >
+        <option value="null">전체</option>
+        <option value="학생">학생</option>
+        <option value="무직">무직</option>
+        <option value="직장인">직장인</option>
+        <option value="자영업">자영업</option>
+        <option value="프리랜서">프리랜서</option>
+        <option value="(예비)창업자">(예비)창업자</option>
+        <option value="일용근로자">일용근로자</option>
+        <option value="단기근로자">단기근로자</option>
+        <option value="영농종사자">영농종사자</option>
+      </select>
+    </div>
+
+    <!-- 연령 필터 -->
+    <div
+      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+    >
+      <i class="fas fa-user text-gray-500"></i>
+      <input
+        v-model="selectedAge"
+        id="selectedAge"
+        type="text"
+        placeholder="나이를 입력해 주세요."
+        class="bg-transparent w-full focus:outline-none"
+      />
+    </div>
+
+    <div
+      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+    >
+      <i class="fas fa-briefcase text-gray-500"></i>
+      <select
+        v-model="selectedPolicyType"
+        class="bg-transparent w-full focus:outline-none"
+      >
+        <option value="null">전체</option>
+        <option v-for="type in policyTypes" :key="type" :value="type">
+          {{ type }}
+        </option>
+      </select>
+    </div>
+
+    <div
+      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+    >
+      <i class="fas fa-user text-gray-500"></i>
+      <input
+        v-model="selectedName"
+        id="selectedName"
+        type="text"
+        placeholder="정책명을 입력해 주세요."
+        class="bg-transparent w-full focus:outline-none"
+      />
+    </div>
+
+    <button
+      @click="applyFilters"
+      class="bg-[#002842] px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center"
+    >
+      <i class="fas fa-search"></i>
+      <span class="ml-1">검색</span>
+    </button>
+  </section>
+
+  <div class="mx-auto p-4 max-w-4xl">
+    <p class="text-2xl font-bold mb-4 text-[32px]">검색한 정책</p>
+    <div class="flex border-t-4 border-darkBlue py-4"></div>
+
+    <ul>
+      <li
+        v-for="(policy, index) in paginatedPolicies"
+        :key="index"
+        class="hover:bg-gray-100 cursor-pointer flex items-center space-x-4 border-t border-gray-200 p-2"
+        @click="
+          $router.push({
+            name: 'PolicyDetail',
+            params: { idx: policy.idx },
+          })
+        "
+      >
+        <div
+          class="w-24 bg-lightBlue text-black text-center font-medium px-3 py-1 rounded-md text-xs"
+        >
+          {{ policy.type }}
+        </div>
+        <div class="p-2">
+          <p class="policy-title text-lg font-semibold">
+            {{ policy.name }}
+          </p>
+          <span class="text-gray-600 text-sm">
+            {{ formatDate(policy.startDate) }}
+          </span>
+          <span> ~ </span>
+          <span class="text-gray-600 text-sm">
+            {{ formatDate(policy.startDate) }}
+          </span>
+        </div>
+      </li>
+    </ul>
     <div class="flex justify-center mt-4">
       <button
         class="px-4 py-2 mx-1 bg-darkBlue text-white rounded-md"
