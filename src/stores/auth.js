@@ -165,6 +165,7 @@ export const useAuthStore = defineStore("auth", {
       localStorage.removeItem("selectedAge");
       localStorage.removeItem("selectedJob");
       localStorage.removeItem("selectedName");
+      localStorage.removeItem("page");
       delete axiosInstance.defaults.headers.common["Authorization"];
     },
   },
