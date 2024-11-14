@@ -2,15 +2,21 @@
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useMyPageStore } from "@/stores/myPage";
 import { useFinanceStore } from "@/stores/finance";
+import { useAuthStore } from "@/stores/auth.js";
 
 const myPageStore = useMyPageStore();
 const financeStore = useFinanceStore();
+const authStore = useAuthStore();
+
 const filterSavings = ref([]);
 const filterLoan = ref([]);
-
 const cities = ref(null);
 const districts = ref(null);
 const locals = ref(null);
+
+const memberName = computed(() =>
+  authStore.member ? authStore.member.memberName : ""
+);
 
 const member = reactive({
   occupation: null,
@@ -36,9 +42,13 @@ const openModal = () => {
   showModal.value = true;
 };
 
-const closeModal = async () => {
+const submitInfo = async () => {
   Object.assign(myPageStore.MyPageInfo, member);
   await myPageStore.updateMyPageInfo();
+  showModal.value = false;
+};
+
+const closeModal = async () => {
   showModal.value = false;
 };
 
@@ -90,53 +100,86 @@ onMounted(async () => {
 <template>
   <div
     v-if="hasValuesInMyPageInfo"
-    class="grid grid-cols-1 md:grid-cols-2 gap-4"
+    class="flex flex-col items-center space-y-4"
   >
-    <div class="bg-white p-6 rounded-lg shadow-md">
-      <h1 class="text-xl font-bold mb-4">정책</h1>
+    <p class="text-3xl font-semibold text-gray-800 text-center mt-2 mb-2">
+      <span
+        class="shake text-3xl font-semibold text-gray-800 text-center mt-2 mb-2"
+        >{{ memberName }}</span
+      >
+      님을 위한 맞춤형 정보를 알려드릴게요!
+    </p>
+
+    <div class="mx-auto p-4 max-w-4xl">
+      <p class="text-2xl font-bold mb-4 text-[28px]">정책</p>
+      <div class="flex border-t-4 border-darkBlue py-4"></div>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md">
-      <h1 class="text-xl font-bold mb-4">청약</h1>
+    <div class="mx-auto p-4 max-w-4xl">
+      <p class="text-2xl font-bold mb-4 text-[28px] text-center">금융</p>
+      <div class="flex border-t-4 border-darkBlue py-4"></div>
+      <div class="flex flex-col items-center space-y-6">
+        <div class="flex justify-center space-x-4">
+          <span class="bg-white p-6 rounded-lg shadow-md max-w-lg w-full">
+            <p class="text-xl font-bold mb-4">추천 금융 상품_예금</p>
+            <p class="text-lg font-semibold mb-2">
+              은행명: {{ filterSavings.korCoNm }}
+            </p>
+            <p class="text-gray-600 mb-1">
+              예금명: {{ filterSavings.finPrdtNm }}
+            </p>
+            <p class="text-gray-600 mb-1">
+              가입 방법: {{ filterSavings.joinWay }}
+            </p>
+            <p class="text-gray-600 mb-1">
+              가입 가능 대상: {{ filterSavings.joinMember }}
+            </p>
+            <p class="text-gray-600 mb-1">
+              이자 방식: {{ filterSavings.intrRateNm }}
+            </p>
+            <p class="text-gray-600 mb-1">
+              저축 기간: {{ filterSavings.saveTrm }}
+            </p>
+            <p class="text-gray-600 mb-1">
+              기본 금리: {{ filterSavings.intrRate }}
+            </p>
+            <p class="text-gray-600 font-bold">
+              최대 금리: {{ filterSavings.intrRate2 }}
+            </p>
+          </span>
+
+          <span class="bg-white p-6 rounded-lg shadow-md max-w-lg w-full">
+            <p class="text-xl font-bold mb-4">추천 금융 상품_대출</p>
+            <p class="text-lg font-semibold mb-2">
+              상품 이름 : {{ filterLoan.korCoNm }}
+            </p>
+          </span>
+        </div>
+      </div>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md">
-      <p class="text-xl font-bold mb-4">추천 금융 상품_예금</p>
-      <p class="text-lg font-semibold mb-2">
-        은행명: {{ filterSavings.korCoNm }}
-      </p>
-      <p class="text-gray-600 mb-1">예금명: {{ filterSavings.finPrdtNm }}</p>
-      <p class="text-gray-600 mb-1">가입 방법: {{ filterSavings.joinWay }}</p>
-      <p class="text-gray-600 mb-1">
-        가입 가능 대상: {{ filterSavings.joinMember }}
-      </p>
-      <p class="text-gray-600 mb-1">
-        이자 방식: {{ filterSavings.intrRateNm }}
-      </p>
-      <p class="text-gray-600 mb-1">저축 기간: {{ filterSavings.saveTrm }}</p>
-      <p class="text-gray-600 mb-1">기본 금리: {{ filterSavings.intrRate }}</p>
-      <p class="text-gray-600 font-bold">
-        최대 금리: {{ filterSavings.intrRate2 }}
-      </p>
-
-      <p class="text-xl font-bold mb-4 mt-4">추천 금융 상품_대출</p>
-      <p class="text-lg font-semibold mb-2">
-        상품 이름 : {{ filterLoan.korCoNm }}
-      </p>
+    <div class="mx-auto p-4 max-w-4xl">
+      <p class="text-2xl font-bold mb-4 text-[28px]">청약</p>
+      <div class="flex border-t-4 border-darkBlue py-4"></div>
     </div>
 
-    <div class="bg-white p-6 rounded-lg shadow-md">
-      <p class="text-xl font-bold mb-4">부동산</p>
+    <div class="mx-auto p-4 max-w-4xl">
+      <p class="text-2xl font-bold mb-4 text-[28px]">부동산</p>
+      <div class="flex border-t-4 border-darkBlue py-4"></div>
     </div>
   </div>
+
   <div v-else>
-    <p class="text-4xl text-center text-border">
+    <p class="text-2xl font-semibold text-gray-800 text-center mb-10 mt-20">
       등록된 추가 정보가 없어서 맞춤형 정보를 제공해드리기 어려워요.
     </p>
-    <p class="text-4xl text-center text-border">
+    <p class="text-2xl font-semibold text-gray-800 text-center mb-20">
       추가 정보를 등록하시겠습니까?
-      <span @click="openModal" class="cursor-pointer text-blue-500 underline">
-        네
+      <span
+        @click="openModal"
+        class="cursor-pointer text-xl text-darkBlue underline hover:text-midBlue"
+      >
+        등록하러 가기
       </span>
     </p>
   </div>
@@ -149,7 +192,7 @@ onMounted(async () => {
       <p class="text-2xl font-bold mb-4">추가 정보 등록</p>
 
       <p class="flex items-center mb-4">
-        <span class="w-1/5 text-xl font-semibold ">지역</span>
+        <span class="w-1/5 text-xl font-semibold">지역</span>
         <select class="w-4/5 py-2" v-model="member.region">
           <option value="null" disabled>지역 선택</option>
           <option v-for="city in cities" :key="city" :value="city">
@@ -225,14 +268,41 @@ onMounted(async () => {
         </select>
       </p>
 
-      <div class="flex justify-center mt-6">
+      <div class="flex justify-center mt-6 space-x-10">
+        <button
+          @click="submitInfo"
+          class="px-4 py-2 bg-darkBlue text-white rounded"
+        >
+          저장
+        </button>
+
         <button
           @click="closeModal"
           class="px-4 py-2 bg-darkBlue text-white rounded"
         >
-          저장
+          취소
         </button>
       </div>
     </div>
   </div>
 </template>
+
+<style>
+.shake {
+  display: inline-block;
+  animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+</style>
