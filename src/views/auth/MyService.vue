@@ -195,7 +195,7 @@ onMounted(async () => {
 
   <div v-else>
     <p class="text-2xl font-semibold text-gray-800 text-center mb-10 mt-20">
-      등록된 추가 정보가 없어서 맞춤형 정보를 제공해드리기 어려워요.
+      등록된 추가 정보가 없어서 맞춤형 정보를 제공해 드리기 어려워요.
     </p>
     <p class="text-2xl font-semibold text-gray-800 text-center mb-20">
       추가 정보를 등록하시겠습니까?
