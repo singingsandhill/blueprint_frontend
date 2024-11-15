@@ -2,12 +2,15 @@
 import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useMyPageStore } from "@/stores/myPage";
 import { useFinanceStore } from "@/stores/finance";
+import { usePolicyStore } from "@/stores/policy";
 import { useAuthStore } from "@/stores/auth.js";
 
 const myPageStore = useMyPageStore();
 const financeStore = useFinanceStore();
+const policyStore = usePolicyStore();
 const authStore = useAuthStore();
 
+const policyList = ref([]);
 const filterSavings = ref([]);
 const filterLoan = ref([]);
 const cities = ref(null);
@@ -52,6 +55,17 @@ const closeModal = async () => {
   showModal.value = false;
 };
 
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toISOString().split("T")[0];
+};
+
+const fetchPolicy = async () => {
+  await policyStore.getRecommendPolicy();
+  policyList.value = policyStore.RecommedPolicyList;
+};
+
 const fetchCity = async () => {
   await myPageStore.getCity();
   cities.value = myPageStore.cities;
@@ -90,6 +104,7 @@ const fetchLoan = async () => {
 };
 
 onMounted(async () => {
+  await fetchPolicy();
   await fetchSavings();
   await fetchLoan();
   await myPageStore.getMyPageInfo();
@@ -111,8 +126,28 @@ onMounted(async () => {
     </p>
 
     <div class="mx-auto p-4 max-w-4xl">
-      <p class="text-2xl font-bold mb-4 text-[28px]">정책</p>
+      <p class="text-2xl font-bold mb-4 text-[28px] text-center">정책</p>
       <div class="flex border-t-4 border-darkBlue py-4"></div>
+      <div v-if="policyList.length === 0" class="text-xl font-semibold">
+        {{ memberName }}님의 조건에 해당하는 정책이 없습니다.
+      </div>
+      <div
+        v-else
+        class="relative bg-white p-6 rounded-lg shadow-md max-w-xs w-full"
+      >
+        <div v-for="policy in policyList" :key="policy" :value="policy">
+          <p class="text-2xl font-bold mb-4 text-center underline">
+            {{ policy.name }}
+          </p>
+          <p class="text-xl mb-4 text-center font-semibold">
+            {{ policy.type }}
+          </p>
+          <p class="text-xl mb-4 text-center">
+            {{ formatDate(policy.startDate) }} ~
+            {{ formatDate(policy.endDate) }}
+          </p>
+        </div>
+      </div>
     </div>
 
     <div class="mx-auto p-4 max-w-4xl">
