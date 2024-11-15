@@ -68,17 +68,21 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
+    
     initializeMemberFromToken() {
       if (this.token) {
         try {
           const decoded = jwtDecode(this.token);
           console.log("디코딩된 토큰 내용: ", decoded);
-          if (decoded && decoded.memberName) {
-            this.member = { memberName: decoded.memberName };
+          if (decoded) {
+            this.member = {
+              uid: decoded.uid,
+              memberName: decoded.memberName,
+            };
             this.isLoggedIn = true;
             console.log("authStore에 설정된 member: ", this.member);
           } else {
-            console.warn("디코딩된 토큰에 memberName이 없습니다.");
+            console.warn("디코딩된 토큰에 사용자 정보가 없습니다.");
           }
         } catch (error) {
           console.error("토큰 디코딩 중 오류:", error);
@@ -176,6 +180,9 @@ export const useAuthStore = defineStore("auth", {
     },
     getMemberName() {
       return this.member ? this.member.memberName : null;
+    },
+    getUid() {
+      return this.member ? this.member.uid : null;
     },
   },
 });

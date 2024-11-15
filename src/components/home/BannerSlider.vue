@@ -19,7 +19,7 @@ const banners = ref([
     subtitle: "AI로 더 빠르고 똑똑하게 정책 확인",
     title: "청사진",
     link: "#",
-    backgroundColor: 'bg-yellow-500',
+    backgroundColor: 'bg-yellow-400',
   },
   {
     subtitle: "자산 관리 서비스",
