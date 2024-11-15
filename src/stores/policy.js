@@ -1,9 +1,11 @@
 import { defineStore } from "pinia";
 import axiosInstance from "@/util/axiosInstance";
+import { useAuthStore } from "@/stores/auth";
 
 export const usePolicyStore = defineStore("policy", {
   state: () => ({
     PolicyInfoList: [],
+    RecommedPolicyList: [],
     filterCondition: {
       city: null,
       district: null,
@@ -27,7 +29,7 @@ export const usePolicyStore = defineStore("policy", {
 
   actions: {
     async getPolicyInfo() {
-       try {
+      try {
         const response = await axiosInstance.get("/policy/list");
         this.PolicyInfoList = response.data.response.data.map((policy) => ({
           idx: policy.idx,
@@ -72,7 +74,8 @@ export const usePolicyStore = defineStore("policy", {
     async getPolicyFilter() {
       try {
         const response = await axiosInstance.post(
-          "/policy/filter", this.filterCondition,
+          "/policy/filter",
+          this.filterCondition
         );
         this.PolicyInfoList = response.data.response.data;
       } catch (error) {
@@ -80,7 +83,22 @@ export const usePolicyStore = defineStore("policy", {
         throw error;
       }
     },
-    
+
+    async getRecommendPolicy() {
+      try {
+        const token = useAuthStore().token;
+        const response = await axiosInstance.get("/policy/recommendation", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        this.RecommedPolicyList = response.data.response.data;
+      } catch (error) {
+        console.error("Failed to recommend policy : ", error);
+        throw error;
+      }
+    },
+
     filterPolicies(userData) {
       return this.PolicyInfoList.filter((policy) => {
         let matches = true;
