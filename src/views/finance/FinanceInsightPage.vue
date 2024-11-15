@@ -124,7 +124,7 @@
           <tbody>
             <tr v-for="item in savingsData.content" :key="item.idx">
               <td>{{ item.korCoNm }}</td>
-              <td>{{ item.prdCategory }}%</td>
+              <td>{{ item.prdCategory }}</td>
               <td>{{ item.finPrdtNm }}</td>
               <td>{{ item.joinWay }}</td>
               <td>{{ item.saveTrm }}</td>
@@ -137,19 +137,24 @@
       </div>
       <div v-else>No data available</div>
     </div>
+
     <div class="flex justify-center mt-4 space-x-2">
-      <!-- "pagination" -->
-        <button 
-        class="pagination-button"
-        @click="prevPage" :disabled="page === 0">이전</button>
-        <button
-        v-for="p in financeData.totalPages" :key="p" @click="goToPage(p - 1)"
-        :class="{'pagination-button': true, 'active': p - 1 === page}">
-        {{ p }}
-      </button>
-        <button class="pagination-button"
-        @click="nextPage" :disabled="financeData.last">다음</button>
-      </div>
+  <button 
+    class="pagination-button"
+    @click="prevPage" 
+    :disabled="page === 0">이전</button>
+  <button
+    v-for="p in selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages" 
+    :key="p" 
+    @click="goToPage(p - 1)"
+    :class="{'pagination-button': true, 'active': p - 1 === page}">
+    {{ p }}
+  </button>
+  <button 
+    class="pagination-button"
+    @click="nextPage" 
+    :disabled="selectedTab === 'loan' ? financeData.last : savingsData.last">다음</button>
+</div>
   </div>
 </template>
 <script setup>
@@ -195,6 +200,27 @@ const selectTab = (tab) => {
     sortBy: 'intrRate',
     direction: 'asc'
   };
+  fetchData();
+};
+const prevPage = () => {
+  if (page.value > 0) {
+    page.value--;
+    fetchData();
+  }
+};
+
+const nextPage = () => {
+  const totalPages = selectedTab.value === 'loan' ? 
+    financeData.value.totalPages : 
+    savingsData.value.totalPages;
+  if (page.value < totalPages - 1) {
+    page.value++;
+    fetchData();
+  }
+};
+
+const goToPage = (newPage) => {
+  page.value = newPage;
   fetchData();
 };
 const fetchData = async () => {
