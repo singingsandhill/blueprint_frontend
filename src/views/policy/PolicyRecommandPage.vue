@@ -12,12 +12,43 @@ const selectedAge = ref(null);
 const selectedJob = ref(null);
 const selectedName = ref(null);
 
+const pageGroup = ref(0);
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-const totalPages = computed(() => {
-  return Math.ceil(policyList.value.length / itemsPerPage);
+const totalPages = computed(() =>
+  Math.ceil(policyList.value.length / itemsPerPage)
+);
+
+// 현재 그룹에 표시할 페이지 번호 목록 (5개씩)
+const visiblePages = computed(() => {
+  const start = pageGroup.value * 5 + 1;
+  const end = Math.min(start + 4, totalPages.value);
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 });
+
+// 페이지 이동
+const changePage = (page) => {
+  if (page > 0 && page <= totalPages.value) {
+    currentPage.value = page;
+    localStorage.setItem("page", page);
+  }
+};
+
+// 페이지 그룹 변경
+const nextPageGroup = () => {
+  if (pageGroup.value < Math.floor(totalPages.value / 5)) {
+    pageGroup.value++;
+    currentPage.value = pageGroup.value * 5 + 1;
+  }
+};
+
+const previousPageGroup = () => {
+  if (pageGroup.value > 0) {
+    pageGroup.value--;
+    currentPage.value = pageGroup.value * 5 + 1;
+  }
+};
 
 const paginatedPolicies = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
@@ -95,13 +126,6 @@ const applyFilters = async () => {
 
   await policyStore.getPolicyFilter();
   policyList.value = policyStore.PolicyInfoList;
-  currentPage.value = 1;
-};
-
-const changePage = (page) => {
-  if (page > 0 && page <= totalPages.value) {
-    currentPage.value = page;
-  }
 };
 
 const formatDate = (dateString) => {
@@ -117,6 +141,9 @@ onMounted(() => {
   selectedAge.value = localStorage.getItem("selectedAge") || "";
   selectedJob.value = localStorage.getItem("selectedJob") || null;
   selectedName.value = localStorage.getItem("selectedName") || "";
+
+  const savedPage = localStorage.getItem("page");
+  currentPage.value = savedPage ? parseInt(savedPage, 10) : 1;
 
   if (
     selectedCity.value ||
@@ -160,7 +187,7 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
-      <i class="fas fa-user text-gray-500"></i>
+      <i class="fa-solid fa-location-arrow text-gray-500"></i>
       <input
         v-model="district"
         id="district"
@@ -191,7 +218,6 @@ onMounted(() => {
       </select>
     </div>
 
-    <!-- 연령 필터 -->
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
@@ -208,7 +234,7 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
-      <i class="fas fa-briefcase text-gray-500"></i>
+      <i class="fa-solid fa-check text-gray-500"></i>
       <select
         v-model="selectedPolicyType"
         class="bg-transparent w-full focus:outline-none"
@@ -223,7 +249,7 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
-      <i class="fas fa-user text-gray-500"></i>
+      <i class="fas fa-search"></i>
       <input
         v-model="selectedName"
         id="selectedName"
@@ -247,7 +273,12 @@ onMounted(() => {
     <div class="flex border-t-4 border-darkBlue py-4"></div>
 
     <ul>
+      <li v-if="paginatedPolicies.length === 0">
+        <p class="text-center text-gray-500">검색한 결과가 없습니다.</p>
+      </li>
+
       <li
+        v-else
         v-for="(policy, index) in paginatedPolicies"
         :key="index"
         class="hover:bg-gray-100 cursor-pointer flex items-center space-x-4 border-t border-gray-200 p-2"
@@ -277,19 +308,34 @@ onMounted(() => {
         </div>
       </li>
     </ul>
-    <div class="flex justify-center mt-4">
+
+    <div class="flex justify-center mt-4 space-x-2">
       <button
-        class="px-4 py-2 mx-1 bg-darkBlue text-white rounded-md"
-        @click="changePage(currentPage - 1)"
-        :disabled="currentPage === 1"
+        class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
+        @click="previousPageGroup"
+        :disabled="pageGroup === 0"
       >
         이전
       </button>
-      <span class="px-4 py-2">{{ currentPage }} / {{ totalPages }}</span>
+
       <button
-        class="px-4 py-2 mx-1 bg-darkBlue text-white rounded-md"
-        @click="changePage(currentPage + 1)"
-        :disabled="currentPage === totalPages"
+        v-for="page in visiblePages"
+        :key="page"
+        @click="changePage(page)"
+        :class="[
+          'px-4 py-2 rounded-md',
+          page === currentPage
+            ? 'bg-darkBlue text-white'
+            : 'border border-gray-300 text-darkBlue',
+        ]"
+      >
+        {{ page }}
+      </button>
+
+      <button
+        class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
+        @click="nextPageGroup"
+        :disabled="pageGroup >= Math.floor(totalPages.value / 5)"
       >
         다음
       </button>

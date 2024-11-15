@@ -32,3 +32,15 @@ app.use(VueAwesomePaginate);
 app.component('font-awesome-icon', FontAwesomeIcon);
 
 app.mount('#app');
+
+// Kakao SDK 불러오기
+import.meta.env.VITE_KAKAO_JS_KEY && (() => {
+    const script = document.createElement("script");
+    script.src = "https://developers.kakao.com/sdk/js/kakao.min.js";
+    script.onload = () => {
+      // Kakao SDK 초기화
+      Kakao.init(import.meta.env.VITE_KAKAO_JS_KEY);
+      console.log("Kakao SDK 초기화:", Kakao.isInitialized());
+    };
+    document.head.appendChild(script);
+  })();
