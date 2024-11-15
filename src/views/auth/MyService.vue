@@ -3,14 +3,17 @@ import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useMyPageStore } from "@/stores/myPage";
 import { useFinanceStore } from "@/stores/finance";
 import { usePolicyStore } from "@/stores/policy";
+import { useSubscriptionStore } from "@/stores/subscription";
 import { useAuthStore } from "@/stores/auth.js";
 
 const myPageStore = useMyPageStore();
 const financeStore = useFinanceStore();
 const policyStore = usePolicyStore();
+const subscriptionStore = useSubscriptionStore();
 const authStore = useAuthStore();
 
 const policyList = ref([]);
+const subscriptionList = ref([]);
 const filterSavings = ref([]);
 const filterLoan = ref([]);
 const cities = ref(null);
@@ -66,6 +69,11 @@ const fetchPolicy = async () => {
   policyList.value = policyStore.RecommedPolicyList;
 };
 
+const fetchSubscription = async () => {
+  await subscriptionStore.getRecommendSubscription();
+  subscriptionList.value = subscriptionStore.RecommedSubscriptionList;
+};
+
 const fetchCity = async () => {
   await myPageStore.getCity();
   cities.value = myPageStore.cities;
@@ -105,6 +113,7 @@ const fetchLoan = async () => {
 
 onMounted(async () => {
   await fetchPolicy();
+  await fetchSubscription();
   await fetchSavings();
   await fetchLoan();
   await myPageStore.getMyPageInfo();
@@ -151,13 +160,48 @@ onMounted(async () => {
     </div>
 
     <div class="mx-auto p-4 max-w-4xl">
-      <p class="text-2xl font-bold mb-4 text-[28px]">청약</p>
+      <p class="text-2xl font-bold mb-4 text-[28px] text-center">청약</p>
       <div class="flex border-t-4 border-darkBlue py-4"></div>
-    </div>
-
-    <div class="mx-auto p-4 max-w-4xl">
-      <p class="text-2xl font-bold mb-4 text-[28px]">부동산</p>
-      <div class="flex border-t-4 border-darkBlue py-4"></div>
+      <div v-if="subscriptionList.length === 0" class="text-xl font-semibold">
+        {{ memberName }}님의 조건에 해당하는 청약이 없습니다.
+      </div>
+      <div v-else class="flex justify-center gap-10">
+        <div
+          v-for="subscription in subscriptionList"
+          :key="subscription"
+          :value="subscription"
+          class="relative bg-white p-6 rounded-lg shadow-md max-w-lg w-full text-center"
+        >
+          <p class="text-2xl font-bold mb-4 text-center underline">
+            {{ subscription.name }}
+          </p>
+          <p class="text-lg mb-4 text-center font-semibold">
+            {{ subscription.region }} {{ subscription.city }}
+          </p>
+          <p class="text-lg mb-4 text-center font-semibold">
+            {{ subscription.district }} {{ subscription.detail }}
+          </p>
+          <p class="text-lg mb-4 text-center">
+            {{ subscription.rentSecd }}
+          </p>
+          <p class="text-lg mb-4 text-center">
+            {{ subscription.houseDtlSecdNm }} / {{ subscription.houseDtlSecd }}
+          </p>
+          <p class="text-lg text-gray-600 mb-3 font-semibold underline">
+            {{ formatDate(subscription.rceptBgnde) }} ~
+            {{ formatDate(subscription.rceptEndde) }}
+          </p>
+          <p class="text-base text-right font-semibold">
+            <a
+              :href="subscription.pblancUrl"
+              class="text-blue-500 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+              >상세 정보</a
+            >
+          </p>
+        </div>
+      </div>
     </div>
 
     <div class="mx-auto p-4 max-w-4xl">
@@ -221,7 +265,10 @@ onMounted(async () => {
             <span> / {{ filterLoan.rpayTypeNm }} </span>
           </p>
           <p class="text-gray-600 font-bold underline">
-            평균 연 {{ filterLoan.lendRateAvg }}%
+            최저 연 {{ filterLoan.lendRateMin }}%
+            <span class="text-gray-600 font-bold underline">
+              ~ 최고 연 {{ filterLoan.lendRateMax }}%
+            </span>
           </p>
         </div>
       </div>

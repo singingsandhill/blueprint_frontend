@@ -1,9 +1,12 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import axiosInstance from "@/util/axiosInstance";
+import { useAuthStore } from "@/stores/auth";
 
 export const useSubscriptionStore = defineStore("subscription",{
     state:()=>({
         subscription: [],
+        RecommedSubscriptionList: [],
     }),
 
 actions: {
@@ -14,6 +17,21 @@ actions: {
         } catch (error) {
             console.log("Error fetching subscription data:", error);
         }
-    }
+    },
+
+    async getRecommendSubscription() {
+        try {
+          const token = useAuthStore().token;
+          const response = await axiosInstance.get("/subscription/recommendation", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          this.RecommedSubscriptionList = response.data.response.data;
+        } catch (error) {
+          console.error("Failed to recommend subscription : ", error);
+          throw error;
+        }
+      },
 }
 });
