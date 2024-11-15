@@ -25,7 +25,7 @@
         >
           <h2 class="text-lg font-semibold">{{ item.name }}</h2>
   
-          <div class="text-gray-500 text-sm bg-gray-100 rounded-full px-3 py-1 inline-block mt-2">
+          <div class="text-gray-500 text-sm bg-gray-100 rounded-full px-3 py-1 inline-block mt-2 custom_color">
             {{ item.houseDtlSecd }}
           </div>
   
@@ -154,6 +154,11 @@
 .pagination-button.active {
   background-color: #1e3a8a;
   color: white;
+}
+
+.custom_color{
+  color: wheat;
+  background-color: #0E429D;
 }
   </style>
   
