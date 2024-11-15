@@ -4,7 +4,7 @@
     
     <div class="filters">
       <input v-model="filters.finPrdtNm" placeholder="Product Name" />
-      <input v-model="filters.mrtgTypeNm" placeholder="Mortgage Type" />
+      <input v-model="filters.mrtgTypeNm" placeholder="담보 유형" />
       <input v-model="filters.lendRateTypeNm" placeholder="Interest Rate Type" />
       
       <div class="select-group">
@@ -35,16 +35,16 @@
           <tr>
             <!-- <th>ID</th>
             <th>Product Code</th> -->
-            <th>Company Name</th>
-            <th>Product Name</th>
-            <th>Join Way</th>
-            <th>Loan Limit</th>
-            <th>Mortgage Type</th>
-            <th>Interest Rate Type</th>
-            <th>Repayment Type</th>
-            <th>Interest Rate Min</th>
-            <th>Interest Rate Max</th>
-            <th>Interest Rate Avg</th>
+            <th>금융사</th>
+            <th>상품명</th>
+            <th>가입방법</th>
+            <th>대출 한도</th>
+            <th>담보 유형</th>
+            <th>이자 유형</th>
+            <th>상환 유형</th>
+            <th>최소 이율</th>
+            <th>최대 이율</th>
+            <th>평균 이율</th>
             <!-- <th>Category</th> -->
           </tr>
         </thead>
@@ -67,10 +67,14 @@
         </tbody>
       </table>
 
-      <div class="pagination">
-        <button @click="prevPage" :disabled="page === 0">Previous</button>
+      <div class="flex justify-center mt-4 space-x-2">
+      <!-- "pagination" -->
+        <button 
+        class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
+        @click="prevPage" :disabled="page === 0">Previous</button>
         <span>Page {{ page + 1 }} of {{ financeData.totalPages }}</span>
-        <button @click="nextPage" :disabled="financeData.last">Next</button>
+        <button class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
+        @click="nextPage" :disabled="financeData.last">Next</button>
       </div>
     </div>
 
