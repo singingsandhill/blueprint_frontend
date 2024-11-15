@@ -76,3 +76,6 @@ pnpm-debug.log*
 *.tss 
 *.nvuser
 *.sln.iml
+
+# .env
+.env
