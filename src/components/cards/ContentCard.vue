@@ -3,14 +3,14 @@
       <!-- Header Section -->
       <div class="flex items-center space-x-2 text-gray-800">
         <i class="fas fa-arrow-left"></i>
-        <h1 class="text-lg font-medium">다가오는 청약</h1>
+        <h1 class="text-lg font-medium">청약</h1>
         <div class="flex-1"></div>
         <i class="fas fa-info-circle"></i>
       </div>
   
       <!-- Tab Navigation -->
       <div class="flex mt-4 border-b">
-        <button class="px-4 py-2 font-semibold text-black border-b-2 border-black">
+        <button class="px-4 py-2 font-semibold border-b-2 border-black">
           청약신청
         </button>
         <!-- <button class="px-4 py-2 text-gray-500">청약내역/취소</button> -->
@@ -70,39 +70,90 @@
           </div>
         </div>
       </div>
-  
+      
       <p v-else>데이터를 불러오는 중...</p>
+
+      <!-- Pagination -->
+    <div class="flex justify-center mt-4 space-x-2">
+      <button 
+        class="pagination-button"
+        @click="prevPage" 
+        :disabled="currentPage === 0">
+        이전
+      </button>
+      <button
+        v-for="p in totalPages"
+        :key="p"
+        @click="goToPage(p - 1)"
+        :class="{'pagination-button': true, 'active': p - 1 === currentPage}">
+        {{ p }}
+      </button>
+      <button 
+        class="pagination-button"
+        @click="nextPage" 
+        :disabled="currentPage >= totalPages - 1">
+        다음
+      </button>
+    </div>
     </div>
   </template>
-  
-  <script>
+  <script setup>
   import { ref, onMounted } from "vue";
   import { useSubscriptionStore } from "@/stores/subscription.js";
-  import { useRoute } from "vue-router";
   
-  export default {
-    setup() {
-      const store = useSubscriptionStore();
-      const subscriptionList = ref([]);
+  const store = useSubscriptionStore();
+  const subscriptionList = ref([]);
+  const currentPage = ref(0);
+  const totalPages = ref(0);
+  const pageSize = 10;
   
-      const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString('ko-KR', options);
-      };
-  
-      onMounted(async () => {
-        await store.getSubscription();
-        subscriptionList.value = store.subscription; // Pinia 스토어에서 데이터 불러오기
-      });
-  
-      return {
-        subscriptionList,
-        formatDate,
-      };
-    },
+  const formatDate = (dateString) => {
+   const options = { year: 'numeric', month: 'long', day: 'numeric' };
+   return new Date(dateString).toLocaleDateString('ko-KR', options);
   };
+  
+  const fetchData = async (page) => {
+   await store.getSubscription(page, pageSize);
+   subscriptionList.value = store.subscription.content;
+   totalPages.value = store.subscription.totalPages;
+   currentPage.value = page;
+  };
+  
+  const prevPage = () => {
+   if (currentPage.value > 0) {
+     fetchData(currentPage.value - 1);
+   }
+  };
+  
+  const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    fetchData(currentPage.value + 1);
+  }
+};
+  
+  const goToPage = (page) => {
+   fetchData(page);
+  };
+  
+  onMounted(() => {
+   fetchData(0);
+  });
   </script>
   
   <style scoped>
+  .pagination-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #1e3a8a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.pagination-button.active {
+  background-color: #1e3a8a;
+  color: white;
+}
   </style>
   
