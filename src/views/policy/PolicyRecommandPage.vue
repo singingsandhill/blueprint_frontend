@@ -143,7 +143,13 @@ onMounted(() => {
   selectedName.value = localStorage.getItem("selectedName") || "";
 
   const savedPage = localStorage.getItem("page");
-  currentPage.value = savedPage ? parseInt(savedPage, 10) : 1;
+  if (savedPage) {
+    currentPage.value = parseInt(savedPage, 10);
+    pageGroup.value = Math.floor((currentPage.value - 1) / 5);
+  } else {
+    currentPage.value = 1;
+    pageGroup.value = 0;
+  }
 
   if (
     selectedCity.value ||

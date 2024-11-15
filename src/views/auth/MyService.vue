@@ -134,17 +134,19 @@ onMounted(async () => {
       님을 위한 맞춤형 정보를 알려드릴게요!
     </p>
 
-    <div class="mx-auto p-4 max-w-4xl">
+    <div class="mx-auto p-4">
       <p class="text-2xl font-bold mb-4 text-[28px] text-center">정책</p>
       <div class="flex border-t-4 border-darkBlue py-4"></div>
       <div v-if="policyList.length === 0" class="text-xl font-semibold">
         {{ memberName }}님의 조건에 해당하는 정책이 없습니다.
       </div>
-      <div
-        v-else
-        class="relative bg-white p-6 rounded-lg shadow-md max-w-xs w-full"
-      >
-        <div v-for="policy in policyList" :key="policy" :value="policy">
+      <div v-else class="flex justify-center gap-10 w-full">
+        <div
+          v-for="policy in policyList"
+          :key="policy"
+          :value="policy"
+          class="relative bg-white p-6 rounded-lg shadow-md max-w-sm w-full"
+        >
           <p class="text-2xl font-bold mb-4 text-center underline">
             {{ policy.name }}
           </p>
