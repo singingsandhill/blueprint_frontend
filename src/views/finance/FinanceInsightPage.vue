@@ -12,7 +12,11 @@
         @click="selectTab('savings')">저축</button>
     </div>
 
-    <!-- Filters -->
+    
+
+    <!-- Loan Table -->
+    <div v-if="selectedTab === 'loan'">
+      <!-- Filters -->
     <div class="filters" v-if="selectedTab === 'loan'">
       <div class="input-group">
         <label>검색조건</label>
@@ -39,9 +43,6 @@
         <button @click="fetchData">Apply Filters</button>
       </div>
     </div>
-
-    <!-- Loan Table -->
-    <div v-if="selectedTab === 'loan'">
       <div v-if="loading">Loading...</div>
       <div v-else-if="financeData?.content?.length">
         <table>
@@ -80,31 +81,56 @@
 
     <!-- Savings Table -->
     <div v-if="selectedTab === 'savings'">
+      <!-- Filters -->
+    <div class="filters" v-if="selectedTab === 'savings'">
+      <div class="input-group">
+        <label>검색조건</label>
+        <div class="input-fields">
+          <input v-model="filters.intrRateNm" placeholder="금리 유형" />
+          <input v-model="filters.prdCategory" placeholder="상품 유형" />
+        </div>
+      </div>
+
+      <div class="select-group">
+        <label>정렬:</label>
+        <select v-model="filters.sortBy">
+          <option value="intrRate">최소 이율</option>
+          <option value="intrRate2">최대 이율</option>
+        </select>
+
+        <label>기준:</label>
+        <select v-model="filters.direction">
+          <option value="asc">오름차순</option>
+          <option value="desc">내림차순</option>
+        </select>
+        <button @click="fetchData">Apply Filters</button>
+      </div>
+    </div>
       <div v-if="loading">Loading...</div>
       <div v-else-if="savingsData?.content?.length">
         <table>
           <thead>
             <tr>
               <th>금융사</th>
+              <th>상품 유형</th>
               <th>상품명</th>
               <th>가입방법</th>
-              <th>저축 한도</th>
+              <th>저축 기간</th>
               <th>이자 유형</th>
               <th>최소 이율</th>
               <th>최대 이율</th>
-              <th>평균 이율</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in savingsData.content" :key="item.idx">
               <td>{{ item.korCoNm }}</td>
+              <td>{{ item.prdCategory }}%</td>
               <td>{{ item.finPrdtNm }}</td>
               <td>{{ item.joinWay }}</td>
-              <td>{{ item.savingsLmt }}</td>
-              <td>{{ item.interestTypeNm }}</td>
-              <td>{{ item.lendRateMin }}%</td>
-              <td>{{ item.lendRateMax }}%</td>
-              <td>{{ item.lendRateAvg || '-' }}%</td>
+              <td>{{ item.saveTrm }}</td>
+              <td>{{ item.intrRateNm }}</td>
+              <td>{{ item.intrRate }}%</td>
+              <td>{{ item.intrRate2 }}%</td>
             </tr>
           </tbody>
         </table>
@@ -148,15 +174,29 @@ const filters = ref({
   finPrdtNm: '',
   mrtgTypeNm: '',
   lendRateTypeNm: '',
+  intrRateNm: '', // 추가
+  prdCategory: '', // 추가
   sortBy: 'lendRateMin',
   direction: 'asc'
 });
 
 const selectTab = (tab) => {
   selectedTab.value = tab;
-  fetchData(); // Re-fetch data when tab changes
+  // 탭 변경 시 필터 초기화
+  filters.value = tab === 'loan' ? {
+    finPrdtNm: '',
+    mrtgTypeNm: '',
+    lendRateTypeNm: '',
+    sortBy: 'lendRateMin',
+    direction: 'asc'
+  } : {
+    intrRateNm: '',
+    prdCategory: '',
+    sortBy: 'intrRate',
+    direction: 'asc'
+  };
+  fetchData();
 };
-
 const fetchData = async () => {
   loading.value = true;
   try {
