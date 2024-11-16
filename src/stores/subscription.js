@@ -9,7 +9,7 @@ export const useSubscriptionStore = defineStore("subscription",{
 actions: {
     async getSubscription() {
         try{
-            const response = await axios.get("http://localhost:8080/subscription/get")
+            const response = await axios.get("http://localhost:8080/subscription/getAll")
             this.subscription = response.data.response.data;
         } catch (error) {
             console.log("Error fetching subscription data:", error);

@@ -21,11 +21,11 @@ const handleFilterChanged = (policies) => {
     <BannerSlider />
   </div>
   <div class="homepage container mx-auto p-4">
-    <FilterSection @filterChanged="handleFilterChanged" class="mb-32" />
-    <FilterResult v-if="searchExecuted" :filteredPolicies="filteredPolicies" class="mb-32" />
-    <PolicySection class="mb-32" />
-    <SubscriptionSection class="mb-32" />
-    <FinanceSection class="mb-32" />
+    <FilterSection @filterChanged="handleFilterChanged" class="mb-20" />
+    <FilterResult v-if="searchExecuted" :filteredPolicies="filteredPolicies" class="mb-20" />
+    <PolicySection class="mb-20" />
+    <SubscriptionSection class="mb-20" />
+    <FinanceSection class="mb-20" />
   </div>
 </template>
 

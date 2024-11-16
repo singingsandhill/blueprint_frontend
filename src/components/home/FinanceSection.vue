@@ -1,61 +1,167 @@
 <script setup>
-const financeCards = [
-  { image: 'finance-image1.jpg', description: '금융 설명 1' },
-  { image: 'finance-image2.jpg', description: '금융 설명 2' },
-  { image: 'finance-image3.jpg', description: '금융 설명 3' },
-];
+import { ref, onMounted } from "vue";
+import { useFinanceStore } from "@/stores/finance";
+
+const financeStore = useFinanceStore();
+
+const cachedSavingsList = localStorage.getItem("cachedSavingsList");
+const cachedLoanList = localStorage.getItem("cachedLoanList");
+
+const savingsList = ref(cachedSavingsList ? JSON.parse(cachedSavingsList) : []);
+const loanList = ref(cachedLoanList ? JSON.parse(cachedLoanList) : []);
+
+// 데이터 랜덤화 함수
+const shuffleArray = (array) => {
+  return array.sort(() => Math.random() - 0.5);
+};
+
+// API에서 데이터 가져오기 및 캐싱
+const fetchAndCacheData = async () => {
+  if (!cachedSavingsList || !cachedLoanList) {
+    try {
+      await financeStore.getAllSavings();
+      await financeStore.getAllLoans();
+
+      // 데이터 캐싱
+      localStorage.setItem(
+        "cachedSavingsList",
+        JSON.stringify(financeStore.AllSavingsList)
+      );
+      localStorage.setItem(
+        "cachedLoanList",
+        JSON.stringify(financeStore.AllLoanList)
+      );
+
+      // 랜덤화 후 저장
+      savingsList.value = shuffleArray(financeStore.AllSavingsList).slice(0, 4);
+      loanList.value = shuffleArray(financeStore.AllLoanList).slice(0, 4);
+    } catch (error) {
+      console.error("Error fetching financial data:", error);
+    }
+  } else {
+    // 캐싱된 데이터를 랜덤으로 정렬
+    savingsList.value = shuffleArray(JSON.parse(cachedSavingsList)).slice(0, 4);
+    loanList.value = shuffleArray(JSON.parse(cachedLoanList)).slice(0, 4);
+  }
+};
+
+// "예금" 또는 "적금" 표시 함수
+const getProductType = (productName) => {
+  if (productName.includes("예금")) {
+    return "예금";
+  } else if (productName.includes("적금")) {
+    return "적금";
+  } else {
+    return "상품";
+  }
+};
+
+// 대출 카테고리 표시 함수
+const getLoanCategory = (category) => {
+  if (category === "mortgage") {
+    return "주택 담보 대출";
+  } else if (category === "rentHouse") {
+    return "전세 자금 대출";
+  } else {
+    return "기타 대출";
+  }
+};
+
+onMounted(async () => {
+  await fetchAndCacheData();
+});
 </script>
 
 <template>
-  <div class="section mt-20">
-    <h2 class="text-2xl font-bold mb-12 text-center">금주의 금융 상품 추천</h2>
-    <div class="flex items-center">
-      <button class="p-2 bg-gray-200 rounded-full shadow hover:bg-gray-300">
-        <i class="fas fa-chevron-left"></i>
-      </button>
+  <div class="section mt-12">
+    <h2 class="text-2xl font-bold mb-8 text-center">금주의 금융 상품 추천</h2>
 
-      <div class="cards flex overflow-hidden w-full mx-4 space-x-4">
+    <!-- 저축 상품 -->
+    <div class="mb-12">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div
-          v-for="(card, index) in financeCards"
+          v-for="(item, index) in savingsList"
           :key="index"
-          class="card cursor-pointer bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200 p-4 w-64 flex-shrink-0"
+          class="card bg-white border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
         >
-          <img :src="card.image" alt="금융 이미지" class="mb-3 rounded-md w-full h-32 object-cover" />
-          <p class="text-sm text-gray-700">{{ card.description }}</p>
+          <div
+            class="text-sm rounded-full px-3 py-1 inline-block mb-2 text-center"
+            style="background-color: #C1D5F9; color: white;"
+          >
+            {{ getProductType(item.finPrdtNm) }}
+          </div>
+          <h3 class="text-lg font-semibold mb-2 text-center">
+            {{ item.finPrdtNm || "상품명 없음" }}
+          </h3>
+          <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
+            <p>가입 대상: {{ item.joinMember || "정보 없음" }}</p>
+            <p>가입 방법: {{ item.joinWay || "정보 없음" }}</p>
+            <p>이율: 최대 {{ item.intrRate2 || 0 }}%</p>
+          </div>
         </div>
       </div>
-
-      <button class="p-2 bg-gray-200 rounded-full shadow hover:bg-gray-300">
-        <i class="fas fa-chevron-right"></i>
-      </button>
     </div>
 
-    <div class="flex justify-center mt-6">
-      <router-link to="/finance" class="px-4 py-2 rounded-lg hover:bg-blue-200 hover:transition duration-200 font-semibold border">
-        더보기
-      </router-link>
+    <!-- 대출 상품 -->
+    <div class="mb-12">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+          v-for="(item, index) in loanList"
+          :key="index"
+          class="card bg-white border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
+        >
+          <!-- 대출 카테고리 표시 -->
+          <div
+            class="text-sm rounded-full px-3 py-1 inline-block mb-2 text-center"
+            style="background-color: #C1D5F9; color: white;"
+          >
+            {{ getLoanCategory(item.prdCategory) }}
+          </div>
+
+          <!-- 대출 상품명 -->
+          <h3 class="text-lg font-semibold mb-2 text-center">
+            {{ item.finPrdtNm || "상품명 없음" }}
+          </h3>
+
+          <!-- 대출 상세 정보 -->
+          <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
+            <p>최소 금리: {{ item.lendRateMin || 0 }}%</p>
+            <p>최대 금리: {{ item.lendRateMax || 0 }}%</p>
+            <p>대출 금리 유형: {{ item.lendRateTypeNm || "정보 없음" }}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .card {
-  min-width: 250px;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  transition: transform 0.3s;
+  min-height: 250px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 8px;
 }
+
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-1px);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
 }
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+
 @media (max-width: 768px) {
   .card {
     width: 100%;
-    margin-bottom: 1rem;
+    min-height: 200px;
+    padding: 1rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+
+  .text-sm {
+    font-size: 0.875rem;
   }
 }
 </style>
+
