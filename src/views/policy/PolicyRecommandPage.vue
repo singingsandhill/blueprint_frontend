@@ -20,14 +20,12 @@ const totalPages = computed(() =>
   Math.ceil(policyList.value.length / itemsPerPage)
 );
 
-// 현재 그룹에 표시할 페이지 번호 목록 (5개씩)
 const visiblePages = computed(() => {
   const start = pageGroup.value * 5 + 1;
   const end = Math.min(start + 4, totalPages.value);
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 });
 
-// 페이지 이동
 const changePage = (page) => {
   if (page > 0 && page <= totalPages.value) {
     currentPage.value = page;
@@ -35,7 +33,6 @@ const changePage = (page) => {
   }
 };
 
-// 페이지 그룹 변경
 const nextPageGroup = () => {
   if (pageGroup.value < Math.floor(totalPages.value / 5)) {
     pageGroup.value++;
@@ -143,7 +140,13 @@ onMounted(() => {
   selectedName.value = localStorage.getItem("selectedName") || "";
 
   const savedPage = localStorage.getItem("page");
-  currentPage.value = savedPage ? parseInt(savedPage, 10) : 1;
+  if (savedPage) {
+    currentPage.value = parseInt(savedPage, 10);
+    pageGroup.value = Math.floor((currentPage.value - 1) / 5);
+  } else {
+    currentPage.value = 1;
+    pageGroup.value = 0;
+  }
 
   if (
     selectedCity.value ||
@@ -156,14 +159,23 @@ onMounted(() => {
     applyFilters();
   }
 });
+
+const updateFilters = (filters) => {
+  selectedCity.value = filters.selectedCity;
+  district.value = filters.district;
+  selectedPolicyType.value = filters.selectedPolicyType;
+  selectedAge.value = filters.selectedAge;
+  selectedJob.value = filters.selectedJob;
+  selectedName.value = filters.selectedName;
+};
 </script>
 
 <template>
   <section
-    class="bg-gray-800 text-white p-4 rounded-lg mt-6 flex mx-auto flex-col items-center gap-4 md:gap-2 shadow-md w-[90%] md:flex-row md:flex-wrap md:justify-center"
+    class="bg-gray-800 text-white p-4 rounded-lg mt-6 flex mx-auto flex-col items-center gap-4 md:gap-2 shadow-md w-[90%] md:flex-row md:flex-wrap md:justify-center max-w-8xl w-full"
   >
     <div
-      class="flex items-center space-x-2 bg-[#002842] text-white px-3 py-2 rounded-lg md:rounded-l-lg w-full md:w-auto"
+      class="flex items-center space-x-2 bg-darkBlue text-white px-3 py-2 rounded-lg md:rounded-l-lg w-full md:w-auto"
     >
       <i class="fas fa-users"></i>
       <strong class="text-lg font-semibold">정책 검색</strong>
@@ -261,14 +273,14 @@ onMounted(() => {
 
     <button
       @click="applyFilters"
-      class="bg-[#002842] px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center"
+      class="bg-darkBlue px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center"
     >
       <i class="fas fa-search"></i>
       <span class="ml-1">검색</span>
     </button>
   </section>
 
-  <div class="mx-auto p-4 max-w-4xl">
+  <div class="mx-auto p-4 w-full max-w-8xl">
     <p class="text-2xl font-bold mb-4 text-[32px]">검색한 정책</p>
     <div class="flex border-t-4 border-darkBlue py-4"></div>
 
@@ -281,7 +293,7 @@ onMounted(() => {
         v-else
         v-for="(policy, index) in paginatedPolicies"
         :key="index"
-        class="hover:bg-gray-100 cursor-pointer flex items-center space-x-4 border-t border-gray-200 p-2"
+        class="hover:bg-gray-100 cursor-pointer flex items-center space-x-10 border-t border-gray-200 p-2"
         @click="
           $router.push({
             name: 'PolicyDetail',
