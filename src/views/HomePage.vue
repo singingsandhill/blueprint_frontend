@@ -36,7 +36,7 @@ const handleFilterChanged = (policies) => {
 <style scoped>
 .homepage {
   padding: 1rem;
-  max-width: 1200px;
+  max-width: 1350px;
   margin: 0 auto;
 }
 
