@@ -197,8 +197,8 @@ const register = async () => {
         </div>
 
         <!-- 아이디 입력 필드 -->
-        <div class="flex flex-col md:flex-row items-center md:space-x-4 mt-4">
-          <div class="flex items-center space-x-4 w-full md:w-auto">
+        <div class="flex flex-col  md:flex-row items-center md:space-x-4 mt-4">
+          <div class="flex items-center space-x-4 w-full md:w-3/4">
             <label for="memberId" class="w-24 text-sm font-medium text-gray-700">아이디</label>
             <input
               type="text"
@@ -209,11 +209,11 @@ const register = async () => {
               required
             />
           </div>
-          <div class="w-full md:w-auto">
+          <div class="flex justify-end w-full">
             <button 
               @click="checkId" 
               type="button" 
-              class="responsive-button px-4 py-2 bg-[#002842] text-white rounded hover:bg-[#0E429D] text-sm mt-2 md:mt-0 md:ml-auto w-full md:w-auto">
+              class="responsive-button px-4 py-2 bg-[#002842] text-white rounded hover:bg-[#0E429D] text-sm mt-2 md:mt-0 md:ml-auto md:w-auto">
               ID 중복 확인
             </button>
           </div>
@@ -261,6 +261,7 @@ const register = async () => {
 
         <!-- 이메일 입력 필드 -->
 <div class="flex flex-col md:flex-row items-center md:space-x-4 mt-4">
+  <!-- 이메일 입력 -->
   <div class="flex items-center space-x-4 w-full md:w-auto">
     <label for="email" class="w-24 text-sm font-medium text-gray-700">이메일</label>
     <input
@@ -272,40 +273,42 @@ const register = async () => {
       required
     />
   </div>
-  <div class="w-full md:w-auto">
+  <!-- 인증 코드 발송 버튼 -->
+  <div class="flex justify-end w-full mt-2">
     <button 
       @click="sendEmailVerification" 
       type="button" 
-      class="responsive-button px-4 py-2 bg-[#002842] text-white rounded hover:bg-[#0E429D] text-sm mt-2 md:mt-0 md:ml-auto w-full md:w-auto">
+      class="responsive-button px-4 py-2 bg-[#002842] text-white rounded hover:bg-[#0E429D] text-sm w-auto">
       인증 코드 발송
     </button>
   </div>
 </div>
 
 <!-- 인증 코드 입력 및 확인 -->
-<div v-if="emailVerificationSent" class="mt-4">
-  <div class="flex flex-col md:flex-row items-center md:space-x-4">
-    <div class="flex items-center space-x-4 w-full md:w-auto">
-      <label for="emailVerificationCode" class="w-24 text-sm font-medium text-gray-700">인증 코드</label>
-      <input
-        type="text"
-        v-model="member.emailVerificationCode"
-        id="emailVerificationCode"
-        class="flex-grow px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
-        placeholder="인증 코드를 입력하세요"
-        required
-      />
-    </div>
-    <div class="w-full md:w-auto">
-      <button 
-        @click="verifyEmailCode" 
-        type="button" 
-        class="responsive-button px-4 py-2 bg-[#002842] text-white rounded hover:bg-[#0E429D] text-sm mt-2 md:mt-0 md:ml-auto w-full md:w-auto">
-        인증 확인
-      </button>
-    </div>
+<div v-if="emailVerificationSent" class="flex flex-col md:flex-row items-center md:space-x-4 mt-4">
+  <!-- 인증 코드 입력 -->
+  <div class="flex items-center space-x-4 w-full md:w-auto">
+    <label for="emailVerificationCode" class="w-24 text-sm font-medium text-gray-700">인증 코드</label>
+    <input
+      type="text"
+      v-model="member.emailVerificationCode"
+      id="emailVerificationCode"
+      class="flex-grow px-4 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
+      placeholder="인증 코드를 입력하세요"
+      required
+    />
+  </div>
+  <!-- 인증 확인 버튼 -->
+  <div class="flex justify-end w-full mt-2">
+    <button 
+      @click="verifyEmailCode" 
+      type="button" 
+      class="responsive-button px-4 py-2 bg-[#002842] text-white rounded hover:bg-[#0E429D] text-sm w-auto">
+      인증 확인
+    </button>
   </div>
 </div>
+
 
 
         <!-- 성별 선택 필드 -->
@@ -366,14 +369,6 @@ a {
 ::placeholder {
   color: #999999;
   opacity: 1;
-}
-
-@media (max-width: 640px) {
-  .responsive-button {
-    display: block;
-    width: 70%;
-    margin-left: auto;
-  }
 }
 
 </style>
