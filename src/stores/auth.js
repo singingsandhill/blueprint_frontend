@@ -4,9 +4,9 @@ import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    token: localStorage.getItem("token") || null,
+    token: localStorage.getItem("authToken") || null,
     member: null,
-    isLoggedIn: !!localStorage.getItem("token"),
+    isLoggedIn: !!localStorage.getItem("authToken"),
   }),
 
   actions: {
@@ -21,7 +21,7 @@ export const useAuthStore = defineStore("auth", {
           this.token = response.data.response.data.accessToken;
           this.isLoggedIn = true;
 
-          localStorage.setItem("token", this.token);
+          localStorage.setItem("authToken", this.token);
           axiosInstance.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${this.token}`;
@@ -162,7 +162,7 @@ export const useAuthStore = defineStore("auth", {
       this.token = null;
       this.member = null;
       this.isLoggedIn = false;
-      localStorage.removeItem("token");
+      localStorage.removeItem("authToken");
       localStorage.removeItem("selectedCity");
       localStorage.removeItem("district");
       localStorage.removeItem("selectedPolicyType");

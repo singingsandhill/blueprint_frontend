@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/auth";
 import { reactive, ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useMyPageStore } from "@/stores/myPage";
-import NotificationStatus from "@/components/mypage/NotificationStatus.vue";
+import NotificationStatus from "@/components/notification/NotificationStatus.vue";
 
 const router = useRouter();
 const auth = useAuthStore();
