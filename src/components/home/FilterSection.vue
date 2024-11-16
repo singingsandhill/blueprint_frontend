@@ -102,7 +102,7 @@ onMounted(() => {
     selectedName.value
   ) {
     applyFilters();
-    }
+  }
 });
 </script>
 
@@ -113,7 +113,6 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-[#002842] text-white px-4 py-3 rounded-lg md:rounded-l-lg w-full md:w-auto"
     >
-      <i class="fas fa-users"></i>
       <strong class="text-lg font-semibold">정책 검색</strong>
     </div>
 
