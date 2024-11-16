@@ -172,10 +172,10 @@ const updateFilters = (filters) => {
 
 <template>
   <section
-    class="bg-gray-800 text-white p-4 rounded-lg mt-6 flex mx-auto flex-col items-center gap-4 md:gap-2 shadow-md w-[90%] md:flex-row md:flex-wrap md:justify-center max-w-8xl w-full"
+    class="text-white p-4 rounded-lg mt-6 flex mx-auto flex-col items-center gap-4 md:gap-2 w-[90%] md:flex-row md:flex-wrap md:justify-center"
   >
     <div
-      class="flex items-center space-x-2 bg-darkBlue text-white px-3 py-2 rounded-lg md:rounded-l-lg w-full md:w-auto"
+      class="flex items-center space-x-2 bg-[#002842] text-white px-4 py-3 rounded-lg md:rounded-l-lg w-full md:w-auto"
     >
       <i class="fas fa-users"></i>
       <strong class="text-lg font-semibold">정책 검색</strong>
