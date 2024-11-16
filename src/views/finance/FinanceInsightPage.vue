@@ -1,9 +1,8 @@
 <template>
   <div>
-    <h2>금융 상품</h2>
-
     <!-- Tabs for Loan and Savings -->
     <div class="tabs">
+      <h2>금융 상품</h2>
       <button 
         :class="{ active: selectedTab === 'loan' }" 
         @click="selectTab('loan')">대출</button>
@@ -253,8 +252,15 @@ onMounted(fetchData);
 <style>
 .tabs {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
 }
 
 .tabs button {
@@ -368,5 +374,9 @@ input {
 
 button {
   padding: 0.25rem 0.5rem;
+}
+
+h2{
+  font-size: 1.5rem;
 }
 </style>
