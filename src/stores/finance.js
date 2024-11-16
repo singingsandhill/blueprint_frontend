@@ -6,6 +6,8 @@ export const useFinanceStore = defineStore("finance", {
   state: () => ({
     SavingsList: [],
     LoanList: [],
+    AllSavingsList: [],
+    AllLoanList: [],
   }),
 
   actions: {
@@ -19,7 +21,7 @@ export const useFinanceStore = defineStore("finance", {
         });
         this.SavingsList = response.data.response.data;
       } catch (error) {
-        console.error("Failed to fetch savings filtering : ", error);
+        console.error("Failed to fetch savings filtering: ", error);
         throw error;
       }
     },
@@ -34,7 +36,37 @@ export const useFinanceStore = defineStore("finance", {
         });
         this.LoanList = response.data.response.data;
       } catch (error) {
-        console.error("Failed to fetch loan filtering : ", error);
+        console.error("Failed to fetch loan filtering: ", error);
+        throw error;
+      }
+    },
+
+    async getAllSavings() {
+      try {
+        const token = useAuthStore().token;
+        const response = await axiosInstance.get("/finance/getAllSavings", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        this.AllSavingsList = response.data.response.data;
+      } catch (error) {
+        console.error("Failed to fetch all savings: ", error);
+        throw error;
+      }
+    },
+
+    async getAllLoans() {
+      try {
+        const token = useAuthStore().token;
+        const response = await axiosInstance.get("/finance/getAllLoans", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        this.AllLoanList = response.data.response.data;
+      } catch (error) {
+        console.error("Failed to fetch all loans: ", error);
         throw error;
       }
     },

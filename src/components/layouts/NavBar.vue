@@ -155,7 +155,7 @@ const handleLogout = () => {
       <ul class="w-full space-y-6 text-center">
         <li class="border-b border-gray-600 py-2">
           <router-link
-            to="/my-service"
+            to="/member/myService"
             class="text-white hover:text-gray-200 transition-colors duration-200"
             @click="toggleNavShow"
           >

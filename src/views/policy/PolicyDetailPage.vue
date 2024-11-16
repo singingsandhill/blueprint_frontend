@@ -1,9 +1,9 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { usePolicyStore } from '@/stores/policy';
-import ShareButton from '@/components/kakao/ShareButton.vue';
-import UrlCopyIcon from '@/assets/url_copy.svg';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
+import { usePolicyStore } from "@/stores/policy";
+import ShareButton from "@/components/kakao/ShareButton.vue";
+import UrlCopyIcon from "@/assets/url_copy.svg";
 
 const route = useRoute();
 const policyStore = usePolicyStore();
@@ -25,8 +25,9 @@ const formatDate = (date) => {
 };
 
 const copyUrl = () => {
-  navigator.clipboard.writeText(window.location.href)
-    .then(() => alert('URL이 복사되었습니다.'));
+  navigator.clipboard
+    .writeText(window.location.href)
+    .then(() => alert("URL이 복사되었습니다."));
 };
 
 onMounted(async () => {
@@ -35,14 +36,16 @@ onMounted(async () => {
     await policyStore.getPolicyInfo();
     await policyStore.getPolicyDetail(idx);
     policyDetail.value = policyStore.PolicyDetail;
-    policyListItem.value = policyStore.PolicyInfoList.find(item => item.idx === idx);
+    policyListItem.value = policyStore.PolicyInfoList.find(
+      (item) => item.idx === idx
+    );
     if (typeof window !== "undefined") {
       shareUrl.value = `${window.location.origin}/policy/detail/${policyDetail.value.idx}`;
     }
 
-    headerHeight.value = document.querySelector('header')?.offsetHeight || 0;
+    headerHeight.value = document.querySelector("header")?.offsetHeight || 0;
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
   } catch (error) {
     console.error("Error fetching policy data: ", error);
   } finally {
@@ -51,7 +54,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener("scroll", handleScroll);
 });
 
 const handleScroll = () => {
@@ -63,17 +66,17 @@ const handleScroll = () => {
 };
 
 const scrollToTop = () => {
-  const titleElement = document.querySelector('h2');
+  const titleElement = document.querySelector("h2");
   if (titleElement) {
-    titleElement.scrollIntoView({ behavior: 'smooth' });
-    activeSection.value = 'top';
+    titleElement.scrollIntoView({ behavior: "smooth" });
+    activeSection.value = "top";
   }
 };
 
 const scrollToSection = (sectionId) => {
   const section = document.getElementById(sectionId);
   if (section) {
-    section.scrollIntoView({ behavior: 'smooth' });
+    section.scrollIntoView({ behavior: "smooth" });
     activeSection.value = sectionId;
   }
 };
@@ -81,40 +84,54 @@ const scrollToSection = (sectionId) => {
 const formatPolicySubject = (text) => {
   if (!text) return "";
 
-  const segments = text.split(/[\u2022\u25E6\u25A1\*\u25CB](?!\d-\d)|(?<!\d)-(?=\D)/).filter(Boolean);
+  const segments = text
+    .split(/[\u2022\u25E6\u25A1\*\u25CB](?!\d-\d)|(?<!\d)-(?=\D)/)
+    .filter(Boolean);
 
   return segments
-    .map(segment => {
+    .map((segment) => {
       const subSegments = segment
-        .split(/(?<!\d)-(?=\D)|(?<=\D)-(?=\d)|(?=[가-힣]\.)|(?=※)|(?=\[.*?\])|(?=\b\d{1,2}\.(?!\d{1,2}\.\d{1,2})\b)/)
+        .split(
+          /(?<!\d)-(?=\D)|(?<=\D)-(?=\d)|(?=[가-힣]\.)|(?=※)|(?=\[.*?\])|(?=\b\d{1,2}\.(?!\d{1,2}\.\d{1,2})\b)/
+        )
         .filter(Boolean)
-        .map(sub => {
+        .map((sub) => {
           const trimmedSub = sub.trim();
 
           if (/^\d{4}\.\d{1,2}\.\d{1,2}$/.test(trimmedSub)) {
             return trimmedSub;
-          }
-          else if (/^[가-힣]\.|^※|^\[.*?\]|^- |\b\d{1,2}\.(?!\d)/.test(trimmedSub)) {
+          } else if (
+            /^[가-힣]\.|^※|^\[.*?\]|^- |\b\d{1,2}\.(?!\d)/.test(trimmedSub)
+          ) {
             return `<br>${trimmedSub}`;
           }
           return `- ${trimmedSub}`;
         });
 
-      return subSegments.join('');
+      return subSegments.join("");
     })
-    .join('<br><br>');
+    .join("<br><br>");
 };
-
 </script>
 
 <template>
   <div class="contentsWrap mw_wrap p-4">
     <!-- 제목 -->
     <div class="flex justify-between items-center mb-10">
-      <h2 id="page-title" class="text-3xl font-bold">{{ policyListItem?.name }}</h2>
+      <h2 id="page-title" class="text-3xl font-bold">
+        {{ policyListItem?.name }}
+      </h2>
       <div class="flex space-x-2">
-        <ShareButton :title="policyListItem?.name" :description="policyDetail?.subject" :shareUrl="shareUrl" class="w-6 h-6 bg-white rounded-full flex items-center justify-center" />
-        <button @click="copyUrl" class="w-6 h-6 bg-white rounded-full flex items-center justify-center border border-gray-300">
+        <ShareButton
+          :title="policyListItem?.name"
+          :description="policyDetail?.subject"
+          :shareUrl="shareUrl"
+          class="w-6 h-6 bg-white rounded-full flex items-center justify-center"
+        />
+        <button
+          @click="copyUrl"
+          class="w-6 h-6 bg-white rounded-full flex items-center justify-center border border-gray-300"
+        >
           <img :src="UrlCopyIcon" alt="URL 복사" class="w-6 h-6" />
         </button>
       </div>
@@ -125,7 +142,12 @@ const formatPolicySubject = (text) => {
       <!-- 왼쪽 콘텐츠 영역 (테이블) -->
       <div class="left w-full lg:w-3/4 lg:pr-6">
         <!-- 사업 개요 -->
-        <h3 id="business-overview" class="section-title border-b-2 border-gray-300 pb-2 mb-4">사업 개요</h3>
+        <h3
+          id="business-overview"
+          class="section-title border-b-2 border-gray-300 pb-2 mb-4"
+        >
+          사업 개요
+        </h3>
         <div class="content-section mb-10">
           <div class="content-row mb-4">
             <span class="title-cell">정책 유형</span>
@@ -138,7 +160,10 @@ const formatPolicySubject = (text) => {
           <div class="content-row mb-4">
             <span class="title-cell">정책 소개</span>
             <!-- v-html을 사용해 HTML 형식으로 텍스트를 렌더링 -->
-            <span class="content-cell" v-html="formatPolicySubject(policyDetail?.subject)"></span>
+            <span
+              class="content-cell"
+              v-html="formatPolicySubject(policyDetail?.subject)"
+            ></span>
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">지원 내용</span>
@@ -146,7 +171,10 @@ const formatPolicySubject = (text) => {
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">사업 운영 기간</span>
-            <span class="content-cell">{{ formatDate(policyListItem?.apply_start_date) }} ~ {{ formatDate(policyListItem?.apply_end_date) }}</span>
+            <span class="content-cell"
+              >{{ formatDate(policyListItem?.apply_start_date) }} ~
+              {{ formatDate(policyListItem?.apply_end_date) }}</span
+            >
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">지원 규모</span>
@@ -155,17 +183,35 @@ const formatPolicySubject = (text) => {
           <div class="content-row mb-4">
             <span class="title-cell">관련 사이트</span>
             <span class="content-cell">
-              <a :href="policyDetail?.url" class="text-blue-500 underline" target="_blank">{{ policyDetail?.url }}</a>
+              <a
+                :href="policyDetail?.url"
+                class="text-blue-500 underline"
+                target="_blank"
+                >{{ policyDetail?.url }}</a
+              >
             </span>
           </div>
         </div>
 
         <!-- 신청 자격 -->
-        <h3 id="eligibility" class="section-title border-b-2 border-gray-300 pb-2 mb-4">신청 자격</h3>
+        <h3
+          id="eligibility"
+          class="section-title border-b-2 border-gray-300 pb-2 mb-4"
+        >
+          신청 자격
+        </h3>
         <div class="content-section mb-10">
           <div class="content-row mb-4">
             <span class="title-cell">조건</span>
             <span class="content-cell">{{ policyDetail?.condition }}</span>
+          </div>
+          <div class="content-row mb-4">
+            <span class="title-cell">나이</span>
+            <span class="content-cell">{{ policyDetail?.minAge }} ~ {{ policyDetail?.maxAge }}</span>
+          </div>
+          <div class="content-row mb-4">
+            <span class="title-cell">직업</span>
+            <span class="content-cell">{{ policyDetail?.job }}</span>
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">자격</span>
@@ -174,29 +220,87 @@ const formatPolicySubject = (text) => {
         </div>
 
         <!-- 신청 방법 -->
-        <h3 id="application-method" class="section-title border-b-2 border-gray-300 pb-2 mb-4">신청 방법</h3>
+        <h3
+          id="application-method"
+          class="section-title border-b-2 border-gray-300 pb-2 mb-4"
+        >
+          신청 방법
+        </h3>
         <p class="py-3 px-4 mb-10">{{ policyDetail?.way }}</p>
 
         <!-- 제출 서류 -->
-        <h3 id="required-documents" class="section-title border-b-2 border-gray-300 pb-2 mb-4">제출 서류</h3>
+        <h3
+          id="required-documents"
+          class="section-title border-b-2 border-gray-300 pb-2 mb-4"
+        >
+          제출 서류
+        </h3>
         <ul class="list-disc pl-6 mb-10">
-          <li v-for="doc in policyDetail?.requiredDocuments" :key="doc">{{ doc }}</li>
+          <li v-for="doc in policyDetail?.requiredDocuments" :key="doc">
+            {{ doc }}
+          </li>
         </ul>
 
         <!-- 뒤로 가기 링크 -->
-        <router-link to="/" class="text-blue-500 mt-4 inline-block">뒤로 가기</router-link>
+        <router-link to="/" class="text-blue-500 mt-4 inline-block"
+          >뒤로 가기</router-link
+        >
       </div>
 
       <!-- 오른쪽 네비게이션 (모바일에서는 숨기기) -->
-      <div :class="['right-nav', { 'fixed': isFixed }]" :style="{ top: isFixed ? headerHeight + '500px' : 'auto' }">
+      <div
+        :class="['right-nav', { fixed: isFixed }]"
+        :style="{ top: isFixed ? headerHeight + '500px' : 'auto' }"
+      >
         <div class="aside border-l pl-4">
-          <p><a href="javascript:void(0)" @click="scrollToTop" :class="{'active-link': activeSection === 'top'}">이 페이지의 구성</a></p>
+          <p>
+            <a
+              href="javascript:void(0)"
+              @click="scrollToTop"
+              :class="{ 'active-link': activeSection === 'top' }"
+              >이 페이지의 구성</a
+            >
+          </p>
           <nav class="mt-4">
             <ul class="lnb space-y-2">
-              <li><a href="javascript:void(0)" @click="scrollToSection('business-overview')" :class="{'active-link': activeSection === 'business-overview'}">사업 개요</a></li>
-              <li><a href="javascript:void(0)" @click="scrollToSection('eligibility')" :class="{'active-link': activeSection === 'eligibility'}">신청 자격</a></li>
-              <li><a href="javascript:void(0)" @click="scrollToSection('application-method')" :class="{'active-link': activeSection === 'application-method'}">신청 방법</a></li>
-              <li><a href="javascript:void(0)" @click="scrollToSection('required-documents')" :class="{'active-link': activeSection === 'required-documents'}">제출 서류</a></li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  @click="scrollToSection('business-overview')"
+                  :class="{
+                    'active-link': activeSection === 'business-overview',
+                  }"
+                  >사업 개요</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  @click="scrollToSection('eligibility')"
+                  :class="{ 'active-link': activeSection === 'eligibility' }"
+                  >신청 자격</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  @click="scrollToSection('application-method')"
+                  :class="{
+                    'active-link': activeSection === 'application-method',
+                  }"
+                  >신청 방법</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  @click="scrollToSection('required-documents')"
+                  :class="{
+                    'active-link': activeSection === 'required-documents',
+                  }"
+                  >제출 서류</a
+                >
+              </li>
             </ul>
           </nav>
         </div>
@@ -266,7 +370,7 @@ const formatPolicySubject = (text) => {
 
 .right-nav a:hover,
 .right-nav a.active-link {
-  color: #0E429D;
+  color: #0e429d;
 }
 
 @media (max-width: 640px) {
