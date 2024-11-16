@@ -1,85 +1,3 @@
-<template>
-    <div class="chart-wrapper">
-    <div class="chart-container">
-      <div class="location-selector">
-        <div class="select-group">
-          <label>시/도</label>
-          <select 
-            v-model="selectedRegion" 
-            @change="onRegionChange" 
-            class="select-box" 
-            :disabled="loading"
-          >
-            <option value="">시/도 선택</option>
-            <option 
-              v-for="region in regions" 
-              :key="region" 
-              :value="region"
-            >
-              {{ region }}
-            </option>
-          </select>
-        </div>
-  
-        <div class="select-group">
-          <label>시/군/구</label>
-          <select 
-            v-model="selectedSgg" 
-            @change="onSggChange" 
-            class="select-box" 
-            :disabled="!selectedRegion || loading"
-          >
-            <option value="">시/군/구 선택</option>
-            <option 
-              v-for="sgg in sggList" 
-              :key="sgg" 
-              :value="sgg"
-            >
-              {{ sgg }}
-            </option>
-          </select>
-        </div>
-  
-        <div class="select-group">
-          <label>읍/면/동</label>
-          <select 
-            v-model="selectedUmd" 
-            @change="onUmdChange" 
-            class="select-box" 
-            :disabled="!selectedSgg || loading"
-          >
-            <option value="">읍/면/동 선택</option>
-            <option 
-              v-for="umd in umdList" 
-              :key="umd" 
-              :value="umd"
-            >
-              {{ umd }}
-            </option>
-          </select>
-        </div>
-      </div>
-  
-      <div class="location-info" v-if="selectedRegion && selectedSgg && selectedUmd">
-        <h2>{{ selectedRegion }} {{ selectedSgg }} {{ selectedUmd }} 부동산 현황</h2>
-      </div>
-  
-      <div v-if="!selectedRegion || !selectedSgg || !selectedUmd" class="guide-message">
-        지역을 선택해주세요.
-      </div>
-  
-      <canvas ref="chartCanvas" v-show="selectedRegion && selectedSgg && selectedUmd"></canvas>
-      
-      <div v-if="error" class="error-message">
-        {{ error }}
-      </div>
-      <div v-if="loading" class="loading-message">
-        데이터를 불러오는 중...
-      </div>
-    </div>
-</div>
-  </template>
-  
   <script setup>
   import { ref, onMounted } from "vue";
   import { getRegions, getSggList, getUmdList, getRealEstateSummary, handleApiError } from "@/util/axiosInstance";
@@ -282,131 +200,213 @@
     await initializeLocationData();
   });
   </script>
-  
-  <style scoped>
- .chart-wrapper {
+
+<template>
+  <div class="chart-wrapper">
+  <div class="chart-container">
+    <div class="location-selector">
+      <div class="select-group">
+        <label>시/도</label>
+        <select 
+          v-model="selectedRegion" 
+          @change="onRegionChange" 
+          class="select-box" 
+          :disabled="loading"
+        >
+          <option value="">시/도 선택</option>
+          <option 
+            v-for="region in regions" 
+            :key="region" 
+            :value="region"
+          >
+            {{ region }}
+          </option>
+        </select>
+      </div>
+
+      <div class="select-group">
+        <label>시/군/구</label>
+        <select 
+          v-model="selectedSgg" 
+          @change="onSggChange" 
+          class="select-box" 
+          :disabled="!selectedRegion || loading"
+        >
+          <option value="">시/군/구 선택</option>
+          <option 
+            v-for="sgg in sggList" 
+            :key="sgg" 
+            :value="sgg"
+          >
+            {{ sgg }}
+          </option>
+        </select>
+      </div>
+
+      <div class="select-group">
+        <label>읍/면/동</label>
+        <select 
+          v-model="selectedUmd" 
+          @change="onUmdChange" 
+          class="select-box" 
+          :disabled="!selectedSgg || loading"
+        >
+          <option value="">읍/면/동 선택</option>
+          <option 
+            v-for="umd in umdList" 
+            :key="umd" 
+            :value="umd"
+          >
+            {{ umd }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="location-info" v-if="selectedRegion && selectedSgg && selectedUmd">
+      <h2>{{ selectedRegion }} {{ selectedSgg }} {{ selectedUmd }} 부동산 현황</h2>
+    </div>
+
+    <div v-if="!selectedRegion || !selectedSgg || !selectedUmd" class="guide-message">
+      지역을 선택해주세요.
+    </div>
+
+    <canvas ref="chartCanvas" v-show="selectedRegion && selectedSgg && selectedUmd"></canvas>
+    
+    <div v-if="error" class="error-message">
+      {{ error }}
+    </div>
+    <div v-if="loading" class="loading-message">
+      데이터를 불러오는 중...
+    </div>
+  </div>
+</div>
+</template>
+
+<style scoped>
+.chart-wrapper {
   width: 100%;
-  margin-bottom: 4rem; /* Footer와의 간격 증가 */
+  margin-bottom: 4rem;
 }
 
 .chart-container {
   position: relative;
   width: 100%;
-  min-height: 600px; /* 최소 높이 설정 */
-  height: auto; /* 자동 높이 조정 */
+  min-height: 600px;
+  height: auto; 
   padding: 20px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-  
-  .location-selector {
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .select-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .select-group label {
-    font-size: 0.9rem;
-    color: #666;
-    font-weight: 500;
-  }
-  
-  .select-box {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    min-width: 150px;
-    background-color: white;
-    cursor: pointer;
-  }
-  
-  .select-box:disabled {
-    background-color: #f5f5f5;
-    cursor: not-allowed;
-  }
-  
-  .select-box:focus {
-    border-color: #4a90e2;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-  }
-  
-  .guide-message {
-    text-align: center;
-    padding: 2rem;
-    color: #666;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    margin: 2rem 0;
-  }
-  
-  .location-info {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .location-info h2 {
-    font-size: 1.5rem;
-    color: #333;
-    margin: 0;
-  }
-  
-  .error-message {
-    color: #dc3545;
-    text-align: center;
-    padding: 1rem;
-    background-color: #f8d7da;
-    border-radius: 4px;
-    margin-top: 1rem;
-  }
-  
-  .loading-message {
-    text-align: center;
-    padding: 1rem;
-    color: #666;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    margin-top: 1rem;
-  }
-
-  canvas {
-  width: 100% !important;
-  height: 400px !important; /* 고정 높이 설정 */
-  margin-top: 2rem;
-}
 
 .location-selector {
-  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.select-group label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.select-box {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  min-width: 150px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.select-box:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.select-box:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
 
 .guide-message {
-  min-height: 200px; /* 가이드 메시지 최소 높이 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin: 2rem 0;
+}
+
+.location-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.location-info h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  padding: 1rem;
+  background-color: #f8d7da;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 1rem;
+  color: #666;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+canvas {
+  width: 100% !important;
+  height: 400px !important;
+  margin-top: 2rem;
 }
 
 @media (max-width: 768px) {
-  .chart-wrapper {
-    margin-bottom: 2rem;
+  .location-selector {
+    flex-direction: column; 
+    align-items: center; 
+    gap: 1rem;
   }
 
-  .chart-container {
-    min-height: 500px;
-  }
-
-  canvas {
-    height: 300px !important;
+  .select-group {
+    width: 90%;
   }
 }
-  </style>
+
+@media (min-width: 769px) {
+  .location-selector {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .select-group {
+    width: auto;
+  }
+}
+</style>
