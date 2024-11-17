@@ -1,3 +1,133 @@
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import axiosInstance from '@/util/axiosInstance';
+
+const selectedTab = ref('loan');
+const financeData = ref({
+  content: [],
+  totalPages: 0,
+  last: true
+});
+const savingsData = ref({
+  content: [],
+  totalPages: 0,
+  last: true
+});
+const page = ref(0);
+const size = ref(10);
+const loading = ref(false);
+const visiblePageCount = 5; // 한 번에 표시할 페이지 수
+
+const filters = ref({
+  finPrdtNm: '',
+  mrtgTypeNm: '',
+  lendRateTypeNm: '',
+  intrRateNm: '',
+  prdCategory: '',
+  sortBy: 'lendRateMin',
+  direction: 'asc'
+});
+
+// 표시할 페이지 번호 계산
+const displayedPages = computed(() => {
+  const totalPages = selectedTab.value === 'loan' ? 
+    financeData.value.totalPages : 
+    savingsData.value.totalPages;
+  const current = page.value;
+  const half = Math.floor(visiblePageCount / 2);
+  
+  let start = current - half;
+  let end = current + half;
+  
+  // 시작 페이지가 0보다 작을 경우 조정
+  if (start < 0) {
+    start = 0;
+    end = Math.min(visiblePageCount - 1, totalPages - 1);
+  }
+  
+  // 끝 페이지가 총 페이지 수를 넘을 경우 조정
+  if (end >= totalPages) {
+    end = totalPages - 1;
+    start = Math.max(0, end - visiblePageCount + 1);
+  }
+  
+  // 페이지 배열 생성
+  const pages = [];
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  
+  return pages;
+});
+
+const selectTab = (tab) => {
+  selectedTab.value = tab;
+  filters.value = tab === 'loan' ? {
+    finPrdtNm: '',
+    mrtgTypeNm: '',
+    lendRateTypeNm: '',
+    sortBy: 'lendRateMin',
+    direction: 'asc'
+  } : {
+    intrRateNm: '',
+    prdCategory: '',
+    sortBy: 'intrRate',
+    direction: 'asc'
+  };
+  page.value = 0; // 탭 변경 시 첫 페이지로 이동
+  fetchData();
+};
+
+const prevPage = () => {
+  if (page.value > 0) {
+    page.value--;
+    fetchData();
+  }
+};
+
+const nextPage = () => {
+  const totalPages = selectedTab.value === 'loan' ? 
+    financeData.value.totalPages : 
+    savingsData.value.totalPages;
+  if (page.value < totalPages - 1) {
+    page.value++;
+    fetchData();
+  }
+};
+
+const goToPage = (newPage) => {
+  page.value = newPage;
+  fetchData();
+};
+
+const fetchData = async () => {
+  loading.value = true;
+  try {
+    const params = {
+      page: page.value,
+      size: size.value,
+      ...filters.value,
+    };
+    const url = selectedTab.value === 'loan' ? '/finance/loans' : '/finance/savings';
+    const response = await axiosInstance.get(url, { params });
+    if (response.data.success) {
+      if (selectedTab.value === 'loan') {
+        financeData.value = response.data.response.data;
+      } else {
+        savingsData.value = response.data.response.data;
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    financeData.value = savingsData.value = { content: [], totalPages: 0, last: true };
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(fetchData);
+</script>
+
 <template>
   <div>
     <!-- Tabs for Loan and Savings -->
@@ -20,7 +150,7 @@
       <div class="input-group">
         <label>검색조건</label>
         <div class="input-fields">
-          <input v-model="filters.finPrdtNm" placeholder="상품명" />
+          <!--/<input v-model="filters.finPrdtNm" placeholder="상품명" /> -->
           <input v-model="filters.mrtgTypeNm" placeholder="담보 유형" />
           <input v-model="filters.lendRateTypeNm" placeholder="Interest Rate Type" />
         </div>
@@ -138,117 +268,64 @@
     </div>
 
     <div class="flex justify-center mt-4 space-x-2">
-  <button 
-    class="pagination-button"
-    @click="prevPage" 
-    :disabled="page === 0">이전</button>
-  <button
-    v-for="p in selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages" 
-    :key="p" 
-    @click="goToPage(p - 1)"
-    :class="{'pagination-button': true, 'active': p - 1 === page}">
-    {{ p }}
-  </button>
-  <button 
-    class="pagination-button"
-    @click="nextPage" 
-    :disabled="selectedTab === 'loan' ? financeData.last : savingsData.last">다음</button>
-</div>
+    <button 
+      class="pagination-button"
+      @click="prevPage" 
+      :disabled="page === 0"
+    >
+      이전
+    </button>
+
+    <!-- 첫 페이지 버튼 -->
+    <button
+      v-if="displayedPages[0] > 0"
+      class="pagination-button"
+      @click="goToPage(0)"
+    >
+      1
+    </button>
+
+    <!-- 첫 페이지 이후 생략 부호 -->
+    <span v-if="displayedPages[0] > 1" class="px-2">...</span>
+
+    <!-- 페이지 번호 -->
+    <button
+      v-for="p in displayedPages"
+      :key="p"
+      @click="goToPage(p)"
+      :class="{'pagination-button': true, 'active': p === page}"
+    >
+      {{ p + 1 }}
+    </button>
+
+    <!-- 마지막 페이지 이전 생략 부호 -->
+    <span 
+      v-if="displayedPages[displayedPages.length - 1] < (selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages) - 2" 
+      class="px-2"
+    >
+      ...
+    </span>
+
+    <!-- 마지막 페이지 버튼 -->
+    <button
+      v-if="displayedPages[displayedPages.length - 1] < (selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages) - 1"
+      class="pagination-button"
+      @click="goToPage((selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages) - 1)"
+    >
+      {{ selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages }}
+    </button>
+
+    <button 
+      class="pagination-button"
+      @click="nextPage" 
+      :disabled="selectedTab === 'loan' ? financeData.last : savingsData.last"
+    >
+      다음
+    </button>
+  </div>
   </div>
 </template>
-<script setup>
-import { ref, onMounted } from 'vue';
-import axiosInstance from '@/util/axiosInstance';
 
-const selectedTab = ref('loan'); // Default tab is "loan"
-const financeData = ref({
-  content: [],
-  totalPages: 0,
-  last: true
-});
-const savingsData = ref({
-  content: [],
-  totalPages: 0,
-  last: true
-});
-const page = ref(0);
-const size = ref(10);
-const loading = ref(false);
-const filters = ref({
-  finPrdtNm: '',
-  mrtgTypeNm: '',
-  lendRateTypeNm: '',
-  intrRateNm: '', // 추가
-  prdCategory: '', // 추가
-  sortBy: 'lendRateMin',
-  direction: 'asc'
-});
-
-const selectTab = (tab) => {
-  selectedTab.value = tab;
-  // 탭 변경 시 필터 초기화
-  filters.value = tab === 'loan' ? {
-    finPrdtNm: '',
-    mrtgTypeNm: '',
-    lendRateTypeNm: '',
-    sortBy: 'lendRateMin',
-    direction: 'asc'
-  } : {
-    intrRateNm: '',
-    prdCategory: '',
-    sortBy: 'intrRate',
-    direction: 'asc'
-  };
-  fetchData();
-};
-const prevPage = () => {
-  if (page.value > 0) {
-    page.value--;
-    fetchData();
-  }
-};
-
-const nextPage = () => {
-  const totalPages = selectedTab.value === 'loan' ? 
-    financeData.value.totalPages : 
-    savingsData.value.totalPages;
-  if (page.value < totalPages - 1) {
-    page.value++;
-    fetchData();
-  }
-};
-
-const goToPage = (newPage) => {
-  page.value = newPage;
-  fetchData();
-};
-const fetchData = async () => {
-  loading.value = true;
-  try {
-    const params = {
-      page: page.value,
-      size: size.value,
-      ...filters.value,
-    };
-    const url = selectedTab.value === 'loan' ? '/finance/loans' : '/finance/savings';
-    const response = await axiosInstance.get(url, { params });
-    if (response.data.success) {
-      if (selectedTab.value === 'loan') {
-        financeData.value = response.data.response.data;
-      } else {
-        savingsData.value = response.data.response.data;
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    financeData.value = savingsData.value = { content: [], totalPages: 0, last: true };
-  } finally {
-    loading.value = false;
-  }
-};
-
-onMounted(fetchData);
-</script>
 <style>
 .tabs {
   display: flex;
