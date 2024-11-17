@@ -317,28 +317,14 @@ const formatPolicySubject = (text) => {
 </template>
 
 <style scoped>
-/* .contentsWrap {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.content-wrapper {
-  display: flex;
-  gap: 20px;
-} */
-
 .contentsWrap {
   max-width: 1200px;
   margin: 0 auto;
-  position: relative; /* Sticky와 Fixed 모두 잘 작동하도록 설정 */
 }
 
 .content-wrapper {
   display: flex;
   gap: 20px;
-  overflow: visible; /* Sticky 제한 제거 */
-  height: auto; /* 높이 제한 제거 */
-  position: relative; /* 부모 요소에서 위치 설정 */
 }
 
 .left {
