@@ -3,20 +3,27 @@ import axios from "axios";
 import axiosInstance from "@/util/axiosInstance";
 import { useAuthStore } from "@/stores/auth";
 
-export const useSubscriptionStore = defineStore("subscription",{
-    state:()=>({
-        subscription: [],
+export const useSubscriptionStore = defineStore('subscription', {
+  state: () => ({
+    subscription: {
+      content: [],
+      totalPages: 0,
+      last: false
+    },
         RecommedSubscriptionList: [],
-    }),
+  }),
 
-actions: {
-    async getSubscription() {
-        try{
-            const response = await axios.get("http://localhost:8080/subscription/getAll")
-            this.subscription = response.data.response.data;
-        } catch (error) {
-            console.log("Error fetching subscription data:", error);
-        }
+  actions: {
+    async getSubscription(page = 0, size = 10) {
+      try {
+        const response = await axiosInstance.get('/subscription/getAll', {
+          params: { page, size }
+        });
+        this.subscription = response.data.response.data;
+      } catch (error) {
+        console.error('Error fetching subscriptions:', error);
+        throw error;
+      }
     },
 
     async getRecommendSubscription() {
@@ -33,5 +40,5 @@ actions: {
           throw error;
         }
       },
-}
+  }
 });
