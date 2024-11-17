@@ -15,10 +15,14 @@ const selectedName = ref(null);
 
 const cities = ref(null);
 
-const fetchCity = async () => {
-  await myPageStore.getCity();
-  cities.value = myPageStore.cities;
-};
+const props = defineProps({
+  immediateApply: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["filterApplied"]);
 
 const policyTypes = [
   "일자리(창업)",
@@ -32,6 +36,11 @@ const policyTypes = [
   "주택공급",
   "참여",
 ];
+
+const fetchCity = async () => {
+  await myPageStore.getCity();
+  cities.value = myPageStore.cities;
+};
 
 const applyFilters = async () => {
   localStorage.setItem("selectedCity", selectedCity.value);
@@ -73,6 +82,15 @@ const applyFilters = async () => {
 
   const filterEvent = new CustomEvent("filters-applied");
   window.dispatchEvent(filterEvent);
+
+  emit("filterApplied", {
+    city: selectedCity.value,
+    district: district.value,
+    type: selectedPolicyType.value,
+    age: selectedAge.value,
+    job: selectedJob.value,
+    name: selectedName.value,
+  });
 };
 
 onMounted(() => {
@@ -85,14 +103,7 @@ onMounted(() => {
   selectedJob.value = localStorage.getItem("selectedJob") || null;
   selectedName.value = localStorage.getItem("selectedName") || "";
 
-  if (
-    selectedCity.value ||
-    district.value ||
-    selectedPolicyType.value ||
-    selectedAge.value ||
-    selectedJob.value ||
-    selectedName.value
-  ) {
+  if (props.immediateApply) {
     applyFilters();
   }
 });
