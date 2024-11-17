@@ -77,7 +77,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <FilterSection />
+  <div class="flex flex-col items-center w-full max-w-8xl">
+    <FilterSection immediateApply />
+  </div>
   <div class="mx-auto p-4 w-full max-w-8xl">
     <p class="text-2xl font-bold mb-4 text-[32px]">정책 정보</p>
     <div class="flex border-t-4 border-darkBlue py-4"></div>

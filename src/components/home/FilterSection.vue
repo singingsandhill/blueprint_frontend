@@ -1,8 +1,10 @@
 <script setup>
 import { usePolicyStore } from "@/stores/policy.js";
+import { useMyPageStore } from "@/stores/myPage";
 import { ref, onMounted } from "vue";
 
 const policyStore = usePolicyStore();
+const myPageStore = useMyPageStore();
 
 const selectedCity = ref(null);
 const district = ref(null);
@@ -11,25 +13,17 @@ const selectedAge = ref(null);
 const selectedJob = ref(null);
 const selectedName = ref(null);
 
-const cities = [
-  "서울",
-  "부산",
-  "대구",
-  "인천",
-  "광주",
-  "대전",
-  "울산",
-  "세종",
-  "경기",
-  "강원",
-  "충북",
-  "충남",
-  "전북",
-  "전남",
-  "경상북도",
-  "경남",
-  "제주",
-];
+const cities = ref(null);
+
+const props = defineProps({
+  immediateApply: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["filterApplied"]);
+
 const policyTypes = [
   "일자리(창업)",
   "일자리(취업)",
@@ -42,6 +36,11 @@ const policyTypes = [
   "주택공급",
   "참여",
 ];
+
+const fetchCity = async () => {
+  await myPageStore.getCity();
+  cities.value = myPageStore.cities;
+};
 
 const applyFilters = async () => {
   localStorage.setItem("selectedCity", selectedCity.value);
@@ -83,9 +82,20 @@ const applyFilters = async () => {
 
   const filterEvent = new CustomEvent("filters-applied");
   window.dispatchEvent(filterEvent);
+
+  emit("filterApplied", {
+    city: selectedCity.value,
+    district: district.value,
+    type: selectedPolicyType.value,
+    age: selectedAge.value,
+    job: selectedJob.value,
+    name: selectedName.value,
+  });
 };
 
 onMounted(() => {
+  fetchCity();
+
   selectedCity.value = localStorage.getItem("selectedCity") || null;
   district.value = localStorage.getItem("district") || "";
   selectedPolicyType.value = localStorage.getItem("selectedPolicyType") || null;
@@ -93,14 +103,7 @@ onMounted(() => {
   selectedJob.value = localStorage.getItem("selectedJob") || null;
   selectedName.value = localStorage.getItem("selectedName") || "";
 
-  if (
-    selectedCity.value ||
-    district.value ||
-    selectedPolicyType.value ||
-    selectedAge.value ||
-    selectedJob.value ||
-    selectedName.value
-  ) {
+  if (props.immediateApply) {
     applyFilters();
   }
 });
@@ -108,16 +111,16 @@ onMounted(() => {
 
 <template>
   <section
-    class="text-white p-4 rounded-lg mt-6 flex mx-auto flex-col items-center gap-4 md:gap-2 w-[90%] md:flex-row md:flex-wrap md:justify-center"
+    class="text-white p-4 rounded-lg mt-6 flex mx-auto flex-row items-center gap-2 justify-start overflow-x-auto whitespace-nowrap"
   >
     <div
-      class="flex items-center space-x-2 bg-[#002842] text-white px-4 py-3 rounded-lg md:rounded-l-lg w-full md:w-auto"
+      class="flex items-center space-x-2 bg-darkBlue text-white px-4 py-3 rounded-lg w-auto"
     >
-      <strong class="text-lg font-semibold">정책 검색</strong>
+      <strong class="text-base">정책 검색</strong>
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
     >
       <select
         v-model="selectedCity"
@@ -131,7 +134,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-auto"
     >
       <input
         v-model="district"
@@ -143,7 +146,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
     >
       <select
         v-model="selectedJob"
@@ -163,7 +166,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-auto"
     >
       <input
         v-model="selectedAge"
@@ -175,7 +178,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
     >
       <select
         v-model="selectedPolicyType"
@@ -189,7 +192,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
     >
       <input
         v-model="selectedName"
@@ -202,7 +205,7 @@ onMounted(() => {
 
     <button
       @click="applyFilters"
-      class="bg-darkBlue px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center"
+      class="bg-darkBlue px-4 py-3 rounded-lg w-full md:w-auto flex items-center justify-center"
     >
       <span class="ml-1">검색</span>
     </button>
