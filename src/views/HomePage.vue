@@ -21,7 +21,7 @@ const handleFilterChanged = (policies) => {
     <BannerSlider />
   </div>
   <div class="homepage container mx-auto p-4">
-    <FilterSection @filterChanged="handleFilterChanged" class="mb-20" />
+    <FilterSection @filterChanged="handleFilterChanged" class="w-[90%] mb-20" />
     <FilterResult
       v-if="searchExecuted"
       :filteredPolicies="filteredPolicies"

@@ -108,16 +108,16 @@ onMounted(() => {
 
 <template>
   <section
-    class="text-white p-4 rounded-lg mt-6 flex mx-auto flex-col items-center gap-4 md:gap-2 w-[90%] md:flex-row md:flex-wrap md:justify-center"
+    class="text-white p-4 rounded-lg mt-6 flex mx-auto flex-row items-center gap-2 justify-start overflow-x-auto whitespace-nowrap"
   >
     <div
-      class="flex items-center space-x-2 bg-[#002842] text-white px-4 py-3 rounded-lg md:rounded-l-lg w-full md:w-auto"
+      class="flex items-center space-x-2 bg-darkBlue text-white px-4 py-3 rounded-lg w-auto"
     >
-      <strong class="text-lg font-semibold">정책 검색</strong>
+      <strong class="text-base">정책 검색</strong>
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
     >
       <select
         v-model="selectedCity"
@@ -131,7 +131,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-auto"
     >
       <input
         v-model="district"
@@ -143,7 +143,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
     >
       <select
         v-model="selectedJob"
@@ -163,7 +163,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-auto"
     >
       <input
         v-model="selectedAge"
@@ -175,7 +175,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
     >
       <select
         v-model="selectedPolicyType"
@@ -189,7 +189,7 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
     >
       <input
         v-model="selectedName"
@@ -202,7 +202,7 @@ onMounted(() => {
 
     <button
       @click="applyFilters"
-      class="bg-darkBlue px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center"
+      class="bg-darkBlue px-4 py-3 rounded-lg w-full md:w-auto flex items-center justify-center"
     >
       <span class="ml-1">검색</span>
     </button>
