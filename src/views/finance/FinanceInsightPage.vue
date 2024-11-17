@@ -16,7 +16,19 @@ const savingsData = ref({
 const page = ref(0);
 const size = ref(10);
 const loading = ref(false);
-const visiblePageCount = 5; // 한 번에 표시할 페이지 수
+const visiblePageCount = 5;
+
+const mortgageTypes = [
+  { value: '', label: '전체' },
+  { value: '아파트', label: '아파트' },
+  { value: '아파트외', label: '아파트외' }
+];
+
+const interestTypes = [
+  { value: '', label: '전체' },
+  { value: '고정금리', label: '고정금리' },
+  { value: '변동금리', label: '변동금리' }
+];
 
 const filters = ref({
   finPrdtNm: '',
@@ -28,7 +40,6 @@ const filters = ref({
   direction: 'asc'
 });
 
-// 표시할 페이지 번호 계산
 const displayedPages = computed(() => {
   const totalPages = selectedTab.value === 'loan' ? 
     financeData.value.totalPages : 
@@ -39,19 +50,16 @@ const displayedPages = computed(() => {
   let start = current - half;
   let end = current + half;
   
-  // 시작 페이지가 0보다 작을 경우 조정
   if (start < 0) {
     start = 0;
     end = Math.min(visiblePageCount - 1, totalPages - 1);
   }
   
-  // 끝 페이지가 총 페이지 수를 넘을 경우 조정
   if (end >= totalPages) {
     end = totalPages - 1;
     start = Math.max(0, end - visiblePageCount + 1);
   }
   
-  // 페이지 배열 생성
   const pages = [];
   for (let i = start; i <= end; i++) {
     pages.push(i);
@@ -74,8 +82,38 @@ const selectTab = (tab) => {
     sortBy: 'intrRate',
     direction: 'asc'
   };
-  page.value = 0; // 탭 변경 시 첫 페이지로 이동
+  page.value = 0;
   fetchData();
+};
+
+const fetchData = async () => {
+  loading.value = true;
+  try {
+    const params = {
+      ...filters.value,
+      page: page.value,
+      size: size.value,
+    };
+    
+    if (params.mrtgTypeNm === '-') {
+      params.mrtgTypeNm = '';
+    }
+    
+    const url = selectedTab.value === 'loan' ? '/finance/loans' : '/finance/savings';
+    const response = await axiosInstance.get(url, { params });
+    if (response.data.success) {
+      if (selectedTab.value === 'loan') {
+        financeData.value = response.data.response.data;
+      } else {
+        savingsData.value = response.data.response.data;
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    financeData.value = savingsData.value = { content: [], totalPages: 0, last: true };
+  } finally {
+    loading.value = false;
+  }
 };
 
 const prevPage = () => {
@@ -100,360 +138,312 @@ const goToPage = (newPage) => {
   fetchData();
 };
 
-const fetchData = async () => {
-  loading.value = true;
-  try {
-    const params = {
-      page: page.value,
-      size: size.value,
-      ...filters.value,
-    };
-    const url = selectedTab.value === 'loan' ? '/finance/loans' : '/finance/savings';
-    const response = await axiosInstance.get(url, { params });
-    if (response.data.success) {
-      if (selectedTab.value === 'loan') {
-        financeData.value = response.data.response.data;
-      } else {
-        savingsData.value = response.data.response.data;
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    financeData.value = savingsData.value = { content: [], totalPages: 0, last: true };
-  } finally {
-    loading.value = false;
-  }
-};
-
 onMounted(fetchData);
 </script>
 
 <template>
-  <div>
-    <!-- Tabs for Loan and Savings -->
-    <div class="tabs">
-      <h2>금융 상품</h2>
+<div class="flex justify-center max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+  <!-- 전체를 감싸는 컨테이너 -->
+  <div class="flex flex-col md:flex-row items-start md:items-center gap-4 mb-6">
+    <div class="items-center space-x-2 bg-[#002842] text-white px-4 py-3 rounded-lg w-full md:w-auto whitespace-nowrap"> 검색 조건 </div>
+    <!-- Tabs -->
+    <div class="flex gap-2 whitespace-nowrap">
       <button 
-        :class="{ active: selectedTab === 'loan' }" 
-        @click="selectTab('loan')">대출</button>
+        :class="[
+          'px-4 py-3 rounded-lg text-sm font-medium',
+          selectedTab === 'loan' 
+            ? 'bg-white border  border-[#002842]' 
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        ]"
+        @click="selectTab('loan')"
+      >
+        대출
+      </button>
       <button 
-        :class="{ active: selectedTab === 'savings' }" 
-        @click="selectTab('savings')">저축</button>
+        :class="[
+          'px-4 py-3 rounded-lg text-sm font-medium',
+          selectedTab === 'savings' 
+            ? 'bg-white border  border-[#002842]' 
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        ]"
+        @click="selectTab('savings')"
+      >
+        저축
+      </button>
     </div>
 
-    
+    <!-- Filter Section -->
+    <div class="flex flex-wrap md:flex-nowrap items-center gap-2 w-full md:w-auto">
+      <!-- 대출 필터 -->
+      <template v-if="selectedTab === 'loan'">
+        <div class="items-center space-x-2 text-[#002842] px-4 py-3 rounded-lg w-full md:w-auto whitespace-nowrap"> 담보 유형 </div>
+        <select 
+          v-model="filters.mrtgTypeNm"
+          class="filter-select"
+        >
+          <option v-for="type in mortgageTypes" :key="type.value" :value="type.value">
+            {{ type.label }}
+          </option>
+        </select>
+        <div class="items-center space-x-2 text-[#002842] px-4 py-3 rounded-lg w-full md:w-auto whitespace-nowrap"> 금리 유형 </div>
+        <select 
+          v-model="filters.lendRateTypeNm"
+          class="filter-select"
+        >
+          <option v-for="type in interestTypes" :key="type.value" :value="type.value">
+            {{ type.label }}
+          </option>
+        </select>
+      </template>
 
-    <!-- Loan Table -->
-    <div v-if="selectedTab === 'loan'">
-      <!-- Filters -->
-    <div class="filters" v-if="selectedTab === 'loan'">
-      <div class="input-group">
-        <label>검색조건</label>
-        <div class="input-fields">
-          <!--/<input v-model="filters.finPrdtNm" placeholder="상품명" /> -->
-          <input v-model="filters.mrtgTypeNm" placeholder="담보 유형" />
-          <input v-model="filters.lendRateTypeNm" placeholder="Interest Rate Type" />
-        </div>
-      </div>
-
-      <div class="select-group">
-        <label>정렬:</label>
-        <select v-model="filters.sortBy">
-          <option value="lendRateMin">최소 이율</option>
-          <option value="lendRateMax">최대 이율</option>
-          <option value="lendRateAvg">평균 이율</option>
+      <!-- 저축 필터 -->
+      <template v-else>
+        <div class="items-center space-x-2 text-[#002842] px-4 py-3 rounded-lg w-full md:w-auto whitespace-nowrap"> 금리 유형 </div>
+        <select 
+          v-model="filters.intrRateNm"
+          class="filter-select"
+        >
+          <option value="">전체</option>
+          <option value="단리">단리</option>
+          <option value="복리">복리</option>
         </select>
 
-        <label>기준:</label>
-        <select v-model="filters.direction">
-          <option value="asc">오름차순</option>
-          <option value="desc">내림차순</option>
+        <div class="items-center space-x-2 text-[#002842] px-4 py-3 rounded-lg w-full md:w-auto whitespace-nowrap"> 상품 유형 </div>
+        <select 
+          v-model="filters.prdCategory"
+          class="filter-select"
+        >
+          <option value="">전체</option>
+          <option value="saving">예금</option>
+          <option value="deposit">적금</option>
         </select>
-        <button @click="fetchData">Apply Filters</button>
-      </div>
+      </template>
+
+      <!-- 검색 버튼 -->
+      <button 
+        @click="fetchData"
+        class="items-center space-x-2 bg-[#002842] text-white px-4 py-3 rounded-lg w-full md:w-auto whitespace-nowrap"
+      >
+        검색
+      </button>
     </div>
-      <div v-if="loading">Loading...</div>
-      <div v-else-if="financeData?.content?.length">
-        <table>
-          <thead>
+  </div>
+</div>
+    <div class="mx-auto p-4 w-full max-w-8xl">
+    <!-- 제목 -->
+    <h2 class="text-2xl font-bold mb-4 text-[32px]">금융 상품</h2>
+    <div class="flex border-t-4 border-darkBlue py-4"></div>
+    <!-- Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <!-- Loading State -->
+      <div v-if="loading" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+
+      <!-- Data Table -->
+      <div v-else class="overflow-x-auto">
+        <!-- Loan Table -->
+        <table v-if="selectedTab === 'loan'" class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
             <tr>
-              <th>금융사</th>
-              <th>상품명</th>
-              <th>가입방법</th>
-              <th>대출 한도</th>
-              <th>담보 유형</th>
-              <th>이자 유형</th>
-              <th>상환 유형</th>
-              <th>최소 이율</th>
-              <th>최대 이율</th>
-              <th>평균 이율</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">금융사</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">상품명</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">가입방법</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">대출 한도</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">담보 유형</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">이자 유형</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">상환 유형</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">최소 이율</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">최대 이율</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">평균 이율</th>
             </tr>
           </thead>
-          <tbody>
-            <tr v-for="item in financeData.content" :key="item.idx">
-              <td>{{ item.korCoNm }}</td>
-              <td>{{ item.finPrdtNm }}</td>
-              <td>{{ item.joinWay }}</td>
-              <td>{{ item.loanLmt }}</td>
-              <td>{{ item.mrtgTypeNm || '-' }}</td>
-              <td>{{ item.lendRateTypeNm }}</td>
-              <td>{{ item.rpayTypeNm }}</td>
-              <td>{{ item.lendRateMin }}%</td>
-              <td>{{ item.lendRateMax }}%</td>
-              <td>{{ item.lendRateAvg || '-' }}%</td>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="item in financeData.content" :key="item.idx" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.korCoNm }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.finPrdtNm }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.joinWay }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.loanLmt }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.mrtgTypeNm || '-' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.lendRateTypeNm }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.rpayTypeNm }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.lendRateMin }}%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.lendRateMax }}%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.lendRateAvg || '-' }}%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Savings Table -->
+        <table v-else class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">금융사</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">상품 유형</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">상품명</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">가입방법</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">저축 기간</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">이자 유형</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">최소 이율</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap ">최대 이율</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="item in savingsData.content" :key="item.idx" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.korCoNm }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.prdCategory === 'deposit' ? '적금' : item.prdCategory === 'saving' ? '예금' : item.prdCategory }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.finPrdtNm }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.joinWay }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.saveTrm }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.intrRateNm }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.intrRate }}%</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.intrRate2 }}%</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div v-else>No data available</div>
-    </div>
 
-    <!-- Savings Table -->
-    <div v-if="selectedTab === 'savings'">
-      <!-- Filters -->
-    <div class="filters" v-if="selectedTab === 'savings'">
-      <div class="input-group">
-        <label>검색조건</label>
-        <div class="input-fields">
-          <input v-model="filters.intrRateNm" placeholder="금리 유형" />
-          <input v-model="filters.prdCategory" placeholder="상품 유형" />
-        </div>
-      </div>
-
-      <div class="select-group">
-        <label>정렬:</label>
-        <select v-model="filters.sortBy">
-          <option value="intrRate">최소 이율</option>
-          <option value="intrRate2">최대 이율</option>
-        </select>
-
-        <label>기준:</label>
-        <select v-model="filters.direction">
-          <option value="asc">오름차순</option>
-          <option value="desc">내림차순</option>
-        </select>
-        <button @click="fetchData">Apply Filters</button>
+      <!-- Empty State -->
+      <div 
+        v-if="!loading && (!financeData.content.length && !savingsData.content.length)" 
+        class="text-center py-12 text-gray-500"
+      >
+        데이터가 없습니다
       </div>
     </div>
-      <div v-if="loading">Loading...</div>
-      <div v-else-if="savingsData?.content?.length">
-        <table>
-          <thead>
-            <tr>
-              <th>금융사</th>
-              <th>상품 유형</th>
-              <th>상품명</th>
-              <th>가입방법</th>
-              <th>저축 기간</th>
-              <th>이자 유형</th>
-              <th>최소 이율</th>
-              <th>최대 이율</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in savingsData.content" :key="item.idx">
-              <td>{{ item.korCoNm }}</td>
-              <td>{{ item.prdCategory }}</td>
-              <td>{{ item.finPrdtNm }}</td>
-              <td>{{ item.joinWay }}</td>
-              <td>{{ item.saveTrm }}</td>
-              <td>{{ item.intrRateNm }}</td>
-              <td>{{ item.intrRate }}%</td>
-              <td>{{ item.intrRate2 }}%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div v-else>No data available</div>
-    </div>
-
-    <div class="flex justify-center mt-4 space-x-2">
-    <button 
-      class="pagination-button"
-      @click="prevPage" 
-      :disabled="page === 0"
-    >
-      이전
-    </button>
-
-    <!-- 첫 페이지 버튼 -->
-    <button
-      v-if="displayedPages[0] > 0"
-      class="pagination-button"
-      @click="goToPage(0)"
-    >
-      1
-    </button>
-
-    <!-- 첫 페이지 이후 생략 부호 -->
-    <span v-if="displayedPages[0] > 1" class="px-2">...</span>
-
-    <!-- 페이지 번호 -->
-    <button
-      v-for="p in displayedPages"
-      :key="p"
-      @click="goToPage(p)"
-      :class="{'pagination-button': true, 'active': p === page}"
-    >
-      {{ p + 1 }}
-    </button>
-
-    <!-- 마지막 페이지 이전 생략 부호 -->
-    <span 
-      v-if="displayedPages[displayedPages.length - 1] < (selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages) - 2" 
-      class="px-2"
-    >
-      ...
-    </span>
-
-    <!-- 마지막 페이지 버튼 -->
-    <button
-      v-if="displayedPages[displayedPages.length - 1] < (selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages) - 1"
-      class="pagination-button"
-      @click="goToPage((selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages) - 1)"
-    >
-      {{ selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages }}
-    </button>
-
-    <button 
-      class="pagination-button"
-      @click="nextPage" 
-      :disabled="selectedTab === 'loan' ? financeData.last : savingsData.last"
-    >
-      다음
-    </button>
   </div>
-  </div>
+
+    <!-- 페이지네이션 -->
+<div class="flex justify-center mt-4 space-x-2">
+  <button 
+    class="pagination-button"
+    @click="prevPage" 
+    :disabled="page === 0"
+  >
+    이전
+  </button>
+
+  <!-- 첫 페이지 버튼 -->
+  <button
+    v-if="displayedPages[0] > 0"
+    class="pagination-button"
+    @click="goToPage(0)"
+  >
+    1
+  </button>
+
+  <!-- 첫 페이지 이후 생략 부호 -->
+  <span v-if="displayedPages[0] > 1" class="px-2">...</span>
+
+  <!-- 페이지 번호 -->
+  <button
+    v-for="p in displayedPages"
+    :key="p"
+    @click="goToPage(p)"
+    :class="{'pagination-button': true, 'active': p === page}"
+  >
+    {{ p + 1 }}
+  </button>
+
+  <!-- 마지막 페이지 이전 생략 부호 -->
+  <span 
+    v-if="displayedPages[displayedPages.length - 1] < (selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages) - 2" 
+    class="px-2"
+  >
+    ...
+  </span>
+
+  <!-- 마지막 페이지 버튼 -->
+  <button
+    v-if="displayedPages[displayedPages.length - 1] < (selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages) - 1"
+    class="pagination-button"
+    @click="goToPage((selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages) - 1)"
+  >
+    {{ selectedTab === 'loan' ? financeData.totalPages : savingsData.totalPages }}
+  </button>
+
+  <button 
+    class="pagination-button"
+    @click="nextPage" 
+    :disabled="selectedTab === 'loan' ? financeData.last : savingsData.last"
+  >
+    다음
+  </button>
+</div>
 </template>
 
-<style>
-.tabs {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+<style scoped>
+.loading-spinner {
+  @apply flex justify-center items-center py-12;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
+.loading-spinner::after {
+  content: '';
+  @apply w-12 h-12 border-4 border-blue-600 rounded-full border-t-transparent animate-spin;
 }
 
-.tabs button {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  background-color: #ddd;
-  cursor: pointer;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.tabs button.active {
-  background-color: #0d223d;
-  color: white;
-  font-weight: bold;
-}
-
-.filters {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #002842;
-  padding: 1rem;
-  border-radius: 8px;
-  gap: 5rem;
-}
-
-.input-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.input-fields {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.select-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.filters input,
-.filters select {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  width: 150px;
-}
-label {
-  color: white;
-  font-weight: bold;
-}
-
-button {
-  background-color: #0d223d;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-th {
-  white-space: nowrap;
-}
-.pagination {
-  margin-top: 1rem;
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-}
 .pagination-button {
   padding: 0.5rem 1rem;
   border: 1px solid #ddd;
-  background-color: white;
-  color: #1e3a8a; /* 텍스트 색상 */
   border-radius: 4px;
+  background-color: white;
   cursor: pointer;
-  font-weight: bold;
+  font-size: 14px;
+  color: #333;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 0.5rem;
-  text-align: left;
-}
-
-th {
+.pagination-button:hover {
   background-color: #f5f5f5;
-  white-space: nowrap;
 }
 
-input {
-  margin-right: 0.5rem;
-  padding: 0.25rem;
+.pagination-button:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  color: #999;
 }
 
-button {
-  padding: 0.25rem 0.5rem;
+.pagination-button.active {
+  background-color: #0d223d;
+  color: white;
+  border-color: #0d223d;
+}
+.filter-select {
+  min-width: 120px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
-h2{
-  font-size: 1.5rem;
+.filter-select:hover {
+  border-color: #999;
+}
+
+.filter-select:focus {
+  border-color: #666;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .filter-select {
+    width: 100%;
+  }
 }
 </style>
