@@ -24,6 +24,9 @@ export const usePolicyStore = defineStore("policy", {
       way: null,
       document: null,
       url: null,
+      minAge: null,
+      maxAge: null,
+      job: null,
     },
   }),
 
@@ -64,6 +67,9 @@ export const usePolicyStore = defineStore("policy", {
           way: policy.way,
           document: policy.document,
           url: policy.url,
+          minAge: policy.minAge,
+          maxAge: policy.maxAge,
+          job: policy.job,
         };
       } catch (error) {
         console.error("Failed to fetch Policy Detail: ", error);

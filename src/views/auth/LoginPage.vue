@@ -32,6 +32,13 @@ const login = async () => {
       localStorage.removeItem("selectedJob");
       localStorage.removeItem("selectedName");
       localStorage.removeItem("page");
+
+      localStorage.setItem("selectedCity", null);
+      localStorage.setItem("district", "");
+      localStorage.setItem("selectedPolicyType", null);
+      localStorage.setItem("selectedAge", "");
+      localStorage.setItem("selectedJob", null);
+      localStorage.setItem("selectedName", "");
       axiosInstance.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${auth.token}`;
