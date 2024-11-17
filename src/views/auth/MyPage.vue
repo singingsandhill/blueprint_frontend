@@ -3,6 +3,7 @@ import { useAuthStore } from "@/stores/auth";
 import { reactive, ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useMyPageStore } from "@/stores/myPage";
+import NotificationStatus from "@/components/notification/NotificationStatus.vue";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -205,6 +206,9 @@ onMounted(async () => {
 
 <template>
   <div class="max-w-3xl mx-auto mt-10 bg-white p-8 shadow-lg">
+    <div class="flex justify-end mb-4">
+    <NotificationStatus />
+  </div>
     <div>
       <h2 class="text-xl font-semibold mb-2">기본정보</h2>
       <p class="text-gray-600 text-sm mb-4">

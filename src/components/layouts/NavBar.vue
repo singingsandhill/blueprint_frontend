@@ -147,8 +147,12 @@ const handleLogout = () => {
           <strong>로그인을 해 주세요</strong>
         </router-link>
         <span v-else class="text-white mb-8">
-          <strong>{{ memberName }} 님</strong>
-        </span>
+  <router-link to="/member/mypage" class="text-white"
+  @click="toggleNavShow">
+    <strong>{{ memberName }} 님</strong>
+  </router-link>
+</span>
+
       </div>
 
       <!-- 모바일 메뉴 항목 리스트 -->

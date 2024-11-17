@@ -29,4 +29,9 @@ export default [
         name: "myService",
         component: () => import("../views/auth/MyService.vue"),
     },
+    {
+        path: "/notification/summary",
+        name: "notificationSummary",
+        component: () => import("../views/auth/NotificationSummary.vue"),
+    },
 ];
