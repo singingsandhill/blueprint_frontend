@@ -3,12 +3,24 @@ import axiosInstance from "@/util/axiosInstance";
 
 export const useNotificationStore = defineStore("notification", {
   state: () => ({
-    notificationStatus: false, // 전체 알림 On/Off 상태
-    userNotifications: [], // 사용자가 직접 설정한 알림
-    recommendedNotifications: [], // 추천된 알림
-    recommendedPolicies: [], // 실시간 추천 정책
+    notificationStatus: false, 
+    userNotifications: [], 
+    recommendedNotifications: [], 
+    unreadNotificationsCount: 0, 
   }),
   actions: {
+    async fetchNotificationStatus() {
+      try {
+        const response = await axiosInstance.get(`/member/notification/status`);
+        console.log("알림 상태 가져오기 성공:", response.data.response.data.notificationEnabled);
+        this.notificationStatus = response.data.response.data.notificationEnabled;
+        return response.data.response.data; 
+      } catch (error) {
+        console.error("알림 상태 가져오는 중 오류 발생:", error.response?.data || error.message);
+        throw error;
+      }
+    },
+
     // 알림 On/Off 상태 업데이트
     async toggleNotificationStatus(enabled) {
       try {
@@ -17,6 +29,9 @@ export const useNotificationStore = defineStore("notification", {
         });
         console.log("알림 상태 업데이트 성공:", response.data);
         this.notificationStatus = enabled;
+
+        // 상태 변경 후 대시보드 데이터 갱신
+        await this.fetchNotificationDashboard();
       } catch (error) {
         console.error("알림 상태 업데이트 중 오류 발생:", error.response?.data || error.message);
       }
@@ -38,9 +53,9 @@ export const useNotificationStore = defineStore("notification", {
       try {
         const response = await axiosInstance.get(`/member/notification/list/recommended`);
         this.recommendedNotifications = response.data.response.data;
-        console.log("추천 알림 목록 가져오기 성공:", this.recommendedNotifications);
+        console.log("추천된 알림 목록 가져오기 성공:", this.recommendedNotifications);
       } catch (error) {
-        console.error("추천 알림 목록 가져오는 중 오류 발생:", error.response?.data || error.message);
+        console.error("추천된 알림 목록 가져오는 중 오류 발생:", error.response?.data || error.message);
       }
     },
 
@@ -48,17 +63,19 @@ export const useNotificationStore = defineStore("notification", {
     async fetchNotificationDashboard() {
       try {
         const response = await axiosInstance.get(`/member/notification/dashboard`);
-        const { memberNotifications, recommendedNotifications, recommendedPolicies } =
-          response.data.response.data;
+        const { memberNotifications, recommendedNotifications } = response.data.response.data;
 
         this.userNotifications = memberNotifications;
         this.recommendedNotifications = recommendedNotifications;
-        this.recommendedPolicies = recommendedPolicies;
+
+        // 읽지 않은 알림 개수 계산
+        const allNotifications = [...memberNotifications, ...recommendedNotifications];
+        this.unreadNotificationsCount = allNotifications.filter((n) => !n.isRead).length;
 
         console.log("대시보드 데이터 가져오기 성공:", {
           userNotifications: this.userNotifications,
           recommendedNotifications: this.recommendedNotifications,
-          recommendedPolicies: this.recommendedPolicies,
+          unreadNotificationsCount: this.unreadNotificationsCount,
         });
       } catch (error) {
         console.error("대시보드 데이터 가져오는 중 오류 발생:", error.response?.data || error.message);
@@ -70,25 +87,39 @@ export const useNotificationStore = defineStore("notification", {
       try {
         const response = await axiosInstance.delete(`/member/notification/${policyIdx}`);
         console.log("알림 삭제 성공:", response.data);
-        // 삭제 후 사용자 알림 목록 갱신
-        this.fetchUserNotifications();
+
+        // 삭제 후 대시보드 데이터 갱신
+        await this.fetchNotificationDashboard();
       } catch (error) {
         console.error("알림 삭제 중 오류 발생:", error.response?.data || error.message);
       }
     },
 
     // 사용자 알림 추가 및 업데이트
-    async updateNotification(policyIdx, notificationEnabled, applyEndDate) {
+    async updateNotification(policyIdx, notificationEnabled) {
       try {
         const response = await axiosInstance.put(`/member/notification/${policyIdx}`, {
           notificationEnabled,
-          applyEndDate,
         });
         console.log("알림 추가/수정 성공:", response.data);
-        // 추가/수정 후 사용자 알림 목록 갱신
-        this.fetchUserNotifications();
+
+        // 추가/수정 후 대시보드 데이터 갱신
+        await this.fetchNotificationDashboard();
       } catch (error) {
         console.error("알림 추가/수정 중 오류 발생:", error.response?.data || error.message);
+      }
+    },
+
+    // 특정 알림 읽음 처리
+    async markNotificationAsRead(policyIdx) {
+      try {
+        const response = await axiosInstance.put(`/member/notification/read/${policyIdx}`);
+        console.log("알림 읽음 처리 성공:", response.data);
+
+        // 읽음 처리 후 대시보드 데이터 갱신
+        await this.fetchNotificationDashboard();
+      } catch (error) {
+        console.error("알림 읽음 처리 중 오류 발생:", error.response?.data || error.message);
       }
     },
   },
