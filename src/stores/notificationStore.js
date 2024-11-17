@@ -7,14 +7,16 @@ export const useNotificationStore = defineStore("notification", {
     userNotifications: [], 
     recommendedNotifications: [], 
     unreadNotificationsCount: 0, 
+    pushNotifications: [],
   }),
   actions: {
+    // 알림 상태 가져오기
     async fetchNotificationStatus() {
       try {
         const response = await axiosInstance.get(`/member/notification/status`);
         console.log("알림 상태 가져오기 성공:", response.data.response.data.notificationEnabled);
         this.notificationStatus = response.data.response.data.notificationEnabled;
-        return response.data.response.data; 
+        return response.data.response.data;
       } catch (error) {
         console.error("알림 상태 가져오는 중 오류 발생:", error.response?.data || error.message);
         throw error;
@@ -79,6 +81,17 @@ export const useNotificationStore = defineStore("notification", {
         });
       } catch (error) {
         console.error("대시보드 데이터 가져오는 중 오류 발생:", error.response?.data || error.message);
+      }
+    },
+
+    // Push 알림 가져오기
+    async fetchPushNotifications() {
+      try {
+        const response = await axiosInstance.get(`/member/notification/push`);
+        this.pushNotifications = response.data.response.data;
+        console.log("Push 알림 가져오기 성공:", this.pushNotifications);
+      } catch (error) {
+        console.error("Push 알림 가져오는 중 오류 발생:", error.response?.data || error.message);
       }
     },
 

@@ -2,27 +2,30 @@
 import { ref, onMounted, computed } from "vue";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { useAuthStore } from "@/stores/auth";
-import NotificationModal from "@/components/notification/NotificationModal.vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 
 const notificationStore = useNotificationStore();
 const authStore = useAuthStore();
-const route = useRoute();
 const router = useRouter();
 
-const notificationStatus = ref(false); // 알림 설정 상태
+const notificationStatus = ref(false); 
 const isModalOpen = ref(false);
-const notifications = ref([]);
+const notifications = ref([]); 
+const isLoading = ref(false); 
 
-// 읽지 않은 알림 상태 확인
 const unreadCount = computed(() =>
   notifications.value.filter((notification) => !notification.isRead).length
 );
 
+const recentNotifications = computed(() =>
+  [...notifications.value].reverse().slice(0, 10)
+);
+
+// 초기 알림 상태 가져오기
 const fetchInitialNotificationStatus = async () => {
   try {
     const response = await notificationStore.fetchNotificationStatus();
-    notificationStatus.value = response.notificationEnabled; 
+    notificationStatus.value = response.notificationEnabled;
     console.log("초기 알림 상태 가져오기 성공:", notificationStatus.value);
   } catch (error) {
     console.error(
@@ -35,7 +38,6 @@ const fetchInitialNotificationStatus = async () => {
 // 알림 상태 변경 처리
 const handleToggleChange = async () => {
   try {
-    // 상태 변경 API 호출
     await notificationStore.toggleNotificationStatus(notificationStatus.value);
     console.log("알림 상태 변경 성공:", notificationStatus.value);
   } catch (error) {
@@ -43,8 +45,11 @@ const handleToggleChange = async () => {
   }
 };
 
-// 모달 열기 및 알림 목록 불러오기
+// 알림 모달 열기
 const openNotificationModal = async () => {
+
+  if (isModalOpen.value) return;
+
   if (!authStore.isLoggedIn || !authStore.token) {
     console.error("로그인 상태가 유효하지 않습니다. 로그인을 다시 시도하세요.");
     router.push({ name: "login" });
@@ -54,26 +59,41 @@ const openNotificationModal = async () => {
   isModalOpen.value = true;
 
   try {
-    // 대시보드 데이터 가져오기
-    await notificationStore.fetchNotificationDashboard();
-    notifications.value = [
-      ...notificationStore.userNotifications,
-      ...notificationStore.recommendedNotifications,
-    ];
+    isLoading.value = true;
+    await notificationStore.fetchPushNotifications();
+    notifications.value = notificationStore.pushNotifications;
+    console.log("알림 목록 불러오기 성공:", notifications.value);
   } catch (error) {
-    console.error("알림 대시보드 로드 중 오류:", error);
+    console.error("알림 목록 로드 중 오류:", error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
 // 모달 닫기
 const closeModal = () => {
   isModalOpen.value = false;
+  notifications.value = [];
 };
 
-// 컴포넌트 로드 시 초기 알림 상태 가져오기
+// 알림 읽음 처리 및 상세 페이지로 이동
+const markAsReadAndNavigate = async (policyIdx, routePath) => {
+  try {
+    await notificationStore.markNotificationAsRead(policyIdx);
+    router.push(routePath);
+  } catch (error) {
+    console.error("알림 읽음 처리 중 오류:", error);
+  }
+};
+
+// 알림 모아보기 페이지로 이동
+const goToNotificationSummary = () => {
+  router.push("/notification/summary");
+};
+
 onMounted(() => {
   if (authStore.isLoggedIn && authStore.token) {
-    fetchInitialNotificationStatus(); // 초기 상태 가져오기
+    fetchInitialNotificationStatus();
   } else {
     console.error("로그인 상태가 유효하지 않습니다. 로그인을 다시 시도하세요.");
     router.push({ name: "login" });
@@ -109,7 +129,10 @@ onMounted(() => {
     </label>
 
     <!-- 알림 아이콘 -->
-    <div class="notification-icon relative cursor-pointer" @click="openNotificationModal">
+    <div
+      class="notification-icon relative cursor-pointer"
+      @click="openNotificationModal"
+    >
       <span class="icon">🔔</span>
       <span
         v-if="unreadCount > 0"
@@ -119,12 +142,47 @@ onMounted(() => {
       </span>
     </div>
 
-    <!-- 알림 목록 모달 -->
-    <NotificationModal
-      v-if="isModalOpen"
-      @close="closeModal"
-      :notifications="notifications"
-    />
+    <!-- 모달 -->
+    <div v-if="isModalOpen" class="modal">
+      <div class="modal-content">
+        <h2>Push 알림</h2>
+
+        <!-- 로딩 상태 -->
+        <p v-if="isLoading" class="text-center text-gray-500">로딩 중...</p>
+
+        <!-- 알림 목록 -->
+        <ul v-else-if="recentNotifications.length > 0">
+          <li
+            v-for="(notification, index) in recentNotifications"
+            :key="index"
+            class="mb-4 border-b pb-4"
+          >
+            <div
+              class="cursor-pointer"
+              @click="markAsReadAndNavigate(notification.policyIdx, `/policy/detail/${notification.policyIdx}`)"
+            >
+              <p>{{ notification.message }}</p>
+              <small class="text-gray-500">{{ notification.applyEndDate || "날짜 정보 없음" }}</small>
+            </div>
+          </li>
+        </ul>
+
+        <p v-else class="text-center text-gray-500">표시할 Push 알림이 없습니다.</p>
+
+        <!-- 버튼 -->
+        <div class="flex justify-end mt-4">
+          <button
+            @click="goToNotificationSummary"
+            class="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+          >
+            알림 모아보기
+          </button>
+          <button @click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded">
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -155,5 +213,40 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background-color: #0056b3;
 }
 </style>
