@@ -119,7 +119,6 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
-      <i class="fas fa-map-marker-alt text-gray-500"></i>
       <select
         v-model="selectedCity"
         class="bg-transparent w-full focus:outline-none"
@@ -134,7 +133,6 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
-      <i class="fa-solid fa-location-arrow text-gray-500"></i>
       <input
         v-model="district"
         id="district"
@@ -147,7 +145,6 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
-      <i class="fas fa-briefcase text-gray-500"></i>
       <select
         v-model="selectedJob"
         class="bg-transparent w-full focus:outline-none"
@@ -168,7 +165,6 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
-      <i class="fas fa-user text-gray-500"></i>
       <input
         v-model="selectedAge"
         id="selectedAge"
@@ -181,7 +177,6 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
-      <i class="fa-solid fa-check text-gray-500"></i>
       <select
         v-model="selectedPolicyType"
         class="bg-transparent w-full focus:outline-none"
@@ -196,7 +191,6 @@ onMounted(() => {
     <div
       class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
     >
-      <i class="fas fa-search"></i>
       <input
         v-model="selectedName"
         id="selectedName"
@@ -210,7 +204,6 @@ onMounted(() => {
       @click="applyFilters"
       class="bg-darkBlue px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center"
     >
-      <i class="fas fa-search"></i>
       <span class="ml-1">검색</span>
     </button>
   </section>
