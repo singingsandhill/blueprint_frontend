@@ -1,29 +1,36 @@
 <script setup>
+import FilterSection from "@/components/home/FilterSection.vue";
 import { usePolicyStore } from "@/stores/policy.js";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 
 const policyStore = usePolicyStore();
 const policyList = ref([]);
 
-const selectedCity = ref(null);
-const district = ref(null);
-const selectedPolicyType = ref(null);
-const selectedAge = ref(null);
-const selectedJob = ref(null);
-const selectedName = ref(null);
-
-const pageGroup = ref(0);
 const currentPage = ref(1);
 const itemsPerPage = 10;
+const pageGroupSize = 5;
 
 const totalPages = computed(() =>
   Math.ceil(policyList.value.length / itemsPerPage)
 );
 
+const paginatedPolicies = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return policyList.value.slice(start, end);
+});
+
+const currentGroup = computed(() =>
+  Math.ceil(currentPage.value / pageGroupSize)
+);
+
 const visiblePages = computed(() => {
-  const start = pageGroup.value * 5 + 1;
-  const end = Math.min(start + 4, totalPages.value);
-  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  const startPage = (currentGroup.value - 1) * pageGroupSize + 1;
+  const endPage = Math.min(startPage + pageGroupSize - 1, totalPages.value);
+  return Array.from(
+    { length: endPage - startPage + 1 },
+    (_, i) => startPage + i
+  );
 });
 
 const changePage = (page) => {
@@ -33,96 +40,16 @@ const changePage = (page) => {
   }
 };
 
-const nextPageGroup = () => {
-  if (pageGroup.value < Math.floor(totalPages.value / 5)) {
-    pageGroup.value++;
-    currentPage.value = pageGroup.value * 5 + 1;
-  }
-};
-
 const previousPageGroup = () => {
-  if (pageGroup.value > 0) {
-    pageGroup.value--;
-    currentPage.value = pageGroup.value * 5 + 1;
+  if (currentGroup.value > 1) {
+    currentPage.value = (currentGroup.value - 1) * pageGroupSize;
   }
 };
 
-const paginatedPolicies = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return policyList.value.slice(start, end);
-});
-
-const cities = [
-  "서울",
-  "부산",
-  "대구",
-  "인천",
-  "광주",
-  "대전",
-  "울산",
-  "세종",
-  "경기",
-  "강원",
-  "충북",
-  "충남",
-  "전북",
-  "전남",
-  "경상북도",
-  "경남",
-  "제주",
-];
-const policyTypes = [
-  "일자리(창업)",
-  "일자리(취업)",
-  "건강",
-  "교육",
-  "금융",
-  "문화",
-  "복지",
-  "주거비 지원",
-  "주택공급",
-  "참여",
-];
-
-const applyFilters = async () => {
-  localStorage.setItem("selectedCity", selectedCity.value);
-  localStorage.setItem("district", district.value);
-  localStorage.setItem("selectedPolicyType", selectedPolicyType.value);
-  localStorage.setItem("selectedAge", selectedAge.value);
-  localStorage.setItem("selectedJob", selectedJob.value);
-  localStorage.setItem("selectedName", selectedName.value);
-
-  policyStore.filterCondition.city =
-    selectedCity.value === "전체" || selectedCity.value === "null"
-      ? null
-      : selectedCity.value;
-
-  policyStore.filterCondition.district =
-    district.value === "" || district.value === "null" ? null : district.value;
-
-  policyStore.filterCondition.type =
-    selectedPolicyType.value === "전체" || selectedPolicyType.value === "null"
-      ? null
-      : selectedPolicyType.value;
-
-  policyStore.filterCondition.age =
-    selectedAge.value === "" || selectedAge.value === "null"
-      ? null
-      : selectedAge.value;
-
-  policyStore.filterCondition.job =
-    selectedJob.value === "전체" || selectedJob.value === "null"
-      ? null
-      : selectedJob.value;
-
-  policyStore.filterCondition.name =
-    selectedName.value === "" || selectedName.value === "null"
-      ? null
-      : selectedName.value;
-
-  await policyStore.getPolicyFilter();
-  policyList.value = policyStore.PolicyInfoList;
+const nextPageGroup = () => {
+  if (currentGroup.value * pageGroupSize < totalPages.value) {
+    currentPage.value = currentGroup.value * pageGroupSize + 1;
+  }
 };
 
 const formatDate = (dateString) => {
@@ -131,155 +58,26 @@ const formatDate = (dateString) => {
   return date.toISOString().split("T")[0];
 };
 
+const updatePolicyList = () => {
+  policyList.value = policyStore.PolicyInfoList || [];
+};
+
 onMounted(() => {
-  selectedCity.value = localStorage.getItem("selectedCity") || null;
-  district.value = localStorage.getItem("district") || "";
-  selectedPolicyType.value = localStorage.getItem("selectedPolicyType") || null;
-  selectedAge.value = localStorage.getItem("selectedAge") || "";
-  selectedJob.value = localStorage.getItem("selectedJob") || null;
-  selectedName.value = localStorage.getItem("selectedName") || "";
+  window.addEventListener("filters-applied", updatePolicyList);
 
   const savedPage = localStorage.getItem("page");
   if (savedPage) {
     currentPage.value = parseInt(savedPage, 10);
-    pageGroup.value = Math.floor((currentPage.value - 1) / 5);
-  } else {
-    currentPage.value = 1;
-    pageGroup.value = 0;
-  }
-
-  if (
-    selectedCity.value ||
-    district.value ||
-    selectedPolicyType.value ||
-    selectedAge.value ||
-    selectedJob.value ||
-    selectedName.value
-  ) {
-    applyFilters();
   }
 });
 
-const updateFilters = (filters) => {
-  selectedCity.value = filters.selectedCity;
-  district.value = filters.district;
-  selectedPolicyType.value = filters.selectedPolicyType;
-  selectedAge.value = filters.selectedAge;
-  selectedJob.value = filters.selectedJob;
-  selectedName.value = filters.selectedName;
-};
+onBeforeUnmount(() => {
+  window.removeEventListener("filters-applied", updatePolicyList);
+});
 </script>
 
 <template>
-  <section
-    class="bg-gray-800 text-white p-4 rounded-lg mt-6 flex mx-auto flex-col items-center gap-4 md:gap-2 shadow-md w-[90%] md:flex-row md:flex-wrap md:justify-center max-w-8xl w-full"
-  >
-    <div
-      class="flex items-center space-x-2 bg-darkBlue text-white px-3 py-2 rounded-lg md:rounded-l-lg w-full md:w-auto"
-    >
-      <i class="fas fa-users"></i>
-      <strong class="text-lg font-semibold">정책 검색</strong>
-    </div>
-
-    <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
-    >
-      <i class="fas fa-map-marker-alt text-gray-500"></i>
-      <select
-        v-model="selectedCity"
-        class="bg-transparent w-full focus:outline-none"
-      >
-        <option value="null">전체</option>
-        <option v-for="city in cities" :key="city" :value="city">
-          {{ city }}
-        </option>
-      </select>
-    </div>
-
-    <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
-    >
-      <i class="fa-solid fa-location-arrow text-gray-500"></i>
-      <input
-        v-model="district"
-        id="district"
-        type="text"
-        placeholder="지역구를 입력해 주세요."
-        class="bg-transparent w-full focus:outline-none"
-      />
-    </div>
-
-    <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
-    >
-      <i class="fas fa-briefcase text-gray-500"></i>
-      <select
-        v-model="selectedJob"
-        class="bg-transparent w-full focus:outline-none"
-      >
-        <option value="null">전체</option>
-        <option value="학생">학생</option>
-        <option value="무직">무직</option>
-        <option value="직장인">직장인</option>
-        <option value="자영업">자영업</option>
-        <option value="프리랜서">프리랜서</option>
-        <option value="(예비)창업자">(예비)창업자</option>
-        <option value="일용근로자">일용근로자</option>
-        <option value="단기근로자">단기근로자</option>
-        <option value="영농종사자">영농종사자</option>
-      </select>
-    </div>
-
-    <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
-    >
-      <i class="fas fa-user text-gray-500"></i>
-      <input
-        v-model="selectedAge"
-        id="selectedAge"
-        type="text"
-        placeholder="나이를 입력해 주세요."
-        class="bg-transparent w-full focus:outline-none"
-      />
-    </div>
-
-    <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
-    >
-      <i class="fa-solid fa-check text-gray-500"></i>
-      <select
-        v-model="selectedPolicyType"
-        class="bg-transparent w-full focus:outline-none"
-      >
-        <option value="null">전체</option>
-        <option v-for="type in policyTypes" :key="type" :value="type">
-          {{ type }}
-        </option>
-      </select>
-    </div>
-
-    <div
-      class="flex items-center space-x-2 bg-white text-black p-2 border border-gray-300 rounded-md w-full md:w-auto"
-    >
-      <i class="fas fa-search"></i>
-      <input
-        v-model="selectedName"
-        id="selectedName"
-        type="text"
-        placeholder="정책명을 입력해 주세요."
-        class="bg-transparent w-full focus:outline-none"
-      />
-    </div>
-
-    <button
-      @click="applyFilters"
-      class="bg-darkBlue px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center"
-    >
-      <i class="fas fa-search"></i>
-      <span class="ml-1">검색</span>
-    </button>
-  </section>
-
+  <FilterSection />
   <div class="mx-auto p-4 w-full max-w-8xl">
     <p class="text-2xl font-bold mb-4 text-[32px]">정책 정보</p>
     <div class="flex border-t-4 border-darkBlue py-4"></div>
@@ -324,30 +122,28 @@ const updateFilters = (filters) => {
     <div class="flex justify-center mt-4 space-x-2">
       <button
         class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
+        :disabled="currentGroup.value === 1"
         @click="previousPageGroup"
-        :disabled="pageGroup === 0"
       >
         이전
       </button>
-
       <button
         v-for="page in visiblePages"
         :key="page"
-        @click="changePage(page)"
         :class="[
           'px-4 py-2 rounded-md',
           page === currentPage
             ? 'bg-darkBlue text-white'
             : 'border border-gray-300 text-darkBlue',
         ]"
+        @click="changePage(page)"
       >
         {{ page }}
       </button>
-
       <button
         class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
+        :disabled="currentGroup.value * pageGroupSize >= totalPages.value"
         @click="nextPageGroup"
-        :disabled="pageGroup >= Math.floor(totalPages.value / 5)"
       >
         다음
       </button>

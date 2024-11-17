@@ -2,12 +2,31 @@
 import { RouterLink, RouterView } from "vue-router";
 import DefaultLayout from "./components/layouts/DefaultLayout.vue";
 
-import { onMounted } from 'vue';
-import { useAuthStore } from '@/stores/auth';
+import { onMounted } from "vue";
+import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
 
+function initializeLocalStorage() {
+  const defaults = {
+    selectedCity: null,
+    district: "",
+    selectedPolicyType: null,
+    selectedAge: "",
+    selectedJob: null,
+    selectedName: "",
+    page: 1,
+  };
+
+  Object.entries(defaults).forEach(([key, value]) => {
+    if (localStorage.getItem(key) === null) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+  });
+}
+
 onMounted(() => {
+  initializeLocalStorage();
   authStore.initializeMemberFromToken();
 });
 </script>
@@ -19,7 +38,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 @media (min-width: 1024px) {
   header {
     display: flex;

@@ -207,7 +207,9 @@ const formatPolicySubject = (text) => {
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">나이</span>
-            <span class="content-cell">{{ policyDetail?.minAge }} ~ {{ policyDetail?.maxAge }}</span>
+            <span class="content-cell"
+              >{{ policyDetail?.minAge }} ~ {{ policyDetail?.maxAge }}</span
+            >
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">직업</span>
@@ -242,7 +244,7 @@ const formatPolicySubject = (text) => {
         </ul>
 
         <!-- 뒤로 가기 링크 -->
-        <router-link to="/" class="text-blue-500 mt-4 inline-block"
+        <router-link to="/policy" class="text-blue-500 mt-4 inline-block"
           >뒤로 가기</router-link
         >
       </div>
@@ -326,7 +328,7 @@ const formatPolicySubject = (text) => {
 }
 
 .right-nav {
-  position: sticky;
+  position: absolute;
   top: 0;
   right: 0;
   width: 20%;
@@ -335,10 +337,6 @@ const formatPolicySubject = (text) => {
   padding-top: 20px;
   max-height: calc(100vh - 80px);
   overflow-y: auto;
-}
-
-.right-nav.fixed {
-  position: fixed;
 }
 
 .section-title {
