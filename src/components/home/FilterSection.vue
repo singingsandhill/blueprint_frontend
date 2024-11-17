@@ -1,8 +1,10 @@
 <script setup>
 import { usePolicyStore } from "@/stores/policy.js";
+import { useMyPageStore } from "@/stores/myPage";
 import { ref, onMounted } from "vue";
 
 const policyStore = usePolicyStore();
+const myPageStore = useMyPageStore();
 
 const selectedCity = ref(null);
 const district = ref(null);
@@ -11,25 +13,13 @@ const selectedAge = ref(null);
 const selectedJob = ref(null);
 const selectedName = ref(null);
 
-const cities = [
-  "서울",
-  "부산",
-  "대구",
-  "인천",
-  "광주",
-  "대전",
-  "울산",
-  "세종",
-  "경기",
-  "강원",
-  "충북",
-  "충남",
-  "전북",
-  "전남",
-  "경상북도",
-  "경남",
-  "제주",
-];
+const cities = ref(null);
+
+const fetchCity = async () => {
+  await myPageStore.getCity();
+  cities.value = myPageStore.cities;
+};
+
 const policyTypes = [
   "일자리(창업)",
   "일자리(취업)",
@@ -86,6 +76,8 @@ const applyFilters = async () => {
 };
 
 onMounted(() => {
+  fetchCity();
+
   selectedCity.value = localStorage.getItem("selectedCity") || null;
   district.value = localStorage.getItem("district") || "";
   selectedPolicyType.value = localStorage.getItem("selectedPolicyType") || null;
