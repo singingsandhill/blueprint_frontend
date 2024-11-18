@@ -60,7 +60,7 @@ onUnmounted(() => {
 
 const handleScroll = () => {
   const scrollPosition = window.scrollY;
-  const additionalOffset = 20; // 네브바와의 추가 여백
+  const additionalOffset = 20;
 
   if (scrollPosition >= headerHeight.value + additionalOffset) {
     isFixed.value = true;
@@ -125,17 +125,17 @@ const formatPolicySubject = (text) => {
       <h2 id="page-title" class="text-3xl font-bold">
         {{ policyListItem?.name }}
       </h2>
-      <div class="flex space-x-2">
+      <div class="flex mx-4 space-x-2">
         <MemberNotification :policyIdx="policyListItem?.idx" />
         <ShareButton
           :title="policyListItem?.name"
           :description="policyDetail?.subject"
           :shareUrl="shareUrl"
-          class="w-6 h-6 bg-white rounded-full flex items-center justify-center"
+          class="w-6 h-8 bg-white rounded-full flex items-center justify-center"
         />
         <button
           @click="copyUrl"
-          class="w-6 h-6 bg-white rounded-full flex items-center justify-center border border-gray-300"
+          class="w-6 h-8 bg-white rounded-full flex items-center justify-center border border-gray-300"
         >
           <img :src="UrlCopyIcon" alt="URL 복사" class="w-6 h-6" />
         </button>

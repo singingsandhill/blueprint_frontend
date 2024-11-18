@@ -88,7 +88,7 @@ const markAsReadAndNavigate = async (policyIdx) => {
       notificationStore.unreadNotificationsCount -= 1; 
     }
 
-    router.push(`/policy/detail/${policyIdx}`);
+    router.push({ path: `/policy/detail/${policyIdx}`, query: { isLiked: true } });
   } catch (error) {
     console.error("알림 읽음 처리 중 오류:", error);
   }
@@ -162,7 +162,7 @@ onMounted(async () => {
             :key="index"
             :class="[ 
               'border rounded-lg p-4 flex items-center space-x-4 text-sm cursor-pointer', 
-              notification.isRead ? 'bg-gray-200' : 'bg-white' 
+              notification.isRead ? 'bg-gray-300' : 'bg-white' 
             ]"
             @click="markAsReadAndNavigate(notification.policyIdx)"
           >

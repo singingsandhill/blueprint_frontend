@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
-import { useNotificationStore } from "@/stores/notificationStore"; // Pinia store
+import { useNotificationStore } from "@/stores/notificationStore";
 import { useAuthStore } from "@/stores/auth";
 
 const props = defineProps({
@@ -13,6 +13,7 @@ const props = defineProps({
 const notificationStore = useNotificationStore();
 const authStore = useAuthStore();
 const isLiked = ref(false);
+const isLoading = ref(false);
 
 const toggleLike = async () => {
   if (!authStore.isUserLoggedIn) {
@@ -20,15 +21,21 @@ const toggleLike = async () => {
     return;
   }
 
+  isLoading.value = true; 
   try {
     if (isLiked.value) {
       await notificationStore.deleteNotification(props.policyIdx);
+      alert("알림이 해제되었습니다.");
     } else {
       await notificationStore.updateNotification(props.policyIdx, true);
+      alert("알림이 설정되었습니다.");
     }
-    isLiked.value = !isLiked.value;
+    isLiked.value = !isLiked.value; 
   } catch (error) {
     console.error("알림 상태 변경 실패:", error);
+    alert("알림 상태 변경에 실패하였습니다.");
+  } finally {
+    isLoading.value = false; 
   }
 };
 
@@ -59,6 +66,7 @@ watch(() => props.policyIdx, fetchInitialLikeStatus);
     <button
       @click="toggleLike"
       :class="{ liked: isLiked }"
+      :disabled="isLoading"
     >
       <span v-if="isLiked">❤️</span>
       <span v-else>🤍</span>
@@ -84,5 +92,10 @@ button.liked {
 
 button:not(.liked) {
   color: gray;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 </style>
