@@ -26,16 +26,16 @@ const handleFilterApplied = () => {
 
 <template>
   <div>
-    <TypeFilter />
-  </div>
-  <div>
     <BannerSlider />
   </div>
-  <div class="homepage container mx-auto p-4">
+  <div>
+    <TypeFilter />
+  </div>
+  <div class="homepage mx-auto p-4">
     <FilterSection
       @filterChanged="handleFilterChanged"
       @filterApplied="handleFilterApplied"
-      class="w-[90%] mb-20"
+      class=" mb-20"
     />
     <FilterResult
       v-if="searchExecuted"
@@ -51,7 +51,7 @@ const handleFilterApplied = () => {
 <style scoped>
 .homepage {
   padding: 1rem;
-  max-width: 1350px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 

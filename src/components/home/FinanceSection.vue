@@ -130,7 +130,7 @@ onMounted(async () => {
         >
           <!-- 배경 이미지 컨테이너 -->
           <div 
-            class="absolute inset-0 rounded-lg opacity-30 bg-image-container"
+            class="absolute inset-0 rounded-lg opacity-20 bg-image-container"
             :style="{ 
               backgroundImage: `url(${getBankImage(item.korCoNm)})`,
               backgroundSize: 'contain',
@@ -142,7 +142,7 @@ onMounted(async () => {
     <!-- 컨텐츠 -->
     <div class="content-wrapper">
       <div
-              class="text-sm rounded-full px-3 py-1 inline-block mb-2 text-center"
+              class="text-sm rounded-full px-3 py-1 mb-2 text-center"
               style="background-color: #C1D5F9; color: white;"
             >
               {{ getProductType(item.finPrdtNm) }}
