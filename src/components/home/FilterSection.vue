@@ -131,7 +131,7 @@ onMounted(() => {
 
 <template>
   <section
-    class="text-white p-4 rounded-lg mt-6 flex mx-auto flex-row items-center gap-2 justify-start overflow-x-auto whitespace-nowrap"
+    class="text-white p-4 rounded-lg mt-6 flex flex-wrap lg:flex-nowrap mx-auto items-center gap-2 lg:gap-4 justify-start overflow-x-auto whitespace-nowrap max-w-screen-xl"
   >
     <div
       class="flex items-center space-x-2 bg-darkBlue text-white px-4 py-3 rounded-lg w-auto"
@@ -140,11 +140,11 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full md:w-40"
     >
       <select
         v-model="selectedCity"
-        class="bg-transparent w-full focus:outline-none"
+        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
       >
         <option value="null">전체</option>
         <option v-for="city in cities" :key="city" :value="city">
@@ -154,23 +154,23 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-full md:w-80"
     >
       <input
         v-model="district"
         id="district"
         type="text"
         placeholder="지역구를 입력해 주세요."
-        class="bg-transparent w-full focus:outline-none"
+        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
       />
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full md:w-40"
     >
       <select
         v-model="selectedJob"
-        class="bg-transparent w-full focus:outline-none"
+        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
       >
         <option value="null">전체</option>
         <option value="학생">학생</option>
@@ -186,23 +186,23 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-full md:w-80"
     >
       <input
         v-model="selectedAge"
         id="selectedAge"
         type="text"
         placeholder="나이를 입력해 주세요."
-        class="bg-transparent w-full focus:outline-none"
+        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
       />
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full md:w-40"
     >
       <select
         v-model="selectedPolicyType"
-        class="bg-transparent w-full focus:outline-none"
+        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
       >
         <option value="null">전체</option>
         <option v-for="type in policyTypes" :key="type" :value="type">
@@ -212,20 +212,20 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-auto"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full md:w-80"
     >
       <input
         v-model="selectedName"
         id="selectedName"
         type="text"
         placeholder="정책명을 입력해 주세요."
-        class="bg-transparent w-full focus:outline-none"
+        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
       />
     </div>
 
     <button
       @click="applyFilters"
-      class="bg-darkBlue px-4 py-3 rounded-lg w-full md:w-auto flex items-center justify-center"
+      class="bg-darkBlue px-4 py-3 rounded-lg w-full md:w-auto flex items-center justify-center text-sm md:text-base"
     >
       <span class="ml-1">검색</span>
     </button>
