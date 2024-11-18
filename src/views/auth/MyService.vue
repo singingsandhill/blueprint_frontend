@@ -205,7 +205,7 @@ onMounted(async () => {
               {{ formatDate(subscription.rceptBgnde) }} ~
               {{ formatDate(subscription.rceptEndde) }}
             </p>
-            <p class="text-base text-right font-semibold">
+            <p class="mt-2 text-right font-semibold">
               <a
                 :href="subscription.pblancUrl"
                 class="text-blue-500 underline"
