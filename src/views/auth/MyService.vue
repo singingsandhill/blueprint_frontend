@@ -232,7 +232,7 @@ onMounted(async () => {
             </p>
             <div>
               <img
-                src="@/assets/bank/부산은행.png"
+                src="@/assets/bank/busanbank.png"
                 alt="부산은행 로고"
                 class="w-28 h-auto mx-auto mb-4"
               />

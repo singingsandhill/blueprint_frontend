@@ -9,9 +9,26 @@ const totalPages = ref(0);
 const pageSize = 10;
 const loading = ref(false);
 const error = ref(null);
+const activeTab = ref('current'); // 'current' 또는 'past'
 
 // 페이지네이션 표시 개수
 const visiblePageCount = 5;
+
+// 필터링된 구독 리스트
+const filteredSubscriptions = computed(() => {
+  const currentTimestamp = Date.now();
+  return store.subscription?.filter(item => {
+    const isPast = parseInt(item.rceptEndde) < currentTimestamp;
+    return activeTab.value === 'past' ? isPast : !isPast;
+  }) || [];
+});
+
+// 현재 페이지에 표시할 구독 리스트
+const displayedSubscriptions = computed(() => {
+  const startIndex = currentPage.value * pageSize;
+  const endIndex = startIndex + pageSize;
+  return filteredSubscriptions.value.slice(startIndex, endIndex);
+});
 
 // 표시할 페이지 번호 계산
 const displayedPages = computed(() => {
@@ -22,19 +39,16 @@ const displayedPages = computed(() => {
   let start = current - half;
   let end = current + half;
   
-  // 시작 페이지가 0보다 작을 경우 조정
   if (start < 0) {
     start = 0;
     end = Math.min(visiblePageCount - 1, total - 1);
   }
   
-  // 끝 페이지가 총 페이지 수를 넘을 경우 조정
   if (end >= total) {
     end = total - 1;
     start = Math.max(0, end - visiblePageCount + 1);
   }
   
-  // 페이지 배열 생성
   const pages = [];
   for (let i = start; i <= end; i++) {
     pages.push(i);
@@ -47,7 +61,7 @@ const formatDate = (dateString) => {
   if (!dateString) return "날짜 정보 없음";
   try {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('ko-KR', options);
+    return new Date(parseInt(dateString)).toLocaleDateString('ko-KR', options);
   } catch (err) {
     return "날짜 형식 오류";
   }
@@ -59,16 +73,9 @@ const fetchData = async (page) => {
   
   try {
     await store.getSubscription(page, pageSize);
-    
-    if (Array.isArray(store.subscription)) {
-      const startIndex = page * pageSize;
-      const endIndex = startIndex + pageSize;
-      subscriptionList.value = store.subscription.slice(startIndex, endIndex);
-      totalPages.value = Math.ceil(store.subscription.length / pageSize);
-      currentPage.value = page;
-    } else {
-      throw new Error('데이터 형식이 올바르지 않습니다.');
-    }
+    subscriptionList.value = displayedSubscriptions.value;
+    totalPages.value = Math.ceil(filteredSubscriptions.value.length / pageSize);
+    currentPage.value = page;
   } catch (err) {
     console.error('데이터 로딩 중 오류 발생:', err);
     error.value = err.message || '데이터를 불러오는데 실패했습니다. 다시 시도해주세요.';
@@ -77,6 +84,12 @@ const fetchData = async (page) => {
   } finally {
     loading.value = false;
   }
+};
+
+const switchTab = (tab) => {
+  activeTab.value = tab;
+  currentPage.value = 0;
+  fetchData(0);
 };
 
 const retryFetch = () => {
@@ -107,19 +120,30 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 p-4">
+  <div class="min-h-screen p-4">
     <!-- Header Section -->
     <div class="flex items-center space-x-2 text-gray-800">
-      <i class="fas fa-arrow-left"></i>
+      <!-- <i class="fas fa-arrow-left"></i>
       <h1 class="text-lg font-medium">청약</h1>
       <div class="flex-1"></div>
-      <i class="fas fa-info-circle"></i>
+      <i class="fas fa-info-circle"></i> -->
     </div>
 
     <!-- Tab Navigation -->
     <div class="flex mt-4 border-b">
-      <button class="px-4 py-2 font-semibold border-b-2 border-black">
-        청약신청
+      <button 
+        class="px-4 py-2 font-semibold border-b-2 mr-2"
+        :class="activeTab === 'current' ? 'border-black' : 'border-transparent'"
+        @click="switchTab('current')"
+      >
+        청약
+      </button>
+      <button 
+        class="px-4 py-2 font-semibold border-b-2"
+        :class="activeTab === 'past' ? 'border-black' : 'border-transparent'"
+        @click="switchTab('past')"
+      >
+        지난 청약
       </button>
     </div>
 
@@ -191,61 +215,61 @@ onMounted(async () => {
     </div>
     
     <p v-else class="mt-4 text-center text-gray-500">
-      표시할 데이터가 없습니다
+      {{ activeTab === 'current' ? '진행중인 청약이 없습니다' : '지난 청약이 없습니다' }}
     </p>
 
     <!-- Pagination -->
     <div v-if="totalPages > 0" class="flex justify-center items-center mt-4 space-x-2">
-    <button 
-      class="pagination-button"
-      @click="prevPage" 
-      :disabled="currentPage === 0"
-    >
-      이전
-    </button>
+      <button 
+        class="pagination-button"
+        @click="prevPage" 
+        :disabled="currentPage === 0"
+      >
+        이전
+      </button>
 
-    <!-- 첫 페이지 버튼 -->
-    <button
-      v-if="displayedPages[0] > 0"
-      class="pagination-button"
-      @click="goToPage(0)"
-    >
-      1
-    </button>
+      <!-- 첫 페이지 버튼 -->
+      <button
+        v-if="displayedPages[0] > 0"
+        class="pagination-button"
+        @click="goToPage(0)"
+      >
+        1
+      </button>
 
-    <!-- 첫 페이지 이후 생략 부호 -->
-    <span v-if="displayedPages[0] > 1" class="px-2">...</span>
+      <!-- 첫 페이지 이후 생략 부호 -->
+      <span v-if="displayedPages[0] > 1" class="px-2">...</span>
 
-    <!-- 페이지 번호 -->
-    <button
-      v-for="page in displayedPages"
-      :key="page"
-      @click="goToPage(page)"
-      :class="{'pagination-button': true, 'active': page === currentPage}"
-    >
-      {{ page + 1 }}
-    </button>
+      <!-- 페이지 번호 -->
+      <button
+        v-for="page in displayedPages"
+        :key="page"
+        @click="goToPage(page)"
+        :class="{'pagination-button': true, 'active': page === currentPage}"
+      >
+        {{ page + 1 }}
+      </button>
 
-    <!-- 마지막 페이지 이전 생략 부호 -->
-    <span v-if="displayedPages[displayedPages.length - 1] < totalPages - 2" class="px-2">...</span>
+      <!-- 마지막 페이지 이전 생략 부호 -->
+      <span v-if="displayedPages[displayedPages.length - 1] < totalPages - 2" class="px-2">...</span>
 
-    <!-- 마지막 페이지 버튼 -->
-    <button
-      v-if="displayedPages[displayedPages.length - 1] < totalPages - 1"
-      class="pagination-button"
-      @click="goToPage(totalPages - 1)"
-    >
-      {{ totalPages }}
-    </button>
+      <!-- 마지막 페이지 버튼 -->
+      <button
+        v-if="displayedPages[displayedPages.length - 1] < totalPages - 1"
+        class="pagination-button"
+        @click="goToPage(totalPages - 1)"
+      >
+        {{ totalPages }}
+      </button>
 
-    <button 
-      class="pagination-button"
-      @click="nextPage" 
-      :disabled="currentPage >= totalPages - 1"
-    >
-      다음
-    </button>
-  </div>
+      <button 
+        class="pagination-button"
+        @click="nextPage" 
+        :disabled="currentPage >= totalPages - 1"
+      >
+        다음
+      </button>
+    </div>
   </div>
 </template>
 
@@ -268,5 +292,10 @@ onMounted(async () => {
 .custom_color {
   color: wheat;
   background-color: #0E429D;
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
