@@ -10,17 +10,22 @@ const authStore = useAuthStore();
 function initializeLocalStorage() {
   const defaults = {
     selectedCity: null,
-    district: "",
+    district: null,
     selectedPolicyType: null,
-    selectedAge: "",
+    selectedAge: null,
     selectedJob: null,
-    selectedName: "",
+    selectedName: null,
     page: 1,
   };
 
   Object.entries(defaults).forEach(([key, value]) => {
-    if (localStorage.getItem(key) === null) {
-      localStorage.setItem(key, JSON.stringify(value));
+    const currentValue = localStorage.getItem(key);
+    if (
+      currentValue === null ||
+      currentValue === "" ||
+      currentValue === "null"
+    ) {
+      localStorage.setItem(key, value === null ? null : JSON.stringify(value));
     }
   });
 }

@@ -7,6 +7,7 @@ import PolicySection from "@/components/home/PolicySection.vue";
 import SubscriptionSection from "@/components/home/SubscriptionSection.vue";
 import FinanceSection from "@/components//home/FinanceSection.vue";
 import BannerSlider from "@/components/home/BannerSlider.vue";
+import TypeFilter from "@/components/home/TypeFilterSection.vue"
 
 const router = useRouter();
 
@@ -24,6 +25,9 @@ const handleFilterApplied = () => {
 </script>
 
 <template>
+  <div>
+    <TypeFilter />
+  </div>
   <div>
     <BannerSlider />
   </div>
