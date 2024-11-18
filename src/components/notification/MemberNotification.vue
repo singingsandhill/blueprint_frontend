@@ -14,8 +14,8 @@ const notificationStore = useNotificationStore();
 const authStore = useAuthStore();
 const isLiked = ref(false);
 const isLoading = ref(false);
-const notificationStatus = ref(false); // 알림 설정 상태
-const showAlertMessage = ref(false); // 팝업 표시 상태
+const notificationStatus = ref(false); 
+const showAlertMessage = ref(false); 
 
 const toggleLike = async () => {
   if (!authStore.isUserLoggedIn) {
@@ -24,7 +24,6 @@ const toggleLike = async () => {
   }
 
   if (!notificationStatus.value) {
-    // 알림 설정이 꺼져있을 경우 팝업 표시
     showAlertMessage.value = true;
     return;
   }
@@ -58,23 +57,15 @@ const fetchInitialLikeStatus = async () => {
 
     const userNotifications = notificationStore.userNotifications;
 
-    console.log("User Notifications:", userNotifications);
-    console.log("Policy Index (props):", props.policyIdx);
-
-    // 매칭되는 항목 찾기
     const matchingNotifications = userNotifications.filter(
       (notification) =>
         Number(notification.policyIdx) === Number(props.policyIdx)
     );
 
-    console.log("Matching Notifications:", matchingNotifications);
-
-    // 좋아요 상태 설정
     isLiked.value = matchingNotifications.some(
       (notification) => Number(notification.notification_enabled) === 1
     );
 
-    console.log("Is Policy Liked:", isLiked.value);
   } catch (error) {
     console.error("알림 상태 로드 실패:", error);
   }
@@ -83,8 +74,7 @@ const fetchInitialLikeStatus = async () => {
 const fetchNotificationStatus = async () => {
   try {
     const response = await notificationStore.fetchNotificationStatus();
-    notificationStatus.value = response.notificationEnabled; // 알림 설정 상태 저장
-    console.log("Notification Status:", notificationStatus.value);
+    notificationStatus.value = response.notificationEnabled; 
   } catch (error) {
     console.error("알림 상태 가져오는 중 오류 발생:", error);
   }
@@ -95,8 +85,8 @@ const closeAlert = () => {
 };
 
 onMounted(async () => {
-  await fetchNotificationStatus(); // 알림 상태 초기화
-  await fetchInitialLikeStatus(); // 좋아요 상태 초기화
+  await fetchNotificationStatus(); 
+  await fetchInitialLikeStatus();
 });
 
 watch(() => props.policyIdx, fetchInitialLikeStatus);
@@ -127,7 +117,8 @@ watch(() => props.policyIdx, fetchInitialLikeStatus);
         </button>
         <p class="text-gray-700 text-sm">
             <strong>현재 알림 설정이 꺼져 있습니다.</strong><br /><br />
-            마이페이지에서 "알림 설정"을 ON으로 변경하시면 이 기능을 이용하실 수 있습니다. 😊<br /><br />
+            마이페이지에서 "알림 설정"을 ON으로 변경하시면 
+            <br>이 기능을 이용하실 수 있습니다. 😊<br /><br />
             
             <strong>변경 방법</strong><br />
             1. 상단 메뉴에서 "마이페이지"로 이동하세요.<br />
@@ -178,7 +169,6 @@ button:disabled {
   opacity: 0.6;
 }
 
-/* 팝업 스타일 */
 .alert-popup {
   display: flex;
   align-items: center;

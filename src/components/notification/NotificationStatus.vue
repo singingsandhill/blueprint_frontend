@@ -12,9 +12,9 @@ const notificationStatus = ref(
   JSON.parse(localStorage.getItem("notificationStatus")) || false
 );
 const isModalOpen = ref(false);
-const notifications = ref([]); 
+const notifications = ref([]);
 const isLoading = ref(false);
-
+const showNotificationAlert = ref(false); // 알림 안내 팝업 상태
 const unreadCount = computed(() => notificationStore.unreadNotificationsCount);
 
 const fetchInitialNotificationStatus = async () => {
@@ -52,7 +52,9 @@ const fetchPushNotifications = async () => {
     isLoading.value = true;
     await notificationStore.fetchPushNotifications();
 
-    notifications.value = notificationStore.pushNotifications.filter((n) => !n.isRead).slice(0, 10);
+    notifications.value = notificationStore.pushNotifications
+      .filter((n) => !n.isRead)
+      .slice(0, 10);
 
     console.log("읽지 않은 Push 알림 목록 불러오기 성공:", notifications.value);
   } catch (error) {
@@ -63,8 +65,17 @@ const fetchPushNotifications = async () => {
 };
 
 const openNotificationModal = () => {
+  if (!notificationStatus.value) {
+    // 알림 OFF 상태일 경우 팝업 표시
+    showNotificationAlert.value = true;
+    return;
+  }
   if (isModalOpen.value) return;
   isModalOpen.value = true;
+};
+
+const closeNotificationAlert = () => {
+  showNotificationAlert.value = false;
 };
 
 const closeModal = () => {
@@ -82,10 +93,12 @@ const markAsReadAndNavigate = async (policyIdx) => {
 
     await notificationStore.markNotificationAsRead(policyIdx);
 
-    const index = notifications.value.findIndex((n) => n.policyIdx === policyIdx);
+    const index = notifications.value.findIndex(
+      (n) => n.policyIdx === policyIdx
+    );
     if (index !== -1) {
       notifications.value.splice(index, 1);
-      notificationStore.unreadNotificationsCount -= 1; 
+      notificationStore.unreadNotificationsCount -= 1;
     }
 
     router.push({ path: `/policy/detail/${policyIdx}`, query: { isLiked: true } });
@@ -137,14 +150,28 @@ onMounted(async () => {
     </label>
 
     <!-- 알림 아이콘 -->
-    <div class="notification-icon relative cursor-pointer" @click="openNotificationModal">
+    <div
+      class="notification-icon relative cursor-pointer"
+      :class="{ disabled: !notificationStatus }"
+      @click="openNotificationModal"
+    >
       <span class="icon">🔔</span>
       <span
-        v-if="unreadCount > 0"
+        v-if="unreadCount > 0 && notificationStatus"
         class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white rounded-full text-xs flex items-center justify-center"
       >
         {{ unreadCount }}
       </span>
+    </div>
+
+    <!-- 알림 팝업 -->
+    <div v-if="showNotificationAlert" class="alert-popup">
+      <div class="popup-content">
+        <p class="text-gray-700">
+          알림 설정을 ON으로 변경해야 이 기능을 사용할 수 있습니다.
+        </p>
+        <button @click="closeNotificationAlert" class="close-button">✕</button>
+      </div>
     </div>
 
     <!-- 모달 -->
@@ -214,6 +241,10 @@ onMounted(async () => {
 .notification-icon .icon {
   font-size: 1.5rem;
 }
+.notification-icon.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
 .modal {
   position: fixed;
   top: 0;
@@ -234,6 +265,47 @@ onMounted(async () => {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   z-index: 60;
 }
+
+.alert-popup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); 
+  z-index: 50; 
+}
+
+.popup-content {
+  background: white; 
+  padding: 1.5rem;
+  border-radius: 0.5rem; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.7rem;
+  background: none;
+  border: none; 
+  font-size: 0.7rem; 
+  cursor: pointer; 
+  color: #000000; 
+}
+
+.close-button:hover {
+  color: #000;
+}
+
+.text-gray-700 {
+  color: #4a5568; 
+}
+
 .bg-blue-500 {
   background-color: #002842;
 }
