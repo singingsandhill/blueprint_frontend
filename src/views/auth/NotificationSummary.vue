@@ -161,14 +161,13 @@ onMounted(async () => {
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+            <th class="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">
               알림 이름
             </th>
-            <th class="py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+            <th class="px-5 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">
               마감일
             </th>
-            <th class="px-3 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">
-              삭제
+            <th class="px-6 py-3 text-right text-sm font-medium text-gray-600 uppercase tracking-wider">
             </th>
           </tr>
         </thead>
@@ -181,14 +180,14 @@ onMounted(async () => {
               ? handlePolicyClick(notification.policyIdx)
               : console.error('Invalid policyIdx:', notification)"
           >
-            <td class="px-3 py-4 text-sm font-medium text-gray-900">
+            <td class="px-5 py-4 text-sm font-medium text-gray-900">
               {{ notification.policyName }}
             </td>
-            <td class="py-4 text-sm text-gray-500">
+            <td class="px-5 py-4 text-sm text-gray-500">
               {{ notification.applyEndDate === "상시" ? "상시" : notification.applyEndDate }}
             </td>
-            <td class="px-2 py-4 text-right text-sm">
-              <div class="delete-wrapper flex items-center justify-end space-x-2">
+            <td class="px-5 py-4 text-center text-sm">
+              <div class="delete-wrapper flex items-center justify-end">
               <button
                 class="text-red-500 hover:text-red-700"
                 @click.stop="deleteNotification(notification.policyIdx)"
@@ -276,16 +275,5 @@ onMounted(async () => {
   background-color: #0d223d;
   color: white;
   border-color: #0d223d;
-}
-
-.delete-wrapper {
-  display: flex;
-  justify-content: flex-end;
-}
-
-@media (max-width: 768px) {
-  .delete-wrapper {
-    justify-content: flex-start;
-  }
 }
 </style>
