@@ -147,7 +147,7 @@ onMounted(async () => {
         <div v-if="policyList.length === 0" class="text-xl font-semibold">
           {{ memberName }}님의 조건에 해당하는 정책이 없습니다.
         </div>
-        <table class="table-auto w-full border-collapse border-gray-300">
+        <table v-else class="table-auto w-full border-collapse border-gray-300">
           <thead class="border-b border-gray-300">
             <tr>
               <th class="px-8 py-3 text-center font-bold">제목</th>
