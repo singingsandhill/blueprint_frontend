@@ -97,11 +97,31 @@ onMounted(() => {
   fetchCity();
 
   selectedCity.value = localStorage.getItem("selectedCity") || null;
-  district.value = localStorage.getItem("district") || "";
-  selectedPolicyType.value = localStorage.getItem("selectedPolicyType") || null;
-  selectedAge.value = localStorage.getItem("selectedAge") || "";
-  selectedJob.value = localStorage.getItem("selectedJob") || null;
-  selectedName.value = localStorage.getItem("selectedName") || "";
+  district.value =
+    localStorage.getItem("district") === "" ||
+    localStorage.getItem("district") === "null"
+      ? null
+      : localStorage.getItem("district");
+  selectedPolicyType.value =
+    localStorage.getItem("selectedPolicyType") === "" ||
+    localStorage.getItem("selectedPolicyType") === "null"
+      ? null
+      : localStorage.getItem("selectedPolicyType");
+  selectedAge.value =
+    localStorage.getItem("selectedAge") === "" ||
+    localStorage.getItem("selectedAge") === "null"
+      ? null
+      : localStorage.getItem("selectedAge");
+  selectedJob.value =
+    localStorage.getItem("selectedJob") === "" ||
+    localStorage.getItem("selectedJob") === "null"
+      ? null
+      : localStorage.getItem("selectedJob");
+  selectedName.value =
+    localStorage.getItem("selectedName") === "" ||
+    localStorage.getItem("selectedName") === "null"
+      ? null
+      : localStorage.getItem("selectedName");
 
   if (props.immediateApply) {
     applyFilters();
