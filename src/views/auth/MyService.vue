@@ -147,25 +147,29 @@ onMounted(async () => {
         <div v-if="policyList.length === 0" class="text-xl font-semibold">
           {{ memberName }}님의 조건에 해당하는 정책이 없습니다.
         </div>
-        <div v-else class="flex justify-center gap-10 w-full">
-          <div
-            v-for="policy in policyList"
-            :key="policy"
-            :value="policy"
-            class="relative bg-white p-6 rounded-lg shadow-md max-w-sm w-full"
-          >
-            <p class="text-2xl font-bold mb-4 text-center underline">
-              {{ policy.name }}
-            </p>
-            <p class="text-xl mb-4 text-center font-semibold">
-              {{ policy.type }}
-            </p>
-            <p class="text-xl mb-4 text-center">
-              {{ formatDate(policy.startDate) }} ~
-              {{ formatDate(policy.endDate) }}
-            </p>
-          </div>
-        </div>
+        <table class="table-auto w-full border-collapse border-gray-300">
+          <thead class="border-b border-gray-300">
+            <tr>
+              <th class="px-4 py-2 text-center font-bold">제목</th>
+              <th class="px-4 py-2 text-left font-bold">유형</th>
+              <th class="px-4 py-2 text-center font-bold">신청 기간</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="policy in policyList" :key="policy">
+              <td class="px-4 py-2 text-gray-600">
+                {{ policy.name }}
+              </td>
+              <td class="px-4 py-2 text-gray-600">
+                {{ policy.type }}
+              </td>
+              <td class="px-4 py-2 text-gray-600">
+                {{ formatDate(policy.applyStartDate) }} ~
+                {{ formatDate(policy.applyEndDate) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="mx-auto p-4 max-w-4xl">
@@ -174,30 +178,30 @@ onMounted(async () => {
         <div v-if="subscriptionList.length === 0" class="text-xl font-semibold">
           {{ memberName }}님의 조건에 해당하는 청약이 없습니다.
         </div>
-        <div v-else class="flex justify-center gap-10">
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div
             v-for="subscription in subscriptionList"
             :key="subscription"
             :value="subscription"
             class="relative bg-white p-6 rounded-lg shadow-md max-w-lg w-full text-center"
           >
-            <p class="text-2xl font-bold mb-4 text-center underline">
+            <p class="text-xl font-bold mb-4 text-center underline">
               {{ subscription.name }}
             </p>
-            <p class="text-lg mb-4 text-center font-semibold">
+            <p class="text-gray-600 mb-2 font-semibold">
               {{ subscription.region }} {{ subscription.city }}
             </p>
-            <p class="text-lg mb-4 text-center font-semibold">
+            <p class="text-gray-600 mb-3 font-semibold">
               {{ subscription.district }} {{ subscription.detail }}
             </p>
-            <p class="text-lg mb-4 text-center">
+            <p class="text-gray-600 mb-3">
               {{ subscription.rentSecd }}
             </p>
-            <p class="text-lg mb-4 text-center">
+            <p class="text-gray-600 mb-3">
               {{ subscription.houseDtlSecdNm }} /
               {{ subscription.houseDtlSecd }}
             </p>
-            <p class="text-lg text-gray-600 mb-3 font-semibold underline">
+            <p class="text-gray-600 font-bold underline">
               {{ formatDate(subscription.rceptBgnde) }} ~
               {{ formatDate(subscription.rceptEndde) }}
             </p>
