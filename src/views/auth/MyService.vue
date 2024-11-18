@@ -150,20 +150,20 @@ onMounted(async () => {
         <table class="table-auto w-full border-collapse border-gray-300">
           <thead class="border-b border-gray-300">
             <tr>
-              <th class="px-4 py-2 text-center font-bold">제목</th>
-              <th class="px-4 py-2 text-left font-bold">유형</th>
-              <th class="px-4 py-2 text-center font-bold">신청 기간</th>
+              <th class="px-8 py-3 text-center font-bold">제목</th>
+              <th class="px-8 py-3 text-left font-bold">유형</th>
+              <th class="px-8 py-3 text-center font-bold">신청 기간</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="policy in policyList" :key="policy">
-              <td class="px-4 py-2 text-gray-600">
+              <td class="px-8 py-3 text-gray-600">
                 {{ policy.name }}
               </td>
-              <td class="px-4 py-2 text-gray-600">
+              <td class="px-8 py-3 text-gray-600">
                 {{ policy.type }}
               </td>
-              <td class="px-4 py-2 text-gray-600">
+              <td class="px-8 py-3 text-gray-600">
                 {{ formatDate(policy.applyStartDate) }} ~
                 {{ formatDate(policy.applyEndDate) }}
               </td>

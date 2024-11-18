@@ -25,8 +25,8 @@ const props = defineProps({
 const emit = defineEmits(["filterApplied"]);
 
 const policyTypes = [
-  "일자리(창업)",
-  "일자리(취업)",
+  "일자리 (창업)",
+  "일자리 (취업)",
   "건강",
   "교육",
   "금융",
@@ -131,7 +131,7 @@ onMounted(() => {
 
 <template>
   <section
-    class="text-white p-4 rounded-lg mt-6 flex flex-wrap lg:flex-nowrap mx-auto items-center gap-2 lg:gap-4 justify-start overflow-x-auto whitespace-nowrap max-w-screen-xl"
+    class="text-white p-4 rounded-lg mt-6 flex flex-wrap lg:flex-nowrap mx-auto items-center gap-2 lg:gap-4 justify-start overflow-x-auto whitespace-nowrap"
   >
     <div
       class="flex items-center space-x-2 bg-darkBlue text-white px-4 py-3 rounded-lg w-auto"
