@@ -131,16 +131,18 @@ onMounted(() => {
 
 <template>
   <section
-    class="text-white p-4 rounded-lg mt-6 flex flex-wrap lg:flex-nowrap mx-auto items-center gap-2 lg:gap-4 justify-start overflow-x-auto whitespace-nowrap max-w-screen-xl"
+    class="text-white p-4 rounded-lg mt-6 flex flex-wrap lg:flex-nowrap mx-auto items-center gap-2 lg:gap-4 justify-center overflow-x-auto whitespace-nowrap max-w-screen-xl"
   >
+    <!-- 정책 검색 -->
     <div
       class="flex items-center space-x-2 bg-darkBlue text-white px-4 py-3 rounded-lg w-auto"
     >
       <strong class="text-base">정책 검색</strong>
     </div>
 
+    <!-- 시/도 필터 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full md:w-40"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full lg:w-40"
     >
       <select
         v-model="selectedCity"
@@ -153,8 +155,9 @@ onMounted(() => {
       </select>
     </div>
 
+    <!-- 지역구 필터 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-full md:w-80"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-full lg:w-80"
     >
       <input
         v-model="district"
@@ -165,8 +168,9 @@ onMounted(() => {
       />
     </div>
 
+    <!-- 직업 필터 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full md:w-40"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full lg:w-40"
     >
       <select
         v-model="selectedJob"
@@ -185,8 +189,9 @@ onMounted(() => {
       </select>
     </div>
 
+    <!-- 나이 필터 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-full md:w-80"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-full lg:w-80"
     >
       <input
         v-model="selectedAge"
@@ -197,8 +202,9 @@ onMounted(() => {
       />
     </div>
 
+    <!-- 정책 유형 필터 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full md:w-40"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full lg:w-40"
     >
       <select
         v-model="selectedPolicyType"
@@ -211,8 +217,9 @@ onMounted(() => {
       </select>
     </div>
 
+    <!-- 정책명 입력 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full md:w-80"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full lg:w-80"
     >
       <input
         v-model="selectedName"
@@ -223,11 +230,91 @@ onMounted(() => {
       />
     </div>
 
+    <!-- 검색 버튼 -->
     <button
       @click="applyFilters"
-      class="bg-darkBlue px-4 py-3 rounded-lg w-full md:w-auto flex items-center justify-center text-sm md:text-base"
+      class="bg-darkBlue px-4 py-3 rounded-lg w-full lg:w-auto flex items-center justify-center text-sm md:text-base"
     >
       <span class="ml-1">검색</span>
     </button>
   </section>
 </template>
+
+<style scoped>
+section {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; 
+  align-items: center;
+  padding: 0.5rem
+}
+
+.flex {
+  gap: 12px;
+}
+
+select {
+  position: relative;
+  appearance: none; 
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none; 
+}
+
+option {
+  position: relative;
+  z-index: 10;
+  text-indent: 10px;
+  padding: 5px;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+select {
+  box-shadow: none;
+  text-indent: 0.01px;
+  text-overflow: '';
+  z-index: 5;
+}
+
+@media (min-width: 1024px) {
+  section {
+    flex-wrap: nowrap; 
+  }
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: 1rem;
+  }
+
+  .flex {
+    flex-direction: column; 
+    align-items: center;
+    gap: 16px;
+  }
+
+  .flex > div,
+  .flex > button {
+    width: 100%; 
+    max-width: none;
+  }
+
+  .flex > div input,
+  .flex > div select {
+    font-size: 1rem;
+  }
+}
+</style>
+
+
+

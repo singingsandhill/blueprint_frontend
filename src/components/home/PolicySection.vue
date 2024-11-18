@@ -150,11 +150,11 @@ const slidePrev = () => {
 
 <style scoped>
 .card {
-  min-width: 250px;
-  min-height: 200px;
+  min-width: 200px;
+  min-height: 230px;
   flex-shrink: 0;
   scroll-snap-align: start;
-  border: 1px solid #d1d5db;
+  border: 2px solid #aaaeb4c7;
   transition: transform 0.3s;
   text-align: center;
 }

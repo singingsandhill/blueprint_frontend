@@ -126,7 +126,7 @@ onMounted(async () => {
         <div
           v-for="(item, index) in savingsList"
           :key="index"
-          class="card relative border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
+          class="card relative border-2 border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
         >
           <!-- 배경 이미지 컨테이너 -->
           <div 
@@ -139,11 +139,12 @@ onMounted(async () => {
             }"
           ></div>
 
-    <!-- 컨텐츠 -->
-    <div class="content-wrapper">
-      <div
+          <!-- 컨텐츠 -->
+          <div class="content-wrapper">
+            <!-- 제품 유형 -->
+            <div
               class="text-sm rounded-full px-3 py-1 inline-block mb-2 text-center"
-              style="background-color: #C1D5F9; color: white;"
+              style="background-color: #0E429D; color: white; font-size: 0.875rem; line-height: 1.25rem;"
             >
               {{ getProductType(item.finPrdtNm) }}
             </div>
@@ -166,7 +167,7 @@ onMounted(async () => {
         <div
           v-for="(item, index) in loanList"
           :key="index"
-          class="card border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
+          class="card border-2 border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
           :style="{
             backgroundImage: `url( @/assets/bank/${getBankImage(item.korCoNm)})`,
             backgroundSize: 'cover',
@@ -175,28 +176,29 @@ onMounted(async () => {
           }"
         >
           <div class="content-wrapper">
+            <!-- 대출 카테고리 -->
             <div
               class="text-sm rounded-full px-3 py-1 inline-block mb-2 text-center"
-              style="background-color: #C1D5F9; color: white;"
+              style="background-color: #0E429D; color: white; font-size: 0.875rem; line-height: 1.25rem;"
             >
               {{ getLoanCategory(item.prdCategory) }}
             </div>
 
-          <!-- 대출 상품명 -->
-          <h3 class="text-lg font-semibold mb-2 text-center">
-            {{ item.finPrdtNm || "상품명 없음" }}
-          </h3>
+            <!-- 대출 상품명 -->
+            <h3 class="text-lg font-semibold mb-2 text-center">
+              {{ item.finPrdtNm || "상품명 없음" }}
+            </h3>
 
-          <!-- 대출 상세 정보 -->
-          <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
-            <p>최소 금리: {{ item.lendRateMin || 0 }}%</p>
-            <p>최대 금리: {{ item.lendRateMax || 0 }}%</p>
-            <p>대출 금리 유형: {{ item.lendRateTypeNm || "정보 없음" }}</p>            
+            <!-- 대출 상세 정보 -->
+            <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
+              <p>최소 금리: {{ item.lendRateMin || 0 }}%</p>
+              <p>최대 금리: {{ item.lendRateMax || 0 }}%</p>
+              <p>대출 금리 유형: {{ item.lendRateTypeNm || "정보 없음" }}</p>            
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 

@@ -32,11 +32,11 @@ export default {
       const endDate = new Date(item.rceptEndde);
 
       if (endDate.toDateString() === today.toDateString()) {
-        return "border border-red-500";
+        return "border-2 border-red-500";
       } else if (startDate <= today && endDate >= today) {
-        return "border border-[#0E429D]";
+        return "border-2 border-[#0E429D]";
       } else {
-        return "border border-gray-400";
+        return "border-2 border-gray-400";
       }
     };
 
@@ -118,7 +118,7 @@ export default {
           <div
               v-if="item.houseDtlSecd"
               class="text-sm bg-gray-100 rounded-full px-3 py-1 inline-block mb-2 text-center"
-              style="background-color: #C1D5F9; color: white;"
+              style="background-color: #0E429D; color: white;"
               >
               {{ item.houseDtlSecd }}
             </div>
@@ -174,12 +174,14 @@ export default {
 
 <style scoped>
 .card {
-  min-width: 300px;
-  max-width: 300px;
-  min-height: 300px;
+  min-width: 300px; 
+  max-width: 350px; 
+  min-height: 320px;
+  max-height: 350px; 
   text-align: center;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  margin: 0 auto; 
 }
 
 .card:hover {
@@ -187,19 +189,17 @@ export default {
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
+/* 모바일 반응형 */
 @media (max-width: 768px) {
   .section {
     padding: 0 1rem;
   }
   .card {
-    width: 100%;
+    width: 318px;
     margin: 0 auto;
+    height: 320px;
   }
 }
+
 </style>
 

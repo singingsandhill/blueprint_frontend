@@ -28,7 +28,7 @@ const filterType = async (type) => {
         >
           <img
             src="@/assets/policyType/job1.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />
           일자리 (창업)
         </button>
@@ -40,7 +40,7 @@ const filterType = async (type) => {
         >
           <img
             src="@/assets/policyType/job2.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />
           일자리 (취업)
         </button>
@@ -49,7 +49,7 @@ const filterType = async (type) => {
         <button @click="filterType('건강')" class="text-darkBlue font-bold">
           <img
             src="@/assets/policyType/health.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />
           건강
         </button>
@@ -58,7 +58,7 @@ const filterType = async (type) => {
         <button @click="filterType('교육')" class="text-darkBlue font-bold">
           <img
             src="@/assets/policyType/education.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />
           교육
         </button>
@@ -67,7 +67,7 @@ const filterType = async (type) => {
         <button @click="filterType('금융')" class="text-darkBlue font-bold">
           <img
             src="@/assets/policyType/finance.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />금융
         </button>
       </span>
@@ -75,7 +75,7 @@ const filterType = async (type) => {
         <button @click="filterType('문화')" class="text-darkBlue font-bold">
           <img
             src="@/assets/policyType/culture.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />문화
         </button>
       </span>
@@ -83,7 +83,7 @@ const filterType = async (type) => {
         <button @click="filterType('복지')" class="text-darkBlue font-bold">
           <img
             src="@/assets/policyType/welfare.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />복지
         </button>
       </span>
@@ -94,7 +94,7 @@ const filterType = async (type) => {
         >
           <img
             src="@/assets/policyType/residence.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />주거비 지원
         </button>
       </span>
@@ -102,7 +102,7 @@ const filterType = async (type) => {
         <button @click="filterType('주택공급')" class="text-darkBlue font-bold">
           <img
             src="@/assets/policyType/housing.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />주택공급
         </button>
       </span>
@@ -110,7 +110,7 @@ const filterType = async (type) => {
         <button @click="filterType('참여')" class="text-darkBlue font-bold">
           <img
             src="@/assets/policyType/participation.png"
-            class="w-20 h-20 object-contain"
+            class="w-16 h-16 object-contain"
           />참여
         </button>
       </span>
