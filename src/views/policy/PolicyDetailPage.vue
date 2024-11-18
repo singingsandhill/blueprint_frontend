@@ -58,7 +58,10 @@ onUnmounted(() => {
 });
 
 const handleScroll = () => {
-  if (window.scrollY >= headerHeight.value) {
+  const scrollPosition = window.scrollY;
+  const additionalOffset = 20; // 네브바와의 추가 여백
+
+  if (scrollPosition >= headerHeight.value + additionalOffset) {
     isFixed.value = true;
   } else {
     isFixed.value = false;
@@ -250,18 +253,16 @@ const formatPolicySubject = (text) => {
       </div>
 
       <!-- 오른쪽 네비게이션 (모바일에서는 숨기기) -->
-      <div
-        :class="['right-nav', { fixed: isFixed }]"
-        :style="{ top: isFixed ? headerHeight + '500px' : 'auto' }"
-      >
+      <div class="right-nav" :style="{ top: `${headerHeight}px` }">
         <div class="aside border-l pl-4">
           <p>
             <a
               href="javascript:void(0)"
               @click="scrollToTop"
               :class="{ 'active-link': activeSection === 'top' }"
-              >이 페이지의 구성</a
             >
+              이 페이지의 구성
+            </a>
           </p>
           <nav class="mt-4">
             <ul class="lnb space-y-2">
@@ -272,16 +273,18 @@ const formatPolicySubject = (text) => {
                   :class="{
                     'active-link': activeSection === 'business-overview',
                   }"
-                  >사업 개요</a
                 >
+                  사업 개요
+                </a>
               </li>
               <li>
                 <a
                   href="javascript:void(0)"
                   @click="scrollToSection('eligibility')"
                   :class="{ 'active-link': activeSection === 'eligibility' }"
-                  >신청 자격</a
                 >
+                  신청 자격
+                </a>
               </li>
               <li>
                 <a
@@ -290,8 +293,9 @@ const formatPolicySubject = (text) => {
                   :class="{
                     'active-link': activeSection === 'application-method',
                   }"
-                  >신청 방법</a
                 >
+                  신청 방법
+                </a>
               </li>
               <li>
                 <a
@@ -300,8 +304,9 @@ const formatPolicySubject = (text) => {
                   :class="{
                     'active-link': activeSection === 'required-documents',
                   }"
-                  >제출 서류</a
                 >
+                  제출 서류
+                </a>
               </li>
             </ul>
           </nav>
@@ -328,15 +333,15 @@ const formatPolicySubject = (text) => {
 }
 
 .right-nav {
-  position: absolute;
-  top: 0;
+  position: sticky;
+  top: 20px; /* 상단에서의 초기 고정 위치 */
   right: 0;
   width: 20%;
   background-color: #fff;
   z-index: 10;
   padding-top: 20px;
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
+  max-height: calc(100vh - 80px); /* 화면에서 넘치지 않도록 제한 */
+  overflow-y: auto; /* 내부 스크롤 허용 */
 }
 
 .section-title {

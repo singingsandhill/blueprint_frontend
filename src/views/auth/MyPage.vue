@@ -38,26 +38,6 @@ const cities = ref(null);
 const districts = ref(null);
 const locals = ref(null);
 
-// const regions = [
-//   "서울",
-//   "부산",
-//   "대구",
-//   "인천",
-//   "광주",
-//   "대전",
-//   "울산",
-//   "세종",
-//   "경기",
-//   "강원",
-//   "충북",
-//   "충남",
-//   "전북",
-//   "전남",
-//   "경상북도",
-//   "경남",
-//   "제주",
-// ];
-
 function decodeJWT(token) {
   const payload = token.split(".")[1];
   const decodedPayload = JSON.parse(
@@ -207,13 +187,11 @@ onMounted(async () => {
 <template>
   <div class="max-w-3xl mx-auto mt-10 bg-white p-8 shadow-lg">
     <div class="flex justify-end mb-4">
-    <NotificationStatus />
-  </div>
+      <NotificationStatus />
+    </div>
     <div>
       <h2 class="text-xl font-semibold mb-2">기본정보</h2>
-      <p class="text-gray-600 text-sm mb-4">
-        재 로그인시에 반영됩니다.
-      </p>
+      <p class="text-gray-600 text-sm mb-4">재 로그인시에 반영됩니다.</p>
       <div class="flex items-center justify-between border-t border-b py-4">
         <span class="w-1/5 font-semibold">이메일</span>
         <input v-model="member.email" type="email" class="w-4/5" readOnly />
@@ -286,9 +264,7 @@ onMounted(async () => {
     </div>
 
     <h2 class="text-xl font-semibold mb-2 mt-10">추가 정보</h2>
-    <p class="text-gray-600 text-sm mb-4">
-      '나만의 서비스'에 반영됩니다.
-    </p>
+    <p class="text-gray-600 text-sm mb-4">'나만의 서비스'에 반영됩니다.</p>
     <div class="flex items-center justify-between border-t border-b py-4">
       <span class="w-1/5 font-semibold">지역</span>
       <select class="w-4/5 py-2" v-model="member.region">
@@ -336,8 +312,13 @@ onMounted(async () => {
       <select class="w-4/5 py-2" v-model="member.occupation">
         <option value="null" disabled>직업 선택</option>
         <option value="직장인">직장인</option>
-        <option value="사업가">사업가</option>
+        <option value="자영업">자영업</option>
+        <option value="(예비)창업자">(예비)창업자</option>
+        <option value="일용근로자">일용근로자</option>
+        <option value="단기근로자">단기근로자</option>
+        <option value="영농종사자">영농종사자</option>
         <option value="프리랜서">프리랜서</option>
+        <option value="무직">무직</option>
         <option value="취업 준비생">취업 준비생</option>
         <option value="학생">학생</option>
         <option value="기타">기타</option>

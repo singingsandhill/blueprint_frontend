@@ -407,18 +407,28 @@ onMounted(async () => {
     </div>
   </div>
   <div v-else>
-    <div class="text-center mt-20">
-      <p class="text-3xl font-semibold text-darkBlue mb-10">
-        로그인하지 않은 상태입니다.
-      </p>
-      <p class="text-xl text-darkBlue">
-        로그인하시면 맞춤형 정보를 확인할 수 있습니다.
-      </p>
+    <div class="relative">
+      <img src="@/assets/guestMyservice.png" class="w-full" />
       <div
-        class="text-base px-4 py-2 text-darkBlue rounded mt-4 underline cursor-pointer"
-        @click="$router.push({ name: 'login' })"
+        class="absolute inset-0 flex flex-col items-center justify-center text-center"
+        style="top: -200px"
       >
-        로그인 하러 가기
+        <p
+          class="text-3xl font-bold text-darkBlue mb-4 bg-opacity-70 px-4 py-2 rounded"
+        >
+          로그인하지 않은 상태입니다.
+        </p>
+        <p
+          class="text-xl text-darkBlue font-semibold bg-opacity-70 px-4 py-2 rounded"
+        >
+          로그인하시면 맞춤형 정보를 확인할 수 있습니다.
+        </p>
+        <div
+          class="text-base px-4 py-2 text-darkBlue rounded mt-4 underline cursor-pointer bg-opacity-70"
+          @click="$router.push({ name: 'login' })"
+        >
+          로그인 하러 가기
+        </div>
       </div>
     </div>
   </div>
