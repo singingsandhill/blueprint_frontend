@@ -1,177 +1,276 @@
-<script>
-  import { ref, computed, onMounted } from "vue";
-  import { useNotificationStore } from "@/stores/notificationStore";
-  
-  export default {
-    setup() {
-      const notificationStore = useNotificationStore();
-      const activeTab = ref("dashboard");
-      const notifications = computed(() => {
-        if (activeTab.value === "dashboard") {
-          return [
-            ...notificationStore.userNotifications,
-            ...notificationStore.recommendedNotifications,
-          ];
-        } else if (activeTab.value === "user") {
-          return notificationStore.userNotifications;
-        } else if (activeTab.value === "recommended") {
-          return notificationStore.recommendedNotifications;
-        }
-        return [];
-      });
-  
-      const setActiveTab = (tab) => {
-        activeTab.value = tab;
-      };
-  
-      const deleteNotification = async (policyIdx) => {
-        const confirmDelete = confirm("정말로 이 알림을 삭제하시겠습니까?");
-        if (!confirmDelete) return;
-  
-        try {
-          await notificationStore.deleteNotification(policyIdx);
-          console.log("알림 삭제 성공");
-        } catch (error) {
-          console.error("알림 삭제 중 오류 발생:", error);
-        }
-      };
-  
-      onMounted(async () => {
-        await notificationStore.fetchNotificationDashboard();
-      });
-  
-      return {
-        activeTab,
-        notifications,
-        setActiveTab,
-        deleteNotification,
-      };
-    },
-  };
-  </script>
+<script setup>
+import { ref, computed, onMounted } from "vue";
+import { useNotificationStore } from "@/stores/notificationStore";
+
+const selectedTab = ref("dashboard"); // 기본 선택된 탭
+const notificationStore = useNotificationStore();
+
+const page = ref(0); // 현재 페이지
+const size = ref(10); // 한 페이지에 표시할 항목 수
+const totalPages = ref(0); // 전체 페이지 수
+const isLastPage = computed(() => page.value >= totalPages.value - 1);
+const isLoading = ref(false);
+
+// 페이지네이션 계산
+const displayedPages = computed(() => {
+  const visiblePageCount = 5;
+  const current = page.value;
+  const half = Math.floor(visiblePageCount / 2);
+  let start = current - half;
+  let end = current + half;
+
+  if (start < 0) {
+    start = 0;
+    end = Math.min(visiblePageCount - 1, totalPages.value - 1);
+  }
+  if (end >= totalPages.value) {
+    end = totalPages.value - 1;
+    start = Math.max(0, end - visiblePageCount + 1);
+  }
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+});
+
+// 현재 탭 데이터 가져오기
+const currentTabNotifications = computed(() => {
+  let allNotifications = [];
+
+  if (selectedTab.value === "dashboard") {
+    allNotifications = [
+      ...notificationStore.userNotifications,
+      ...notificationStore.recommendedNotifications,
+    ];
+  } else if (selectedTab.value === "user") {
+    allNotifications = notificationStore.userNotifications;
+  } else if (selectedTab.value === "recommended") {
+    allNotifications = notificationStore.recommendedNotifications;
+  }
+
+ 
+allNotifications.sort((a, b) => {
+  const today = new Date();
+  const aDate = a.applyEndDate === "상시" ? null : new Date(a.applyEndDate);
+  const bDate = b.applyEndDate === "상시" ? null : new Date(b.applyEndDate);
+
+  if (aDate && aDate < today && (!bDate || bDate >= today)) return 1;
+  if (bDate && bDate < today && (!aDate || aDate >= today)) return -1;
+
+  if (a.applyEndDate === "상시" && b.applyEndDate !== "상시") return 1;
+  if (b.applyEndDate === "상시" && a.applyEndDate !== "상시") return -1;
+
+  if (aDate && bDate) return bDate - aDate;
+
+  return 0;
+});
+
+  // 페이지네이션 데이터 계산
+  totalPages.value = Math.ceil(allNotifications.length / size.value);
+
+  // 현재 페이지 데이터 반환
+  const startIndex = page.value * size.value;
+  const endIndex = startIndex + size.value;
+  return allNotifications.slice(startIndex, endIndex);
+});
+
+// 탭 변경 처리
+const selectTab = (tab) => {
+  selectedTab.value = tab;
+  page.value = 0; // 페이지 초기화
+};
+
+// 페이지네이션: 이전 페이지
+const prevPage = () => {
+  if (page.value > 0) {
+    page.value--;
+  }
+};
+
+// 페이지네이션: 다음 페이지
+const nextPage = () => {
+  if (!isLastPage.value) {
+    page.value++;
+  }
+};
+
+// 특정 페이지로 이동
+const goToPage = (newPage) => {
+  page.value = newPage;
+};
+
+// 정책 삭제
+const deleteNotification = async (policyIdx) => {
+  const confirmDelete = confirm("정말로 삭제하시겠습니까?");
+  if (!confirmDelete) return;
+  try {
+    await notificationStore.deleteNotification(policyIdx);
+    console.log(`정책 ${policyIdx} 삭제 완료`);
+  } catch (error) {
+    console.error("정책 삭제 중 오류 발생:", error);
+  }
+};
+
+// 컴포넌트 마운트 시 데이터 로드
+onMounted(async () => {
+  await notificationStore.fetchNotificationDashboard();
+});
+</script>
 
 <template>
-    <div class="notification-summary">
-      <!-- 타이틀 -->
-      <header class="title-container flex justify-center sm:justify-between items-center py-4">
-        <h2 class="text-lg font-bold text-center">알림 모아보기</h2>
-        <nav class="tabs flex space-x-4 text-sm">
-          <button
-            class="tab-button"
-            :class="{ 'active-tab': activeTab === 'dashboard' }"
-            @click="setActiveTab('dashboard')"
-          >
-            전체 목록
-          </button>
-          <button
-            class="tab-button"
-            :class="{ 'active-tab': activeTab === 'user' }"
-            @click="setActiveTab('user')"
-          >
-            설정 알림
-          </button>
-          <button
-            class="tab-button"
-            :class="{ 'active-tab': activeTab === 'recommended' }"
-            @click="setActiveTab('recommended')"
-          >
-            추천 알림
-          </button>
-        </nav>
-      </header>
-  
-      <!-- 알림 목록 -->
-      <div class="notification-list py-6 px-4">
-        <ul v-if="notifications.length">
-          <li
-            v-for="notification in notifications"
-            :key="notification.policyIdx"
-            class="notification-item flex items-center border-b pb-4 mb-4"
-          >
-            <!-- 정책 이름 및 날짜 -->
-            <div class="notification-details flex-1 flex justify-between items-center pr-4">
-              <p class="policy-name text-lg font-semibold">{{ notification.policyName }}</p>
-              <p class="apply-date text-sm text-gray-500">{{ notification.applyEndDate }}</p>
-            </div>
-  
-            <!-- 삭제 버튼 -->
-            <button
-              class="delete-button text-red-500 hover:text-red-700 text-sm"
-              @click="deleteNotification(notification.policyIdx)"
-            >
+  <h2 class="text-2xl font-bold mb-4 text-[20px]">알림 모아보기</h2>
+  <div class="flex border-t-4 border-darkBlue py-4"></div>
+  <div class="notification-container mx-auto p-4 max-w-screen-lg">
+    <!-- Tabs -->
+    <nav class="tabs flex space-x-4 mb-4">
+      <button
+        class="tab-button"
+        :class="{ active: selectedTab === 'dashboard' }"
+        @click="selectTab('dashboard')"
+      >
+        전체 목록
+      </button>
+      <button
+        class="tab-button"
+        :class="{ active: selectedTab === 'user' }"
+        @click="selectTab('user')"
+      >
+        설정 알림
+      </button>
+      <button
+        class="tab-button"
+        :class="{ active: selectedTab === 'recommended' }"
+        @click="selectTab('recommended')"
+      >
+        추천 알림
+      </button>
+    </nav>
+
+    <!-- Notification List -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+              알림 이름
+            </th>
+            <th class="py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+              마감일
+            </th>
+            <th class="px-3 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">
               삭제
-            </button>
-          </li>
-        </ul>
-        <p v-else class="text-center text-gray-500">표시할 알림이 없습니다.</p>
-      </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr
+            v-for="notification in currentTabNotifications"
+            :key="notification.policyIdx"
+            class="hover:bg-gray-50"
+            @click="$router.push(`/policy/detail/${notification.policyIdx}`)"
+          >
+            <td class="px-3 py-4 text-sm font-medium text-gray-900">
+              {{ notification.policyName }}
+            </td>
+            <td class="py-4 text-sm text-gray-500">
+              {{ notification.applyEndDate === "상시" ? "상시" : notification.applyEndDate }}
+            </td>
+            <td class="px-2 py-4 text-right text-sm">
+              <div class="delete-wrapper flex items-center justify-end space-x-2">
+              <button
+                class="text-red-500 hover:text-red-700"
+                @click.stop="deleteNotification(notification.policyIdx)"
+              >
+                삭제
+              </button>
+            </div>
+            </td>
+          </tr>
+          <tr v-if="currentTabNotifications.length === 0">
+            <td colspan="3" class="text-center py-6 text-sm text-gray-500">
+              알림이 없습니다.
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </template>
-  
-  <style scoped>
-  .notification-summary {
-    max-width: 1200px; 
-    margin: 0 auto;
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-4 space-x-2">
+      <button class="pagination-button" @click="prevPage" :disabled="page === 0">
+        이전
+      </button>
+      <button
+        v-for="p in displayedPages"
+        :key="p"
+        @click="goToPage(p)"
+        :class="{ 'pagination-button active': page === p, 'pagination-button': true }"
+      >
+        {{ p + 1 }}
+      </button>
+      <button class="pagination-button" @click="nextPage" :disabled="isLastPage">
+        다음
+      </button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.notification-container {
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.tabs {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.tab-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9em;
+  color: #333;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.tab-button.active {
+  font-weight: bold;
+  color: #0056b3;
+  border-bottom: 2px solid #0056b3;
+}
+
+.pagination-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.pagination-button:hover {
+  background-color: #f5f5f5;
+}
+
+.pagination-button:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  color: #999;
+}
+
+.pagination-button.active {
+  background-color: #0d223d;
+  color: white;
+  border-color: #0d223d;
+}
+
+.delete-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .delete-wrapper {
+    justify-content: flex-start;
   }
-  
-  .title-container {
-    border-bottom: 1px solid #e5e5e5;
-  }
-  
-  .tabs .tab-button {
-    padding: 8px 16px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: #555;
-  }
-  
-  .tabs .tab-button.active-tab {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
-    font-weight: bold;
-  }
-  
-  .notification-list {
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 16px;
-  }
-  
-  .notification-item {
-    display: flex;
-    align-items: center; 
-  }
-  
-  .notification-details {
-    flex: 1; 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .policy-name {
-    font-size: 1rem;
-    font-weight: 600;
-  }
-  
-  .apply-date {
-    color: #888;
-    font-size: 0.875rem;
-  }
-  
-  .delete-button {
-    font-size: 0.875rem;
-    cursor: pointer;
-    margin-left: 1rem; 
-  }
-  
-  @media (max-width: 768px) {
-    .notification-details {
-      flex-direction: column; 
-      align-items: flex-start;
-    }
-  }
-  </style>
-  
+}
+</style>

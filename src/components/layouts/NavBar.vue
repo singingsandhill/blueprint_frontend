@@ -126,12 +126,13 @@ const handleLogout = () => {
       class="fixed inset-0 bg-[#002842] text-white z-50 flex flex-col p-6 space-y-4 overflow-hidden"
     >
       <div class="w-full flex flex-col items-center space-y-4 mb-4">
+        <!-- Close Button -->
         <button
           class="text-white text-2xl self-end"
           @click="toggleNavShow"
           aria-label="Close menu"
         >
-          <i class="fas fa-times"></i>
+          <span aria-hidden="true">×</span> <!-- 닫기 아이콘 -->
         </button>
 
         <router-link to="/" class="flex items-center" @click="toggleNavShow">
@@ -147,12 +148,11 @@ const handleLogout = () => {
           <strong>로그인을 해 주세요</strong>
         </router-link>
         <span v-else class="text-white mb-8">
-  <router-link to="/member/mypage" class="text-white"
-  @click="toggleNavShow">
-    <strong>{{ memberName }} 님</strong>
-  </router-link>
-</span>
-
+          <router-link to="/member/mypage" class="text-white"
+            @click="toggleNavShow">
+            <strong>{{ memberName }} 님</strong>
+          </router-link>
+        </span>
       </div>
 
       <!-- 모바일 메뉴 항목 리스트 -->

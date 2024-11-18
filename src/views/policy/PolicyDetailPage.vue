@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import { usePolicyStore } from "@/stores/policy";
 import ShareButton from "@/components/kakao/ShareButton.vue";
 import UrlCopyIcon from "@/assets/url_copy.svg";
+import MemberNotification from '@/components/notification/MemberNotification.vue';
 
 const route = useRoute();
 const policyStore = usePolicyStore();
@@ -118,13 +119,14 @@ const formatPolicySubject = (text) => {
 </script>
 
 <template>
-  <div class="contentsWrap mw_wrap p-4">
+   <div class="contentsWrap mw_wrap p-4">
     <!-- 제목 -->
     <div class="flex justify-between items-center mb-10">
       <h2 id="page-title" class="text-3xl font-bold">
         {{ policyListItem?.name }}
       </h2>
       <div class="flex space-x-2">
+        <MemberNotification :policyIdx="policyListItem?.idx" />
         <ShareButton
           :title="policyListItem?.name"
           :description="policyDetail?.subject"
@@ -374,6 +376,19 @@ const formatPolicySubject = (text) => {
 .right-nav a:hover,
 .right-nav a.active-link {
   color: #0e429d;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+}
+
+button.liked {
+  color: red;
+}
+
+button:not(.liked) {
+  color: gray;
 }
 
 @media (max-width: 640px) {
