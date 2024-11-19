@@ -177,59 +177,6 @@ onMounted(async () => {
         </table>
       </div>
 
-      <div class="mx-auto p-8 max-w-5xl">
-        <p class="text-3xl font-bold mb-6 text-[32px] text-center">청약</p>
-        <div class="flex border-t-4 border-darkBlue py-6"></div>
-        <div
-          v-if="subscriptionList.length === 0"
-          class="text-2xl font-semibold text-center"
-        >
-          {{ memberName }}님의 조건에 해당하는 청약이 없습니다.
-        </div>
-        <div v-else class="flex justify-center space-x-12 text-center">
-          <div
-            v-for="subscription in subscriptionList.slice(0, 2)"
-            :key="subscription"
-            class="relative bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
-          >
-            <span
-              class="absolute top-0 left-6 -translate-y-1/2 bg-lightBlue text-black text-base font-semibold px-4 py-2 rounded-md"
-            >
-              청약 정보
-            </span>
-            <p class="text-2xl font-bold mb-6 text-center">
-              {{ subscription.name }}
-            </p>
-            <p class="text-gray-700 mb-4 text-lg">
-              {{ subscription.region }} {{ subscription.city }}
-            </p>
-            <p class="text-gray-700 mb-4 text-lg">
-              {{ subscription.district }} {{ subscription.detail }}
-            </p>
-            <p class="text-gray-700 mb-4 text-lg">
-              {{ subscription.rentSecd }}
-            </p>
-            <p class="text-gray-700 mb-4 text-lg">
-              {{ subscription.houseDtlSecdNm }} /
-              {{ subscription.houseDtlSecd }}
-            </p>
-            <p class="text-gray-700 font-bold underline text-lg">
-              {{ formatDate(subscription.rceptBgnde) }} ~
-              {{ formatDate(subscription.rceptEndde) }}
-            </p>
-            <p class="mt-4 text-right font-semibold">
-              <a
-                :href="subscription.pblancUrl"
-                class="text-blue-500 underline"
-                target="_blank"
-                rel="noopener noreferrer"
-                >상세 정보</a
-              >
-            </p>
-          </div>
-        </div>
-      </div>
-
       <div class="mx-auto p-4 max-w-4xl">
         <p class="text-2xl font-bold mb-4 text-[28px] text-center">청약</p>
         <div class="flex border-t-4 border-darkBlue py-4"></div>
@@ -241,7 +188,7 @@ onMounted(async () => {
             v-for="subscription in subscriptionList"
             :key="subscription"
             :value="subscription"
-            class="relative bg-white p-6 rounded-lg shadow-md w-[320px] text-center"
+            class="relative bg-white p-6 rounded-lg shadow-md w-[400px] text-center"
           >
             <p class="text-xl font-bold mb-4 text-center underline">
               {{ subscription.name }}
@@ -274,81 +221,79 @@ onMounted(async () => {
             </p>
           </div>
         </div>
-        <div class="mx-auto p-8 max-w-5xl">
-          <p class="text-3xl font-bold mb-6 text-[32px] text-center">금융</p>
-          <div class="flex border-t-4 border-darkBlue py-6"></div>
+      </div>
 
-          <div class="flex justify-center space-x-12 text-center">
-            <div
-              class="relative bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
-            >
-              <span
-                class="absolute top-0 left-6 -translate-y-1/2 bg-lightBlue text-black text-base font-semibold px-4 py-2 rounded-md"
-              >
-                예금 BEST
-              </span>
-              <p class="text-2xl font-bold mb-6 text-center">
-                {{ filterSavings.finPrdtNm }}
-              </p>
-              <div>
-                <img
-                  src="@/assets/bank/busanbank.png"
-                  alt="부산은행 로고"
-                  class="w-36 h-auto mx-auto mb-6"
-                />
-              </div>
-              <p class="text-gray-700 mb-4 text-lg">
-                가입 가능 대상 : {{ filterSavings.joinMember }}
-              </p>
-              <p class="text-gray-700 mb-4 text-lg">
-                가입 방법 : {{ filterSavings.joinWay }}
-              </p>
-              <p class="text-gray-700 mb-4 text-lg">
-                {{ filterSavings.intrRateNm }} /
-                <span> {{ filterSavings.saveTrm }} 개월 </span>
-              </p>
-              <p class="text-gray-700 font-bold underline text-lg">
-                최대 연 {{ filterSavings.intrRate2 }}%
-              </p>
-            </div>
+      <div class="mx-auto p-8 max-w-5xl">
+        <p class="text-3xl font-bold mb-6 text-[32px] text-center">금융</p>
+        <div class="flex border-t-4 border-darkBlue py-6"></div>
 
-            <div
-              class="relative bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
+        <div class="flex justify-center space-x-12 text-center">
+          <div
+            class="relative bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
+          >
+            <span
+              class="absolute top-0 left-6 -translate-y-1/2 bg-lightBlue text-black text-base font-semibold px-4 py-2 rounded-md"
             >
-              <span
-                class="absolute top-0 left-6 -translate-y-1/2 bg-lightBlue text-black text-base font-semibold px-4 py-2 rounded-md"
-              >
-                대출 BEST
-              </span>
-              <p class="text-2xl font-bold mb-6 text-center">
-                {{ filterLoan.korCoNm }}
-              </p>
-              <p class="text-gray-700 font-semibold mb-4 text-lg">
-                {{ filterLoan.finPrdtNm }}
-              </p>
-              <p class="text-gray-700 mb-4 text-lg">
-                가입 방법 : {{ filterLoan.joinWay }}
-              </p>
-              <p class="text-gray-700 mb-4 text-lg">
-                한도 : {{ filterLoan.loanLmt }}
-              </p>
-              <p
-                v-if="filterLoan.mrtgTypeNm"
-                class="text-gray-700 mb-4 text-lg"
-              >
-                담보 유형 : {{ filterLoan.mrtgTypeNm }}
-              </p>
-              <p class="text-gray-700 mb-4 text-lg">
-                {{ filterLoan.lendRateTypeNm }}
-                <span> / {{ filterLoan.rpayTypeNm }} </span>
-              </p>
-              <p class="text-gray-700 font-bold underline text-lg">
-                최저 연 {{ filterLoan.lendRateMin }}%
-                <span class="text-gray-700 font-bold underline">
-                  ~ 최고 연 {{ filterLoan.lendRateMax }}%
-                </span>
-              </p>
+              예금 BEST
+            </span>
+            <p class="text-2xl font-bold mb-6 text-center">
+              {{ filterSavings.finPrdtNm }}
+            </p>
+            <div>
+              <img
+                src="@/assets/bank/busanbank.png"
+                alt="부산은행 로고"
+                class="w-36 h-auto mx-auto mb-6"
+              />
             </div>
+            <p class="text-gray-700 mb-4 text-lg">
+              가입 가능 대상 : {{ filterSavings.joinMember }}
+            </p>
+            <p class="text-gray-700 mb-4 text-lg">
+              가입 방법 : {{ filterSavings.joinWay }}
+            </p>
+            <p class="text-gray-700 mb-4 text-lg">
+              {{ filterSavings.intrRateNm }} /
+              <span> {{ filterSavings.saveTrm }} 개월 </span>
+            </p>
+            <p class="text-gray-700 font-bold underline text-lg">
+              최대 연 {{ filterSavings.intrRate2 }}%
+            </p>
+          </div>
+
+          <div
+            class="relative bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
+          >
+            <span
+              class="absolute top-0 left-6 -translate-y-1/2 bg-lightBlue text-black text-base font-semibold px-4 py-2 rounded-md"
+            >
+              대출 BEST
+            </span>
+            <p class="text-2xl font-bold mb-6 text-center">
+              {{ filterLoan.korCoNm }}
+            </p>
+            <p class="text-gray-700 font-semibold mb-4 text-lg">
+              {{ filterLoan.finPrdtNm }}
+            </p>
+            <p class="text-gray-700 mb-4 text-lg">
+              가입 방법 : {{ filterLoan.joinWay }}
+            </p>
+            <p class="text-gray-700 mb-4 text-lg">
+              한도 : {{ filterLoan.loanLmt }}
+            </p>
+            <p v-if="filterLoan.mrtgTypeNm" class="text-gray-700 mb-4 text-lg">
+              담보 유형 : {{ filterLoan.mrtgTypeNm }}
+            </p>
+            <p class="text-gray-700 mb-4 text-lg">
+              {{ filterLoan.lendRateTypeNm }}
+              <span> / {{ filterLoan.rpayTypeNm }} </span>
+            </p>
+            <p class="text-gray-700 font-bold underline text-lg">
+              최저 연 {{ filterLoan.lendRateMin }}%
+              <span class="text-gray-700 font-bold underline">
+                ~ 최고 연 {{ filterLoan.lendRateMax }}%
+              </span>
+            </p>
           </div>
         </div>
       </div>
