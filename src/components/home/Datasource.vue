@@ -29,6 +29,18 @@ import bizinfo from '@/assets/datasource/bizinfo.png';
             </div>
         </div>
 
+        <div class="card relative border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 flex flex-col">
+            <!-- 정책정보를 카드 상단에 고정 -->
+            <!--<div class="text-sm rounded-full px-3 py-1 mb-4 text-center limited-width" style="background-color: #C1D5F9; color: white;">-->
+            <!--    정책정보-->
+            <!--</div>-->
+
+            <!-- 중앙 정렬을 위한 flex 설정 -->
+            <div class="flex flex-1 justify-center items-center">
+                <img :src="bizinfo" alt="Bank Logo" class="object-contain" style="max-width: 400px; max-height: 200px;" />
+            </div>
+        </div>
+
         <div class="card relative border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4" >
             <div class="content-wrapper">
                 <div class="text-sm rounded-full px-3 py-1 mb-2 text-center limited-width" style="background-color: #C1D5F9; color: white;">
@@ -114,8 +126,8 @@ import bizinfo from '@/assets/datasource/bizinfo.png';
   align-self: center; /* flex 배치에서 중앙 정렬 */
 }
 .card {
-  min-height: 300px;
-  height: 100%;
+  /*min-height: 300px;*/
+  /*height: 100%;*/
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 8px;
