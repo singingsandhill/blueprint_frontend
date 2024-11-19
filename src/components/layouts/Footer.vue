@@ -2,9 +2,9 @@
 
 <template>
   <footer class="footer w-full bg-gray-50 py-8 border-t border-gray-200">
-    <div class="mx-auto px-4 flex items-center justify-between">
-      <div class="flex flex-1 mx-4 justify-between items-center">
-        <div class="flex space-x-6 text-sm text-gray-600">
+    <div class="flex flex-col sm:flex-row flex-1 mx-4 justify-center sm:justify-between items-center sm:items-start text-center sm:text-left">
+      <div class="flex flex-1 mx-4 justify-between items-center sm:items-center sm:text-center">
+        <div class="flex space-x-6 text-sm text-gray-600 sm:items-center sm:text-center">
           <a href="#" class="hover:text-blue-600 font-bold">Chapter 1</a>
           <router-link to="/privacy-policy" class="text-gray-600 hover:text-blue-700">
             개인정보처리방침
@@ -13,40 +13,6 @@
             이용약관
           </router-link>
         </div>
-
-        <div class="flex space-x-6">
-          <a
-            href="https://github.com/Chapter-1/frontend"
-            target="_blank"
-            class="hover:opacity-80"
-          >
-            <div
-              class="bg-green-500 rounded-full shadow-md w-8 h-8 flex items-center justify-center"
-            >
-              <img
-                src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-                alt="GitHub Logo Front"
-                class="rounded-full w-6 h-6"
-              />
-            </div>
-          </a>
-          <a
-            href="https://github.com/Chapter-1/backend"
-            target="_blank"
-            class="hover:opacity-80"
-          >
-            <div
-              class="bg-orange-500 rounded-full shadow-md w-8 h-8 flex items-center justify-center"
-            >
-              <img
-                src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-                alt="GitHub Logo Backend"
-                class="rounded-full w-6 h-6"
-              />
-            </div>
-          </a>
-        </div>
-
       </div>
     </div>
 
