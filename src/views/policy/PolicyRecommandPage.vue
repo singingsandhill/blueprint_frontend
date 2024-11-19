@@ -1,8 +1,10 @@
 <script setup>
 import FilterSection from "@/components/home/FilterSection.vue";
+import { useRoute } from "vue-router";
 import { usePolicyStore } from "@/stores/policy.js";
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 
+const route = useRoute();
 const policyStore = usePolicyStore();
 const policyList = ref([]);
 
@@ -55,6 +57,10 @@ const nextPageGroup = () => {
 const formatDate = (dateString) => {
   if (!dateString) return "";
   const date = new Date(dateString);
+  const year = date.getFullYear();
+  if (year > 2030) {
+    return "예산 소진 시까지";
+  }
   return date.toISOString().split("T")[0];
 };
 
@@ -63,23 +69,25 @@ const updatePolicyList = () => {
 };
 
 onMounted(() => {
-  window.addEventListener("filters-applied", updatePolicyList);
-
   const savedPage = localStorage.getItem("page");
-  if (savedPage) {
+  if (savedPage && (route.name === "policy" || route.name === "PolicyDetail")) {
     currentPage.value = parseInt(savedPage, 10);
   }
+
+  window.addEventListener("filters-applied", updatePolicyList);
 });
 
 onBeforeUnmount(() => {
+  if (route.name !== "policy" && route.name !== "PolicyDetail") {
+    localStorage.removeItem("page");
+  }
+
   window.removeEventListener("filters-applied", updatePolicyList);
 });
 </script>
 
 <template>
-  <div class="flex flex-col items-center w-full max-w-8xl">
-    <FilterSection immediateApply />
-  </div>
+  <FilterSection immediateApply />
   <div class="mx-auto p-4 w-full max-w-8xl">
     <p class="text-2xl font-bold mb-4 text-[32px]">정책 정보</p>
     <div class="flex border-t-4 border-darkBlue py-4"></div>
@@ -111,11 +119,11 @@ onBeforeUnmount(() => {
             {{ policy.name }}
           </p>
           <span class="text-gray-600 text-sm">
-            {{ formatDate(policy.startDate) }}
+            {{ formatDate(policy.applyStartDate) }}
           </span>
           <span> ~ </span>
           <span class="text-gray-600 text-sm">
-            {{ formatDate(policy.startDate) }}
+            {{ formatDate(policy.applyEndDate) }}
           </span>
         </div>
       </li>
