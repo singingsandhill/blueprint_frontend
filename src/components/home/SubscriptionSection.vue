@@ -19,24 +19,86 @@ export default {
     };
 
     const filteredSubscriptionList = computed(() => {
-      return subscriptionList.value
-        .filter((item) => {
-          const endDate = new Date(item.rceptEndde);
-          return endDate >= today && endDate <= oneWeekLater;
-        })
-        .sort((a, b) => new Date(a.rceptEndde) - new Date(b.rceptEndde));
-    });
+  console.log("Original Subscription List:", subscriptionList.value);
+
+  // 오늘 날짜 확인
+  console.log("Today's Date:", today);
+
+  // 날짜 비교 함수
+  const isSameDay = (date1, date2) => {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  };
+
+  // 1. 필터링: 일주일 내 종료되는 항목만 선택
+  const filteredList = subscriptionList.value.filter((item) => {
+    const endDate = new Date(item.rceptEndde);
+    return endDate >= today && endDate <= oneWeekLater;
+  });
+
+  console.log("Filtered Subscription List:", filteredList);
+
+  // 2. 정렬
+  const sortedList = filteredList.sort((a, b) => {
+    const endDateA = new Date(a.rceptEndde);
+    const endDateB = new Date(b.rceptEndde);
+    const startDateA = new Date(a.rceptBgnde);
+    const startDateB = new Date(b.rceptBgnde);
+
+    // 현재 날짜 비교
+    const isTodayA = isSameDay(endDateA, today);
+    const isTodayB = isSameDay(endDateB, today);
+
+    const isOngoingA = today >= startDateA && today <= endDateA; // 진행 중 여부
+    const isOngoingB = today >= startDateB && today <= endDateB;
+
+    const isNotStartedA = today < startDateA; // 아직 시작하지 않은 항목
+    const isNotStartedB = today < startDateB;
+
+    // 디버깅: 비교 중인 항목 출력
+    console.log("Comparing Items:");
+    console.log(`A: ${a.name}, Start Date: ${startDateA}, End Date: ${endDateA}, IsToday: ${isTodayA}, IsOngoing: ${isOngoingA}, IsNotStarted: ${isNotStartedA}`);
+    console.log(`B: ${b.name}, Start Date: ${startDateB}, End Date: ${endDateB}, IsToday: ${isTodayB}, IsOngoing: ${isOngoingB}, IsNotStarted: ${isNotStartedB}`);
+
+    // 1. 마감일이 오늘인 항목 우선
+    if (isTodayA && !isTodayB) return -1;
+    if (!isTodayA && isTodayB) return 1;
+
+    // 2. 진행 중인 항목 우선
+    if (isOngoingA && !isOngoingB) return -1;
+    if (!isOngoingA && isOngoingB) return 1;
+
+    // 3. 시작하지 않은 항목과 이미 마감된 항목은 마지막에 배치
+    if (isNotStartedA && !isNotStartedB) return 1;
+    if (!isNotStartedA && isNotStartedB) return -1;
+
+    // 4. 시작일 기준 최신순
+    if (startDateA > startDateB) return -1;
+    if (startDateA < startDateB) return 1;
+
+    // 5. 동일한 시작일의 경우 종료일 기준 정렬 (오름차순)
+    return endDateA - endDateB;
+  });
+
+  console.log("Sorted Subscription List:", sortedList);
+
+  return sortedList;
+});
+
 
     const getBorderStyle = (item) => {
       const startDate = new Date(item.rceptBgnde);
       const endDate = new Date(item.rceptEndde);
 
       if (endDate.toDateString() === today.toDateString()) {
-        return "border border-red-500";
+        return "border-2 border-red-500";
       } else if (startDate <= today && endDate >= today) {
-        return "border border-[#0E429D]";
+        return "border-2 border-[#0E429D]";
       } else {
-        return "border border-gray-400";
+        return "border-2 border-gray-400";
       }
     };
 
@@ -118,7 +180,7 @@ export default {
           <div
               v-if="item.houseDtlSecd"
               class="text-sm bg-gray-100 rounded-full px-3 py-1 inline-block mb-2 text-center"
-              style="background-color: #C1D5F9; color: white;"
+              style="background-color: #0E429D; color: white;"
               >
               {{ item.houseDtlSecd }}
             </div>
@@ -174,12 +236,14 @@ export default {
 
 <style scoped>
 .card {
-  min-width: 300px;
-  max-width: 300px;
-  min-height: 300px;
+  min-width: 300px; 
+  max-width: 350px; 
+  min-height: 320px;
+  max-height: 350px; 
   text-align: center;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  margin: 0 auto; 
 }
 
 .card:hover {
@@ -187,19 +251,17 @@ export default {
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
+/* 모바일 반응형 */
 @media (max-width: 768px) {
   .section {
     padding: 0 1rem;
   }
   .card {
-    width: 100%;
+    width: 318px;
     margin: 0 auto;
+    height: 320px;
   }
 }
+
 </style>
 

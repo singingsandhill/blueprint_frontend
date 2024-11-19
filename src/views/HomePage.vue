@@ -7,7 +7,8 @@ import PolicySection from "@/components/home/PolicySection.vue";
 import SubscriptionSection from "@/components/home/SubscriptionSection.vue";
 import FinanceSection from "@/components//home/FinanceSection.vue";
 import BannerSlider from "@/components/home/BannerSlider.vue";
-import TypeFilter from "@/components/home/TypeFilterSection.vue";
+import TypeFilter from "@/components/home/TypeFilterSection.vue"
+import Datasource from "@/components/home/Datasource.vue";
 
 const router = useRouter();
 
@@ -26,17 +27,19 @@ const handleFilterApplied = () => {
 
 <template>
   <div>
-    <TypeFilter />
-  </div>
-  <div>
     <BannerSlider />
   </div>
-  <FilterSection
-    @filterChanged="handleFilterChanged"
-    @filterApplied="handleFilterApplied"
-    class="w-[95%] mx-auto mb-20"
-  />
-  <div class="homepage container mx-auto p-4">
+  <div>
+    <TypeFilter />
+  </div>
+
+  <div class="homepage mx-auto p-4">
+    <FilterSection
+      @filterChanged="handleFilterChanged"
+      @filterApplied="handleFilterApplied"
+      class=" mb-20"
+    />
+    
     <FilterResult
       v-if="searchExecuted"
       :filteredPolicies="filteredPolicies"
@@ -46,12 +49,13 @@ const handleFilterApplied = () => {
     <SubscriptionSection class="mb-20" />
     <FinanceSection class="mb-20" />
   </div>
+  <Datasource></Datasource>
 </template>
 
 <style scoped>
 .homepage {
   padding: 1rem;
-  max-width: 1350px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 

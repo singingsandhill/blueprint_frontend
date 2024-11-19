@@ -1,17 +1,21 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useNotificationStore } from "@/stores/notificationStore";
+import { usePolicyStore } from "@/stores/policy";
+import { useRouter } from "vue-router";
 
-const selectedTab = ref("dashboard"); // 기본 선택된 탭
+
+const router = useRouter(); 
+const selectedTab = ref("dashboard");
 const notificationStore = useNotificationStore();
+const policyStore = usePolicyStore(); 
 
-const page = ref(0); // 현재 페이지
-const size = ref(10); // 한 페이지에 표시할 항목 수
-const totalPages = ref(0); // 전체 페이지 수
+const page = ref(0); 
+const size = ref(10); 
+const totalPages = ref(0); 
 const isLastPage = computed(() => page.value >= totalPages.value - 1);
 const isLoading = ref(false);
 
-// 페이지네이션 계산
 const displayedPages = computed(() => {
   const visiblePageCount = 5;
   const current = page.value;
@@ -30,7 +34,6 @@ const displayedPages = computed(() => {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 });
 
-// 현재 탭 데이터 가져오기
 const currentTabNotifications = computed(() => {
   let allNotifications = [];
 
@@ -45,7 +48,6 @@ const currentTabNotifications = computed(() => {
     allNotifications = notificationStore.recommendedNotifications;
   }
 
- 
 allNotifications.sort((a, b) => {
   const today = new Date();
   const aDate = a.applyEndDate === "상시" ? null : new Date(a.applyEndDate);
@@ -62,41 +64,53 @@ allNotifications.sort((a, b) => {
   return 0;
 });
 
-  // 페이지네이션 데이터 계산
   totalPages.value = Math.ceil(allNotifications.length / size.value);
 
-  // 현재 페이지 데이터 반환
   const startIndex = page.value * size.value;
   const endIndex = startIndex + size.value;
   return allNotifications.slice(startIndex, endIndex);
 });
 
-// 탭 변경 처리
 const selectTab = (tab) => {
   selectedTab.value = tab;
-  page.value = 0; // 페이지 초기화
+  page.value = 0; 
 };
 
-// 페이지네이션: 이전 페이지
 const prevPage = () => {
   if (page.value > 0) {
     page.value--;
   }
 };
 
-// 페이지네이션: 다음 페이지
 const nextPage = () => {
   if (!isLastPage.value) {
     page.value++;
   }
 };
 
-// 특정 페이지로 이동
 const goToPage = (newPage) => {
   page.value = newPage;
 };
 
-// 정책 삭제
+const handlePolicyClick = async (policyIdx) => {
+  try {
+    if (!policyIdx) {
+      console.error("Invalid policyIdx:", policyIdx);
+      return;
+    }
+    console.log("Fetching Policy Detail for idx:", policyIdx);
+
+    await policyStore.getPolicyDetail(policyIdx);
+
+    router.push({
+      path: `/policy/detail/${policyIdx}`,
+      query: { isLiked: true },
+    });
+  } catch (error) {
+    console.error("Error while fetching policy detail:", error);
+  }
+};
+
 const deleteNotification = async (policyIdx) => {
   const confirmDelete = confirm("정말로 삭제하시겠습니까?");
   if (!confirmDelete) return;
@@ -108,7 +122,6 @@ const deleteNotification = async (policyIdx) => {
   }
 };
 
-// 컴포넌트 마운트 시 데이터 로드
 onMounted(async () => {
   await notificationStore.fetchNotificationDashboard();
 });
@@ -148,14 +161,13 @@ onMounted(async () => {
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+            <th class="px-6 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">
               알림 이름
             </th>
-            <th class="py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+            <th class="px-5 py-3 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">
               마감일
             </th>
-            <th class="px-3 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">
-              삭제
+            <th class="px-6 py-3 text-right text-sm font-medium text-gray-600 uppercase tracking-wider">
             </th>
           </tr>
         </thead>
@@ -164,16 +176,18 @@ onMounted(async () => {
             v-for="notification in currentTabNotifications"
             :key="notification.policyIdx"
             class="hover:bg-gray-50"
-            @click="$router.push(`/policy/detail/${notification.policyIdx}`)"
+            @click="notification.policyIdx 
+              ? handlePolicyClick(notification.policyIdx)
+              : console.error('Invalid policyIdx:', notification)"
           >
-            <td class="px-3 py-4 text-sm font-medium text-gray-900">
+            <td class="px-5 py-4 text-sm font-medium text-gray-900">
               {{ notification.policyName }}
             </td>
-            <td class="py-4 text-sm text-gray-500">
+            <td class="px-5 py-4 text-sm text-gray-500">
               {{ notification.applyEndDate === "상시" ? "상시" : notification.applyEndDate }}
             </td>
-            <td class="px-2 py-4 text-right text-sm">
-              <div class="delete-wrapper flex items-center justify-end space-x-2">
+            <td class="px-5 py-4 text-center text-sm">
+              <div class="delete-wrapper flex items-center justify-end">
               <button
                 class="text-red-500 hover:text-red-700"
                 @click.stop="deleteNotification(notification.policyIdx)"
@@ -261,16 +275,5 @@ onMounted(async () => {
   background-color: #0d223d;
   color: white;
   border-color: #0d223d;
-}
-
-.delete-wrapper {
-  display: flex;
-  justify-content: flex-end;
-}
-
-@media (max-width: 768px) {
-  .delete-wrapper {
-    justify-content: flex-start;
-  }
 }
 </style>
