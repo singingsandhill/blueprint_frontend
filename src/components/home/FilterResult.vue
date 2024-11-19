@@ -2,11 +2,11 @@
 import { ref, computed } from 'vue';
 
 const props = defineProps({
-  filteredPolicies: Array,  // 부모 컴포넌트로부터 전달받은 검색 결과
+  filteredPolicies: Array,  
 });
 
 const currentPage = ref(1);
-const pageSize = 5; // 페이지당 출력할 항목 수
+const pageSize = 5; 
 
 // 페이지네이션을 위한 필터된 데이터
 const paginatedPolicies = computed(() => {

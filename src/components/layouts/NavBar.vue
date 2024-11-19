@@ -218,7 +218,7 @@ const handleLogout = () => {
           </div>
         </template>
         <template v-else>
-          <div class="border-b border-gray-600 py-2">
+          <div class="border-b border-gray-600 py-4">
             <router-link
               to="/member/register"
               class="text-white hover:text-gray-200 transition-colors duration-200"

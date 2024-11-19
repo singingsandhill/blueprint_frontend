@@ -169,7 +169,7 @@ export default {
           <div
               v-if="item.houseDtlSecd"
               class="text-sm bg-gray-100 rounded-full px-3 py-1 inline-block mb-2 text-center limited-width"
-              style="background-color: #0E429D; color: white;"
+              style="background-color: #002842; color: white;"
               >
               {{ item.houseDtlSecd }}
             </div>
@@ -223,7 +223,7 @@ export default {
 
 <style scoped>
 .card {
-  min-width: 300px; 
+  min-width: 260px; 
   max-width: 350px; 
   min-height: 320px;
   max-height: 350px; 
@@ -252,7 +252,7 @@ export default {
     padding: 0 1rem;
   }
   .card {
-    width: 318px;
+    width: 260px;
     margin: 0 auto;
     height: 320px;
   }
