@@ -57,6 +57,10 @@ const nextPageGroup = () => {
 const formatDate = (dateString) => {
   if (!dateString) return "";
   const date = new Date(dateString);
+  const year = date.getFullYear();
+  if (year > 2030) {
+    return "예산 소진시까지";
+  }
   return date.toISOString().split("T")[0];
 };
 

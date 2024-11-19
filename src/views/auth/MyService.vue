@@ -178,12 +178,12 @@ onMounted(async () => {
         <div v-if="subscriptionList.length === 0" class="text-xl font-semibold">
           {{ memberName }}님의 조건에 해당하는 청약이 없습니다.
         </div>
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6 space-x-2">
           <div
             v-for="subscription in subscriptionList"
             :key="subscription"
             :value="subscription"
-            class="relative bg-white p-6 rounded-lg shadow-md max-w-lg w-full text-center"
+            class="relative bg-white p-6 rounded-lg shadow-md w-[320px] text-center"
           >
             <p class="text-xl font-bold mb-4 text-center underline">
               {{ subscription.name }}
