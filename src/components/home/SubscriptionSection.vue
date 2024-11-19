@@ -21,10 +21,8 @@ export default {
     const filteredSubscriptionList = computed(() => {
   console.log("Original Subscription List:", subscriptionList.value);
 
-  // 오늘 날짜 확인
   console.log("Today's Date:", today);
 
-  // 날짜 비교 함수
   const isSameDay = (date1, date2) => {
     return (
       date1.getFullYear() === date2.getFullYear() &&
@@ -33,55 +31,46 @@ export default {
     );
   };
 
-  // 1. 필터링: 일주일 내 종료되는 항목만 선택
   const filteredList = subscriptionList.value.filter((item) => {
     const endDate = new Date(item.rceptEndde);
-    return endDate >= today && endDate <= oneWeekLater;
+    return endDate > today && endDate <= oneWeekLater;
   });
 
   console.log("Filtered Subscription List:", filteredList);
 
-  // 2. 정렬
   const sortedList = filteredList.sort((a, b) => {
-    const endDateA = new Date(a.rceptEndde);
-    const endDateB = new Date(b.rceptEndde);
-    const startDateA = new Date(a.rceptBgnde);
-    const startDateB = new Date(b.rceptBgnde);
+  const endDateA = new Date(a.rceptEndde);
+  const endDateB = new Date(b.rceptEndde);
+  const startDateA = new Date(a.rceptBgnde);
+  const startDateB = new Date(b.rceptBgnde);
 
-    // 현재 날짜 비교
-    const isTodayA = isSameDay(endDateA, today);
-    const isTodayB = isSameDay(endDateB, today);
+  const isTodayA = isSameDay(endDateA, today);
+  const isTodayB = isSameDay(endDateB, today);
 
-    const isOngoingA = today >= startDateA && today <= endDateA; // 진행 중 여부
-    const isOngoingB = today >= startDateB && today <= endDateB;
+  const isOngoingA = today >= startDateA && today <= endDateA;
+  const isOngoingB = today >= startDateB && today <= endDateB;
 
-    const isNotStartedA = today < startDateA; // 아직 시작하지 않은 항목
-    const isNotStartedB = today < startDateB;
+  const isNotStartedA = today < startDateA;
+  const isNotStartedB = today < startDateB;
 
-    // 디버깅: 비교 중인 항목 출력
-    console.log("Comparing Items:");
-    console.log(`A: ${a.name}, Start Date: ${startDateA}, End Date: ${endDateA}, IsToday: ${isTodayA}, IsOngoing: ${isOngoingA}, IsNotStarted: ${isNotStartedA}`);
-    console.log(`B: ${b.name}, Start Date: ${startDateB}, End Date: ${endDateB}, IsToday: ${isTodayB}, IsOngoing: ${isOngoingB}, IsNotStarted: ${isNotStartedB}`);
+  if (isTodayA && !isTodayB) return -1;
+  if (!isTodayA && isTodayB) return 1;
 
-    // 1. 마감일이 오늘인 항목 우선
-    if (isTodayA && !isTodayB) return -1;
-    if (!isTodayA && isTodayB) return 1;
+  if (isOngoingA && !isOngoingB) return -1;
+  if (!isOngoingA && isOngoingB) return 1;
 
-    // 2. 진행 중인 항목 우선
-    if (isOngoingA && !isOngoingB) return -1;
-    if (!isOngoingA && isOngoingB) return 1;
+  if (isNotStartedA && !isNotStartedB) return 1;
+  if (!isNotStartedA && isNotStartedB) return -1;
 
-    // 3. 시작하지 않은 항목과 이미 마감된 항목은 마지막에 배치
-    if (isNotStartedA && !isNotStartedB) return 1;
-    if (!isNotStartedA && isNotStartedB) return -1;
+  if (endDateA < endDateB) return -1;
+  if (endDateA > endDateB) return 1;
 
-    // 4. 시작일 기준 최신순
-    if (startDateA > startDateB) return -1;
-    if (startDateA < startDateB) return 1;
+  if (startDateA < startDateB) return -1;
+  if (startDateA > startDateB) return 1;
 
-    // 5. 동일한 시작일의 경우 종료일 기준 정렬 (오름차순)
-    return endDateA - endDateB;
-  });
+  return 0;
+});
+
 
   console.log("Sorted Subscription List:", sortedList);
 
@@ -179,7 +168,7 @@ export default {
           >
           <div
               v-if="item.houseDtlSecd"
-              class="text-sm bg-gray-100 rounded-full px-3 py-1 inline-block mb-2 text-center"
+              class="text-sm bg-gray-100 rounded-full px-3 py-1 inline-block mb-2 text-center limited-width"
               style="background-color: #0E429D; color: white;"
               >
               {{ item.houseDtlSecd }}
@@ -249,6 +238,14 @@ export default {
 .card:hover {
   transform: translateY(-1px);
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.limited-width {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  align-self: center;
 }
 
 /* 모바일 반응형 */
