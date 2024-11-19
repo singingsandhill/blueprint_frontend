@@ -32,20 +32,17 @@ const handleFilterApplied = () => {
   <div>
     <TypeFilter />
   </div>
-
-  <div class="homepage mx-auto p-4">
-    <FilterSection
+  <FilterSection
       @filterChanged="handleFilterChanged"
       @filterApplied="handleFilterApplied"
-      class=" mb-20"
     />
-    
+  <div class="homepage container mx-auto p-4">
     <FilterResult
       v-if="searchExecuted"
       :filteredPolicies="filteredPolicies"
       class="mb-20"
     />
-    <PolicySection class="mb-20" />
+    <PolicySection class="mt-10 mb-20" />
     <SubscriptionSection class="mb-20" />
     <FinanceSection class="mb-20" />
   </div>
