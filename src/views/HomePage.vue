@@ -46,7 +46,7 @@ const handleFilterApplied = () => {
     <SubscriptionSection class="mb-20" />
     <FinanceSection class="mb-20" />
   </div>
-  <Datasource></Datasource>
+  <Datasource />
 </template>
 
 <style scoped>
