@@ -25,8 +25,8 @@ const props = defineProps({
 const emit = defineEmits(["filterApplied"]);
 
 const policyTypes = [
-  "일자리(창업)",
-  "일자리(취업)",
+  "일자리 (창업)",
+  "일자리 (취업)",
   "건강",
   "교육",
   "금융",
