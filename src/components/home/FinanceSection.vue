@@ -9,7 +9,7 @@ const cachedLoanList = localStorage.getItem("cachedLoanList");
 
 const savingsList = ref(cachedSavingsList ? JSON.parse(cachedSavingsList) : []);
 const loanList = ref(cachedLoanList ? JSON.parse(cachedLoanList) : []);
-// 배경 이미지 매핑
+
 const getBankImage = (bankName) => {
   const bankImageMap = {
     '한화생명보험주식회사': new URL('@/assets/bank/hanwha.png', import.meta.url).href,
@@ -25,18 +25,18 @@ const getBankImage = (bankName) => {
     '농협생명보험주식회사': new URL('@/assets/bank/nh.png', import.meta.url).href,
     '농협손해보험주식회사': new URL('@/assets/bank/nh.png', import.meta.url).href,
     '에이비엘생명보험주식회사': new URL('@/assets/bank/abl.png', import.meta.url).href,
-    '롯데손해보험주식회사': new URL('@/assets/bank/lotte.png', import.meta.url).href,
+    '롯데손해보험주식회사': new URL('@/assets/bank/lotte.jpg', import.meta.url).href,
     '우리은행': new URL('@/assets/bank/woori.png', import.meta.url).href,
     '한국스탠다드차타드은행': new URL('@/assets/bank/sc.svg', import.meta.url).href,
-    '아이엠뱅크': new URL('@/assets/bank/im.png', import.meta.url).href,
+    '아이엠뱅크': new URL('@/assets/bank/im.svg', import.meta.url).href,
     '부산은행': new URL('@/assets/bank/busanbank.png', import.meta.url).href,
     '광주은행': new URL('@/assets/bank/kjbank.png', import.meta.url).href,
     '제주은행': new URL('@/assets/bank/jeju.png', import.meta.url).href,
     '전북은행': new URL('@/assets/bank/jbbank.png', import.meta.url).href,
     '경남은행': new URL('@/assets/bank/bnk.png', import.meta.url).href,
     '중소기업은행': new URL('@/assets/bank/ibk.png', import.meta.url).href,
-    '한국산업은행': new URL('@/assets/bank/kdb.jpg', import.meta.url).href,
-    '국민은행': new URL('@/assets/bank/kb.png', import.meta.url).href,
+    '한국산업은행': new URL('@/assets/bank/kdb.png', import.meta.url).href,
+    '국민은행': new URL('@/assets/bank/kb.jpg', import.meta.url).href,
     '신한은행': new URL('@/assets/bank/shinhan.png', import.meta.url).href,
     '농협은행주식회사': new URL('@/assets/bank/nh.png', import.meta.url).href,
     '하나은행': new URL('@/assets/bank/hana.png', import.meta.url).href,
@@ -54,19 +54,16 @@ const getBankImage = (bankName) => {
   }
 };
 
-// 데이터 랜덤화 함수
 const shuffleArray = (array) => {
   return array.sort(() => Math.random() - 0.5);
 };
 
-// API에서 데이터 가져오기 및 캐싱
 const fetchAndCacheData = async () => {
   if (!cachedSavingsList || !cachedLoanList) {
     try {
       await financeStore.getAllSavings();
       await financeStore.getAllLoans();
 
-      // 데이터 캐싱
       localStorage.setItem(
         "cachedSavingsList",
         JSON.stringify(financeStore.AllSavingsList)
@@ -76,20 +73,17 @@ const fetchAndCacheData = async () => {
         JSON.stringify(financeStore.AllLoanList)
       );
 
-      // 랜덤화 후 저장
       savingsList.value = shuffleArray(financeStore.AllSavingsList).slice(0, 4);
       loanList.value = shuffleArray(financeStore.AllLoanList).slice(0, 4);
     } catch (error) {
       console.error("Error fetching financial data:", error);
     }
   } else {
-    // 캐싱된 데이터를 랜덤으로 정렬
     savingsList.value = shuffleArray(JSON.parse(cachedSavingsList)).slice(0, 4);
     loanList.value = shuffleArray(JSON.parse(cachedLoanList)).slice(0, 4);
   }
 };
 
-// "예금" 또는 "적금" 표시 함수
 const getProductType = (productName) => {
   if (productName.includes("예금")) {
     return "예금";
@@ -126,7 +120,7 @@ onMounted(async () => {
         <div
           v-for="(item, index) in savingsList"
           :key="index"
-          class="card relative border-2 border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
+          class="card relative border-2 border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
         >
         <div class="content-wrapper">
           <div
@@ -162,7 +156,7 @@ onMounted(async () => {
         <div
           v-for="(item, index) in loanList"
           :key="index"
-          class="card border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
+          class="card border-2 border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
         >
           <div class="content-wrapper">
             <!-- 대출 카테고리 -->
@@ -225,11 +219,11 @@ onMounted(async () => {
   z-index: 1;
 }
 .limited-width {
-  max-width: 200px; /* 원하는 최대 너비 */
+  max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  align-self: center; /* flex 배치에서 중앙 정렬 */
+  align-self: center;
 }
 
 @media (max-width: 768px) {

@@ -166,11 +166,18 @@ onMounted(async () => {
         :key="item.idx"
         class="bg-white rounded-lg shadow-md p-4"
       >
-        <h2 class="text-lg font-semibold">{{ item.name }}</h2>
+      <div class="flex items-start justify-between">
+        <h2 class="text-lg font-semibold w-full max-w-[80%] break-words">
+          {{ item.name }}
+        </h2>
 
-        <div class="text-gray-500 text-sm bg-gray-100 rounded-full px-3 py-1 inline-block mt-2 custom_color">
+        <div class="text-gray-500 text-sm bg-gray-100 rounded-full px-3 py-1 ml-2 flex-shrink-0 custom_color">
           {{ item.houseDtlSecd }}
         </div>
+      </div>
+
+
+
 
         <div class="mt-4 space-y-2 text-gray-700 text-sm">
           <div class="flex justify-between">
@@ -290,7 +297,7 @@ onMounted(async () => {
 }
 
 .custom_color {
-  color: wheat;
+  color: white;
   background-color: #0E429D;
 }
 
@@ -298,4 +305,5 @@ onMounted(async () => {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
 </style>

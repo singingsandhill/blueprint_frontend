@@ -67,7 +67,7 @@ onMounted(() => {
 
 <template>
   <div
-    class="flex flex-col items-center justify-center h-[60vh] font-pretendard-regular bg-gray-100 p-4 sm:p-6"
+    class="flex flex-col items-center justify-center h-[70vh] font-pretendard-regular p-4 sm:p-6"
   >
     <form
       class="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white p-6 rounded-lg shadow-lg mx-auto"
@@ -83,7 +83,7 @@ onMounted(() => {
             v-model="member.memberId"
             id="memberId"
             class="w-full px-10 py-3 rounded border border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
-            placeholder="아이디를 입력해주세요."
+            placeholder="아이디를 입력해주세요"
             aria-label="아이디 입력"
             required
           />
@@ -104,7 +104,7 @@ onMounted(() => {
             v-model="member.password"
             id="password"
             class="w-full px-10 py-3 rounded border border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
-            placeholder="비밀번호를 입력해주세요."
+            placeholder="비밀번호를 입력해주세요"
             aria-label="비밀번호 입력"
             required
           />
@@ -127,7 +127,7 @@ onMounted(() => {
 
       <button
         type="submit"
-        class="w-full bg-[#002842] text-white font-semibold py-3 rounded hover:bg-[#0E429D] focus:outline-none"
+        class="w-full bg-[#002842] text-white font-semibold py-3 mt- rounded hover:bg-[#0E429D] focus:outline-none"
         :disabled="isLoading"
       >
         <span v-if="isLoading" class="loader-spinner mr-2"></span> 로그인
