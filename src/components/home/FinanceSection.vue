@@ -126,7 +126,7 @@ onMounted(async () => {
         <div
           v-for="(item, index) in savingsList"
           :key="index"
-          class="card relative border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
+          class="card relative border-2 border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
         >
         <div class="content-wrapper">
           <div
@@ -165,6 +165,7 @@ onMounted(async () => {
           class="card border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
         >
           <div class="content-wrapper">
+            <!-- 대출 카테고리 -->
             <div
               class="text-sm rounded-full px-3 py-1 inline-block mb-2 text-center limited-width"
               style="background-color: #C1D5F9; color: white;"
@@ -183,16 +184,16 @@ onMounted(async () => {
           class="w-32 h-15 object-contain" />
         </div>
 
-          <!-- 대출 상세 정보 -->
-          <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
-            <p>최소 금리: {{ item.lendRateMin || 0 }}%</p>
-            <p>최대 금리: {{ item.lendRateMax || 0 }}%</p>
-            <p>대출 금리 유형: {{ item.lendRateTypeNm || "정보 없음" }}</p>            
+            <!-- 대출 상세 정보 -->
+            <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
+              <p>최소 금리: {{ item.lendRateMin || 0 }}%</p>
+              <p>최대 금리: {{ item.lendRateMax || 0 }}%</p>
+              <p>대출 금리 유형: {{ item.lendRateTypeNm || "정보 없음" }}</p>            
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
