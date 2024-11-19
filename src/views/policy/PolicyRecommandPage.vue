@@ -9,7 +9,7 @@ const policyStore = usePolicyStore();
 const policyList = ref([]);
 
 const currentPage = ref(1);
-const itemsPerPage = 10;
+const itemsPerPage = 15;
 const pageGroupSize = 5;
 
 const totalPages = computed(() =>
@@ -87,76 +87,91 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <FilterSection immediateApply />
-  <div class="mx-auto p-4 w-full max-w-8xl">
-    <p class="text-2xl font-bold mb-4 text-[32px]">정책 정보</p>
+  <div class="mt-12 max-w-8xl mx-auto p-4 w-full">
+    <p class="text-ml font-bold mb-4 text-[32px]">정책 정보</p>
     <div class="flex border-t-4 border-darkBlue py-4"></div>
-
-    <ul>
-      <li v-if="paginatedPolicies.length === 0">
-        <p class="text-center text-gray-500">검색한 결과가 없습니다.</p>
-      </li>
-
-      <li
-        v-else
-        v-for="(policy, index) in paginatedPolicies"
-        :key="index"
-        class="hover:bg-gray-100 cursor-pointer flex items-center space-x-10 border-t border-gray-200 p-2"
-        @click="
-          $router.push({
-            name: 'PolicyDetail',
-            params: { idx: policy.idx },
-          })
-        "
-      >
-        <div
-          class="w-24 bg-lightBlue text-black text-center font-medium px-3 py-1 rounded-md text-xs"
-        >
-          {{ policy.type }}
-        </div>
-        <div class="p-2">
-          <p class="policy-title text-lg font-semibold">
-            {{ policy.name }}
-          </p>
-          <span class="text-gray-600 text-sm">
-            {{ formatDate(policy.applyStartDate) }}
-          </span>
-          <span> ~ </span>
-          <span class="text-gray-600 text-sm">
-            {{ formatDate(policy.applyEndDate) }}
-          </span>
-        </div>
-      </li>
-    </ul>
-
-    <div class="flex justify-center mt-4 space-x-2">
-      <button
-        class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
-        :disabled="currentGroup.value === 1"
-        @click="previousPageGroup"
-      >
-        이전
-      </button>
-      <button
-        v-for="page in visiblePages"
-        :key="page"
-        :class="[
-          'px-4 py-2 rounded-md',
-          page === currentPage
-            ? 'bg-darkBlue text-white'
-            : 'border border-gray-300 text-darkBlue',
-        ]"
-        @click="changePage(page)"
-      >
-        {{ page }}
-      </button>
-      <button
-        class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
-        :disabled="currentGroup.value * pageGroupSize >= totalPages.value"
-        @click="nextPageGroup"
-      >
-        다음
-      </button>
+    <div class="filterSection flex flex-col items-center w-full max-w-8xl">
+      <FilterSection immediateApply />
     </div>
   </div>
+
+  <div class="mx-auto p-4 w-90% max-w-8xl mt-6 text-sm">
+    <div class="w-full">
+      <div class="flex items-center border-b border-gray-300 pb-2 mb-4">
+        <div class="w-32 text-center mx-2 font-semibold text-gray-700 text-sm">정책 유형</div>
+        <div class="flex-grow w-40 mx-4 text-left font-semibold text-gray-700 text-sm">정책 이름</div>
+        <div class="w-64 text-right mx-12 font-semibold text-gray-700 text-sm">신청 기간</div>
+      </div>
+      <ul>
+        <li v-if="paginatedPolicies.length === 0">
+          <p class="text-center mt-10 mb-10 text-gray-600">검색한 결과가 없습니다</p>
+        </li>
+      </ul>
+      <ul>
+        <li
+          v-for="(policy, index) in paginatedPolicies"
+          :key="index"
+          class="hover:bg-gray-100 cursor-pointer flex items-center space-x-4 border-b border-gray-200 px-4 py-2 text-sm"
+          @click="
+            $router.push({
+              name: 'PolicyDetail',
+              params: { idx: policy.idx },
+            })
+          "
+        >
+          <div class="w-24 bg-lightBlue text-white text-center font-medium px-2 py-1 rounded-md text-xs flex-shrink-0">
+            {{ policy.type }}
+          </div>
+
+          <div class="flex-grow">
+            <span class="policy-title text-sm font-semibold text-left">
+              {{ policy.name }}
+            </span>
+          </div>
+
+          <div class="w-64 text-right">
+            <span class="text-gray-600 text-xs">
+              {{ formatDate(policy.startDate) }} ~ {{ formatDate(policy.endDate) }}
+            </span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flex justify-center mt-4 space-x-2">
+    <button
+      class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
+      :disabled="currentGroup.value === 1"
+      @click="previousPageGroup"
+    >
+      이전
+    </button>
+    <button
+      v-for="page in visiblePages"
+      :key="page"
+      :class="[ 
+        'px-4 py-2 rounded-md',
+        page === currentPage
+          ? 'bg-darkBlue text-white'
+          : 'border border-gray-300 text-darkBlue',
+      ]"
+      @click="changePage(page)"
+    >
+      {{ page }}
+    </button>
+    <button
+      class="px-4 py-2 rounded-md border border-gray-300 text-darkBlue"
+      :disabled="currentGroup.value * pageGroupSize >= totalPages.value"
+      @click="nextPageGroup"
+    >
+      다음
+    </button>
+  </div>
 </template>
+
+<style scoped>
+.filterSection {
+  border: 2px solid var(--darkBlue);
+}
+</style>

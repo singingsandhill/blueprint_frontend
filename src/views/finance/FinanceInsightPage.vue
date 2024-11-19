@@ -231,7 +231,7 @@ onMounted(fetchData);
 </div>
     <div class="mx-auto p-4 w-full max-w-8xl">
     <!-- 제목 -->
-    <h2 class="text-2xl font-bold mb-4 text-[32px]">금융 상품</h2>
+    <h2 class="text-ml font-bold mb-4 text-[32px]">금융 상품</h2>
     <div class="flex border-t-4 border-darkBlue py-4"></div>
     <!-- Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">

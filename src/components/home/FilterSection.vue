@@ -131,25 +131,29 @@ onMounted(() => {
 
 <template>
   <section
-    class="text-white p-4 rounded-lg mt-6 flex flex-wrap lg:flex-nowrap mx-auto items-center gap-2 lg:gap-4 justify-center overflow-x-auto whitespace-nowrap max-w-screen-xl"
+    class="text-white p-4 border-4 border-darkBlue rounded-lg mt-6 flex flex-wrap lg:flex-nowrap mx-auto items-center gap-2 lg:gap-4 justify-center overflow-x-auto whitespace-nowrap max-w-screen-xl"
   >
     <!-- 정책 검색 -->
     <div
       class="flex items-center space-x-2 bg-darkBlue text-white px-4 py-3 rounded-lg w-auto"
     >
-      <strong class="text-base">정책 검색</strong>
+      <strong class="text-sm">정책 검색</strong>
     </div>
 
     <!-- 시/도 필터 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full lg:w-40"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
     >
       <select
         v-model="selectedCity"
-        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
+        class="bg-transparent w-full focus:outline-none text-sm md:text-sm"
       >
-        <option value="null">전체</option>
-        <option v-for="city in cities" :key="city" :value="city">
+      <option
+      value="null"
+      class="text-center font-bold bg-gray-200"
+      :class="{ 'font-bold': selectedJob === 'null' }"
+    >시 / 도</option>
+        <option v-for="city in cities" :key="city" :value="city" class="text-center">
           {{ city }}
         </option>
       </select>
@@ -157,61 +161,73 @@ onMounted(() => {
 
     <!-- 지역구 필터 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-full lg:w-80"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
     >
       <input
         v-model="district"
         id="district"
         type="text"
-        placeholder="지역구를 입력해 주세요."
-        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
+        placeholder="시 / 군 / 구"
+        class="bg-transparent w-full text-center focus:outline-none text-sm md:text-sm"
       />
     </div>
 
     <!-- 직업 필터 -->
-    <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full lg:w-40"
+<div
+  class="flex items-center space-x-2 bg-white text-black px-4 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
+>
+  <select
+    v-model="selectedJob"
+    class="bg-transparent w-full text-center focus:outline-none text-sm md:text-sm"
+  >
+    <option
+      value="null"
+      class="text-center font-bold bg-gray-200"
+      :class="{ 'font-bold': selectedJob === 'null' }"
     >
-      <select
-        v-model="selectedJob"
-        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
-      >
-        <option value="null">전체</option>
-        <option value="학생">학생</option>
-        <option value="무직">무직</option>
-        <option value="직장인">직장인</option>
-        <option value="자영업">자영업</option>
-        <option value="프리랜서">프리랜서</option>
-        <option value="(예비)창업자">(예비)창업자</option>
-        <option value="일용근로자">일용근로자</option>
-        <option value="단기근로자">단기근로자</option>
-        <option value="영농종사자">영농종사자</option>
-      </select>
-    </div>
+      직업
+    </option>
+    <option value="학생">학생</option>
+    <option value="무직">무직</option>
+    <option value="직장인">직장인</option>
+    <option value="자영업">자영업</option>
+    <option value="프리랜서">프리랜서</option>
+    <option value="(예비)창업자">(예비)창업자</option>
+    <option value="일용근로자">일용근로자</option>
+    <option value="단기근로자">단기근로자</option>
+    <option value="영농종사자">영농종사자</option>
+  </select>
+</div>
+
 
     <!-- 나이 필터 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border border-gray-300 rounded-md w-full lg:w-80"
+      class="flex items-center space-x-2 bg-white text-black px-2 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
     >
       <input
         v-model="selectedAge"
         id="selectedAge"
         type="text"
-        placeholder="나이를 입력해 주세요."
-        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
+        placeholder="나이"
+        class="bg-transparent w-full text-center focus:outline-none text-sm md:text-sm"
       />
     </div>
 
     <!-- 정책 유형 필터 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full lg:w-40"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
     >
       <select
         v-model="selectedPolicyType"
-        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
+        class="bg-transparent w-full focus:outline-none text-sm md:text-sm"
       >
-        <option value="null">전체</option>
-        <option v-for="type in policyTypes" :key="type" :value="type">
+      <option
+      value="null"
+      class="text-center font-bold bg-gray-200"
+      :class="{ 'font-bold': selectedJob === 'null' }"
+    > 정책 유형
+        </option>
+        <option v-for="type in policyTypes" :key="type" :value="type" class="text-center">
           {{ type }}
         </option>
       </select>
@@ -219,21 +235,21 @@ onMounted(() => {
 
     <!-- 정책명 입력 -->
     <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border border-gray-300 rounded-md w-full lg:w-80"
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
     >
       <input
         v-model="selectedName"
         id="selectedName"
         type="text"
-        placeholder="정책명을 입력해 주세요."
-        class="bg-transparent w-full focus:outline-none text-sm md:text-base"
+        placeholder="정책명"
+        class="bg-transparent text-center w-full focus:outline-none text-sm md:text-sm"
       />
     </div>
 
     <!-- 검색 버튼 -->
     <button
       @click="applyFilters"
-      class="bg-darkBlue px-4 py-3 rounded-lg w-full lg:w-auto flex items-center justify-center text-sm md:text-base"
+      class="bg-darkBlue px-4 py-3 rounded-lg w-full lg:w-auto flex items-center justify-center text-sm md:text-sm"
     >
       <span class="ml-1">검색</span>
     </button>
