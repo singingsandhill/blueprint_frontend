@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import { usePolicyStore } from "@/stores/policy";
 import ShareButton from "@/components/kakao/ShareButton.vue";
 import UrlCopyIcon from "@/assets/url_copy.svg";
-import MemberNotification from '@/components/notification/MemberNotification.vue';
+import MemberNotification from "@/components/notification/MemberNotification.vue";
 
 const route = useRoute();
 const policyStore = usePolicyStore();
@@ -56,18 +56,27 @@ onMounted(async () => {
 
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
+  handleScroll();
 });
+
+const rightNavPosition = ref(0);
 
 const handleScroll = () => {
   const scrollPosition = window.scrollY;
-  const additionalOffset = 20;
-
-  if (scrollPosition >= headerHeight.value + additionalOffset) {
-    isFixed.value = true;
-  } else {
-    isFixed.value = false;
-  }
+  const navOffset = 20; // 원하는 추가 오프셋
+  rightNavPosition.value = scrollPosition + navOffset;
 };
+
+// const handleScroll = () => {
+//   const scrollPosition = window.scrollY;
+//   const additionalOffset = 20;
+
+//   if (scrollPosition >= headerHeight.value + additionalOffset) {
+//     isFixed.value = true;
+//   } else {
+//     isFixed.value = false;
+//   }
+// };
 
 const scrollToTop = () => {
   const titleElement = document.querySelector("h2");
@@ -119,7 +128,7 @@ const formatPolicySubject = (text) => {
 </script>
 
 <template>
-   <div class="contentsWrap mw_wrap p-4">
+  <div class="contentsWrap mw_wrap p-4">
     <!-- 제목 -->
     <div class="flex justify-between items-center mb-10">
       <h2 id="page-title" class="text-3xl font-bold">
@@ -255,7 +264,10 @@ const formatPolicySubject = (text) => {
       </div>
 
       <!-- 오른쪽 네비게이션 (모바일에서는 숨기기) -->
-      <div class="right-nav" :style="{ top: `${headerHeight}px` }">
+      <div
+        class="right-nav"
+        :style="{ transform: `translateY(${rightNavPosition}px)` }"
+      >
         <div class="aside border-l pl-4">
           <p>
             <a
@@ -335,15 +347,15 @@ const formatPolicySubject = (text) => {
 }
 
 .right-nav {
-  position: sticky;
-  top: 20px; /* 상단에서의 초기 고정 위치 */
+  position: absolute;
+  top: 0;
   right: 0;
   width: 20%;
-  background-color: #fff;
   z-index: 10;
   padding-top: 20px;
-  max-height: calc(100vh - 80px); /* 화면에서 넘치지 않도록 제한 */
-  overflow-y: auto; /* 내부 스크롤 허용 */
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  transition: transform 0.5s ease-in-out;
 }
 
 .section-title {

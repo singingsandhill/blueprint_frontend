@@ -80,6 +80,13 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (route.name !== "policy" && route.name !== "PolicyDetail") {
     localStorage.removeItem("page");
+    localStorage.removeItem("selectedCity");
+    localStorage.removeItem("district");
+    localStorage.removeItem("selectedPolicyType");
+    localStorage.removeItem("selectedAge");
+    localStorage.removeItem("selectedJob");
+    localStorage.removeItem("selectedName");
+    localStorage.removeItem("page");
   }
 
   window.removeEventListener("filters-applied", updatePolicyList);

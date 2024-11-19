@@ -63,6 +63,10 @@ const closeModal = async () => {
 const formatDate = (dateString) => {
   if (!dateString) return "";
   const date = new Date(dateString);
+  const year = date.getFullYear();
+  if (year > 2030) {
+    return "예산 소진 시까지";
+  }
   return date.toISOString().split("T")[0];
 };
 
@@ -141,40 +145,65 @@ onMounted(async () => {
         님을 위한 맞춤형 정보를 알려드릴게요!
       </p>
 
-      <div class="mx-auto p-8">
-        <p class="text-3xl font-bold mb-6 text-[32px] text-center">정책</p>
+      <div class="mx-auto p-4 sm:p-6 lg:p-8">
+        <p
+          class="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 text-center text-[24px] sm:text-[28px] md:text-[32px]"
+        >
+          정책
+        </p>
         <div class="flex border-t-4 border-darkBlue py-6"></div>
         <div
           v-if="policyList.length === 0"
-          class="text-2xl font-semibold text-center"
+          class="text-xl font-semibold text-center"
         >
           {{ memberName }}님의 조건에 해당하는 정책이 없습니다.
         </div>
-        <table v-else class="table-auto w-full border-collapse border-gray-300">
-          <thead class="border-b border-gray-300">
-            <tr>
-              <th class="px-10 py-4 text-center font-bold text-lg">제목</th>
-              <th class="px-10 py-4 text-left font-bold text-lg">유형</th>
-              <th class="px-10 py-4 text-center font-bold text-lg">
-                신청 기간
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="policy in policyList" :key="policy">
-              <td class="px-10 py-4 text-gray-600 text-lg">
-                {{ policy.name }}
-              </td>
-              <td class="px-10 py-4 text-gray-600 text-lg">
-                {{ policy.type }}
-              </td>
-              <td class="px-10 py-4 text-gray-600 text-lg">
-                {{ formatDate(policy.applyStartDate) }} ~
-                {{ formatDate(policy.applyEndDate) }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+
+        <div v-else class="overflow-x-auto">
+          <table
+            class="table-auto w-full border-collapse border-gray-300 text-sm sm:text-base"
+          >
+            <thead class="border-b border-gray-300">
+              <tr>
+                <th
+                  class="px-4 sm:px-6 md:px-10 py-2 sm:py-3 md:py-4 text-center font-bold"
+                >
+                  제목
+                </th>
+                <th
+                  class="px-4 sm:px-6 md:px-10 py-2 sm:py-3 md:py-4 text-left font-bold"
+                >
+                  유형
+                </th>
+                <th
+                  class="px-4 sm:px-6 md:px-10 py-2 sm:py-3 md:py-4 text-center font-bold"
+                >
+                  신청 기간
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="policy in policyList" :key="policy">
+                <td
+                  class="px-4 sm:px-6 md:px-10 py-2 sm:py-3 md:py-4 text-gray-600"
+                >
+                  {{ policy.name }}
+                </td>
+                <td
+                  class="px-4 sm:px-6 md:px-10 py-2 sm:py-3 md:py-4 text-gray-600"
+                >
+                  {{ policy.type }}
+                </td>
+                <td
+                  class="px-4 sm:px-6 md:px-10 py-2 sm:py-3 md:py-4 text-gray-600"
+                >
+                  {{ formatDate(policy.applyStartDate) }} ~
+                  {{ formatDate(policy.applyEndDate) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="mx-auto p-4 max-w-4xl">
@@ -183,12 +212,12 @@ onMounted(async () => {
         <div v-if="subscriptionList.length === 0" class="text-xl font-semibold">
           {{ memberName }}님의 조건에 해당하는 청약이 없습니다.
         </div>
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6 space-x-2">
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
           <div
             v-for="subscription in subscriptionList"
             :key="subscription"
             :value="subscription"
-            class="relative bg-white p-6 rounded-lg shadow-md w-[400px] text-center"
+            class="relative bg-white p-6 rounded-lg shadow-md sm:max-w-sm lg:w-[500px]"
           >
             <p class="text-xl font-bold mb-4 text-center underline">
               {{ subscription.name }}
@@ -227,7 +256,7 @@ onMounted(async () => {
         <p class="text-3xl font-bold mb-6 text-[32px] text-center">금융</p>
         <div class="flex border-t-4 border-darkBlue py-6"></div>
 
-        <div class="flex justify-center space-x-12 text-center">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
           <div
             class="relative bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
           >
@@ -300,14 +329,18 @@ onMounted(async () => {
     </div>
 
     <div v-else>
-      <p class="text-2xl font-semibold text-gray-800 text-center mb-10 mt-20">
+      <p
+        class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 text-center mb-6 sm:mb-8 md:mb-10 mt-10 sm:mt-15 md:mt-20"
+      >
         등록된 추가 정보가 없어서 맞춤형 정보를 제공해 드리기 어려워요.
       </p>
-      <p class="text-2xl font-semibold text-gray-800 text-center mb-20">
+      <p
+        class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 text-center mb-10 sm:mb-15 md:mb-20"
+      >
         추가 정보를 등록하시겠습니까?
         <span
           @click="openModal"
-          class="cursor-pointer text-xl text-darkBlue underline hover:text-midBlue"
+          class="cursor-pointer text-base sm:text-lg md:text-xl text-darkBlue underline hover:text-midBlue"
         >
           등록하러 가기
         </span>
@@ -416,25 +449,25 @@ onMounted(async () => {
       </div>
     </div>
   </div>
+
   <div v-else>
     <div class="relative">
-      <img src="@/assets/guestMyservice.png" class="w-full" />
+      <img src="@/assets/guestMyservice.png" class="w-full h-auto" />
       <div
-        class="absolute inset-0 flex flex-col items-center justify-center text-center"
-        style="top: -200px"
+        class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8 sm:top-[-500px] lg:top-[-200px]"
       >
         <p
-          class="text-3xl font-bold text-darkBlue mb-4 bg-opacity-70 px-4 py-2 rounded"
+          class="sm:text-xl lg:text-3xl font-bold text-darkBlue sm:mb-1 lg:mb-4 bg-opacity-70 px-4 sm:px-6 lg:px-8 py-2 rounded"
         >
           로그인하지 않은 상태입니다.
         </p>
         <p
-          class="text-xl text-darkBlue font-semibold bg-opacity-70 px-4 py-2 rounded"
+          class="sm:text-lg lg:text-xl text-darkBlue font-semibold bg-opacity-70 px-4 sm:px-6 lg:px-8 py-2 rounded"
         >
           로그인하시면 맞춤형 정보를 확인할 수 있습니다.
         </p>
         <div
-          class="text-base px-4 py-2 text-darkBlue rounded mt-4 underline cursor-pointer bg-opacity-70"
+          class="text-sm sm:text-base lg:text-lg px-4 sm:px-6 lg:px-8 py-2 text-darkBlue rounded mt-4 underline cursor-pointer bg-opacity-70"
           @click="$router.push({ name: 'login' })"
         >
           로그인 하러 가기
