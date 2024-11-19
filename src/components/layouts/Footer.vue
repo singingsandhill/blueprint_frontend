@@ -6,8 +6,12 @@
       <div class="flex flex-1 mx-4 justify-between items-center">
         <div class="flex space-x-6 text-sm text-gray-600">
           <a href="#" class="hover:text-blue-600 font-bold">Chapter 1</a>
-          <a href="#" class="hover:text-blue-600">개인정보처리방침</a>
-          <a href="#" class="hover:text-blue-600">이용약관</a>
+          <router-link to="/privacy-policy" class="text-gray-600 hover:text-blue-700">
+            개인정보처리방침
+          </router-link>
+          <router-link to="/terms-of-service" class="text-gray-600 hover:text-blue-700">
+            이용약관
+          </router-link>
         </div>
         <div class="flex"></div>
       </div>
