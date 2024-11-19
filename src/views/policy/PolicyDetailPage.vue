@@ -98,7 +98,7 @@ const formatPolicySubject = (text) => {
   if (!text) return "";
 
   const segments = text
-    .split(/[\u2022\u25E6\u25A1\*\u25CB](?!\d-\d)|(?<!\d)-(?=\D)/)
+    .split(/[\u2022\u25E6\u25A1\*\u25CB\u261E](?!\d-\d)|(?<!\d)-(?=\D)/)
     .filter(Boolean);
 
   return segments
@@ -111,19 +111,21 @@ const formatPolicySubject = (text) => {
         .map((sub) => {
           const trimmedSub = sub.trim();
 
-          if (/^\d{4}\.\d{1,2}\.\d{1,2}$/.test(trimmedSub)) {
-            return trimmedSub;
-          } else if (
+          if (/다\.$/.test(trimmedSub)) {
+            return `${trimmedSub}`;
+          }
+
+          if (
             /^[가-힣]\.|^※|^\[.*?\]|^- |\b\d{1,2}\.(?!\d)/.test(trimmedSub)
           ) {
-            return `<br>${trimmedSub}`;
+            return `<br>${trimmedSub}`; 
           }
-          return `- ${trimmedSub}`;
+          return `${trimmedSub}`; 
         });
 
       return subSegments.join("");
     })
-    .join("<br><br>");
+    .join("<br>");
 };
 </script>
 
@@ -173,7 +175,6 @@ const formatPolicySubject = (text) => {
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">정책 소개</span>
-            <!-- v-html을 사용해 HTML 형식으로 텍스트를 렌더링 -->
             <span
               class="content-cell"
               v-html="formatPolicySubject(policyDetail?.subject)"
@@ -181,7 +182,10 @@ const formatPolicySubject = (text) => {
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">지원 내용</span>
-            <span class="content-cell">{{ policyDetail?.content }}</span>
+            <span
+              class="content-cell"
+              v-html="formatPolicySubject(policyDetail?.content)"
+            ></span>
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">사업 운영 기간</span>
@@ -217,7 +221,10 @@ const formatPolicySubject = (text) => {
         <div class="content-section mb-10">
           <div class="content-row mb-4">
             <span class="title-cell">조건</span>
-            <span class="content-cell">{{ policyDetail?.condition }}</span>
+            <span
+              class="content-cell"
+              v-html="formatPolicySubject(policyDetail?.condition)"
+            ></span>
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">나이</span>

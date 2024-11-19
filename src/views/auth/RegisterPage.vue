@@ -2,7 +2,7 @@
 import { reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import TermsAgreement from '@/components/register/TermsAgreement.vue';
+import TermsAgreement from '@/components/terms/TermsAgreement.vue';
 
 const router = useRouter();
 const auth = useAuthStore();

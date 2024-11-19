@@ -30,29 +30,31 @@ export default {
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center bg-gray-100 p-4">
-      <div class="w-full max-w-md bg-white shadow-md rounded-lg p-6">
+    <div class="flex flex-col items-center justify-center h-[70vh] font-pretendard-regular p-4 sm:p-6">
         <h2 class="text-2xl font-semibold text-center mb-4">비밀번호 찾기</h2>
-        <form @submit.prevent="findPassword">
-          <div class="mb-4">
-            <label for="memberId" class="block text-sm font-medium text-gray-700">아이디</label>
+        <form 
+        class="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white p-6 rounded-lg shadow-lg mx-auto"
+        @submit.prevent="findPassword"
+        >
+          <div class="mb-6">
+            <label for="memberId" class="block text-gray-700 font-semibold mb-2">아이디</label>
             <input
               v-model="memberId"
               type="text"
               id="memberId"
-              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              class="w-full px-10 py-3 rounded border border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
               placeholder="아이디를 입력하세요"
               required
             />
           </div>
   
-          <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-700">이메일</label>
+          <div class="mb-6">
+            <label for="email" class="block text-gray-700 font-semibold mb-2">이메일</label>
             <input
               v-model="email"
               type="email"
               id="email"
-              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              class="w-full px-10 py-3 rounded border border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C1D5F9]"
               placeholder="이메일을 입력하세요"
               required
             />
@@ -60,7 +62,7 @@ export default {
   
           <button
             type="submit"
-            class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="w-full bg-[#002842] text-white font-semibold py-3 mt-5 rounded hover:bg-[#0E429D] focus:outline-none"
           >
             비밀번호 찾기
           </button>
@@ -72,7 +74,6 @@ export default {
           <router-link to="/member/find/memberId" class="text-sm hover:underline">아이디 찾기</router-link>
         </div>
       </div>
-    </div>
   </template>
   
 
