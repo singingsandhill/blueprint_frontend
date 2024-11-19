@@ -111,22 +111,26 @@ const slidePrev = () => {
           class="card cursor-pointer bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200 p-4 border border-gray-300"
           :class="{ 'w-full': itemsPerPage === 1, 'w-1/2': itemsPerPage === 2, 'w-1/4': itemsPerPage === 4 }"
         >
-          <div class="text-center">
+          <div class="flex items-center mb-4">
             <span 
               :class="{
-                'bg-[#0E429D] text-white px-2 py-1 rounded': policy.status === '모집중',
-                'bg-[#C1D5F9] text-white px-2 py-1 rounded': policy.status === '상시',
-                'bg-gray-400 text-white px-2 py-1 rounded': policy.status === '완료'
+                'bg-red-500 text-white px-2 py-2 rounded': policy.status === '모집중',
+                'bg-[#C1D5F9] text-white px-2 py-2 rounded': policy.status === '상시',
+                'bg-gray-400 text-white px-2 py-2 rounded': policy.status === '완료'
               }"
-              class="badge inline-block text-sm font-semibold mb-2"
+              class="badge inline-block text-sm font-semibold"
             >
               {{ policy.status }}
             </span>
+
+            <div class="description mx-3 font-bold text-base text-gray-600">
+              {{ policy.city ? policy.city + ' ' : '' }}{{ policy.district }}
+            </div>
           </div>
-          <h2 class="title text-lg font-bold mb-2 text-center">{{ policy.name }}</h2>
-          <div class="description text-sm text-gray-500 text-center">{{ policy.city ? policy.city + ', ' : '' }}{{ policy.district }}</div>
+          <h2 class="title font-bold text-base mt-3 mb-2 text-center">{{ policy.name }}</h2>
         </div>
       </div>
+
 
       <button 
         @click="slideNext" 
@@ -150,8 +154,8 @@ const slidePrev = () => {
 
 <style scoped>
 .card {
-  min-width: 200px;
-  min-height: 230px;
+  max-width: 350px;
+  min-height: 200px;
   flex-shrink: 0;
   scroll-snap-align: start;
   border: 2px solid #aaaeb4c7;
