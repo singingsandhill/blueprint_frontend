@@ -9,7 +9,40 @@
           <a href="#" class="hover:text-blue-600">개인정보처리방침</a>
           <a href="#" class="hover:text-blue-600">이용약관</a>
         </div>
-        <div class="flex"></div>
+
+        <div class="flex space-x-6">
+          <a
+            href="https://github.com/Chapter-1/frontend"
+            target="_blank"
+            class="hover:opacity-80"
+          >
+            <div
+              class="bg-green-500 rounded-full shadow-md w-8 h-8 flex items-center justify-center"
+            >
+              <img
+                src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                alt="GitHub Logo Front"
+                class="rounded-full w-6 h-6"
+              />
+            </div>
+          </a>
+          <a
+            href="https://github.com/Chapter-1/backend"
+            target="_blank"
+            class="hover:opacity-80"
+          >
+            <div
+              class="bg-orange-500 rounded-full shadow-md w-8 h-8 flex items-center justify-center"
+            >
+              <img
+                src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                alt="GitHub Logo Backend"
+                class="rounded-full w-6 h-6"
+              />
+            </div>
+          </a>
+        </div>
+
       </div>
     </div>
 
