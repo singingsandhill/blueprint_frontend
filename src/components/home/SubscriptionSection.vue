@@ -175,11 +175,9 @@ export default {
             </div>
             <h3 class="text-lg font-semibold mb-2 text-center">{{ item.name }}</h3>
             
-            <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
+            <div class="text-center text-gray-700 mt-3 text-sm">
               <p v-if="item.region || item.city || item.district">
-                <span>{{ item.region }}</span>
-                <span v-if="item.city">, {{ item.city }}</span>
-                <span v-if="item.district">, {{ item.district }}</span>
+                {{ [item.region, item.city, item.district].filter(Boolean).join(' ') }}
               </p>
               <br>
               <p><strong>시작일</strong> {{ formatDate(item.rceptBgnde) }}</p>
