@@ -59,7 +59,7 @@ const formatDate = (dateString) => {
   const date = new Date(dateString);
   const year = date.getFullYear();
   if (year > 2030) {
-    return "예산 소진시까지";
+    return "예산 소진 시까지";
   }
   return date.toISOString().split("T")[0];
 };
