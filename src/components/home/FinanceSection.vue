@@ -128,37 +128,32 @@ onMounted(async () => {
           :key="index"
           class="card relative border-2 border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
         >
-          <!-- 배경 이미지 컨테이너 -->
-          <div 
-            class="absolute inset-0 rounded-lg opacity-30 bg-image-container"
-            :style="{ 
-              backgroundImage: `url(${getBankImage(item.korCoNm)})`,
-              backgroundSize: 'contain',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }"
-          ></div>
-
-          <!-- 컨텐츠 -->
-          <div class="content-wrapper">
-            <!-- 제품 유형 -->
-            <div
-              class="text-sm rounded-full px-3 py-1 inline-block mb-2 text-center"
-              style="background-color: #0E429D; color: white; font-size: 0.875rem; line-height: 1.25rem;"
-            >
-              {{ getProductType(item.finPrdtNm) }}
-            </div>
-            <h3 class="text-lg font-semibold mb-2 text-center">
-              {{ item.finPrdtNm || "상품명 없음" }}
-            </h3>
-            <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
-              <p>가입 대상: {{ item.joinMember || "정보 없음" }}</p>
-              <p>가입 방법: {{ item.joinWay || "정보 없음" }}</p>
-              <p>이율: 최대 {{ item.intrRate2 || 0 }}%</p>
-            </div>
-          </div>
+        <div class="content-wrapper">
+          <div
+          class="text-sm rounded-full px-3 py-1 mb-2 text-center limited-width"
+          style="background-color: #C1D5F9; color: white;"
+          >
+          {{ getProductType(item.finPrdtNm) }}
+        </div>
+        
+        <h3 class="text-lg font-semibold mb-2 text-center">
+          {{ item.finPrdtNm || "상품명 없음" }}
+        </h3>
+        <div class="flex justify-center my-4" v-if="getBankImage(item.korCoNm)">
+          <img
+          :src="getBankImage(item.korCoNm)"
+          alt="Bank Logo"
+          class="w-32 h-15 object-contain" />
+        </div>
+  
+        <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
+          <p>가입 대상: {{ item.joinMember || "정보 없음" }}</p>
+          <p>가입 방법: {{ item.joinWay || "정보 없음" }}</p>
+          <p>이율: 최대 {{ item.intrRate2 || 0 }}%</p>
         </div>
       </div>
+    </div>
+  </div>
     </div>
 
     <!-- 대출 상품 -->
@@ -167,27 +162,27 @@ onMounted(async () => {
         <div
           v-for="(item, index) in loanList"
           :key="index"
-          class="card border-2 border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
-          :style="{
-            backgroundImage: `url( @/assets/bank/${getBankImage(item.korCoNm)})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }"
+          class="card border border-gray-400 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4"
         >
           <div class="content-wrapper">
             <!-- 대출 카테고리 -->
             <div
-              class="text-sm rounded-full px-3 py-1 inline-block mb-2 text-center"
-              style="background-color: #0E429D; color: white; font-size: 0.875rem; line-height: 1.25rem;"
+              class="text-sm rounded-full px-3 py-1 inline-block mb-2 text-center limited-width"
+              style="background-color: #C1D5F9; color: white;"
             >
               {{ getLoanCategory(item.prdCategory) }}
             </div>
 
-            <!-- 대출 상품명 -->
-            <h3 class="text-lg font-semibold mb-2 text-center">
-              {{ item.finPrdtNm || "상품명 없음" }}
-            </h3>
+          <!-- 대출 상품명 -->
+          <h3 class="text-lg font-semibold mb-2 text-center">
+            {{ item.finPrdtNm || "상품명 없음" }}
+          </h3>
+          <div class="flex justify-center my-4" v-if="getBankImage(item.korCoNm)">
+          <img
+          :src="getBankImage(item.korCoNm)"
+          alt="Bank Logo"
+          class="w-32 h-15 object-contain" />
+        </div>
 
             <!-- 대출 상세 정보 -->
             <div class="text-center text-gray-700 mt-4 space-y-2 text-sm">
@@ -221,15 +216,6 @@ onMounted(async () => {
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.bg-image-container {
-  width: 100%;
-  height: 100%;
-  padding: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .content-wrapper {
   flex: 1;
   display: flex;
@@ -238,14 +224,17 @@ onMounted(async () => {
   position: relative;
   z-index: 1;
 }
+.limited-width {
+  max-width: 200px; /* 원하는 최대 너비 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  align-self: center; /* flex 배치에서 중앙 정렬 */
+}
 
 @media (max-width: 768px) {
   .card {
     min-height: 250px;
-    padding: 1rem;
-  }
-
-  .bg-image-container {
     padding: 1rem;
   }
 

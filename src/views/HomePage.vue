@@ -8,6 +8,7 @@ import SubscriptionSection from "@/components/home/SubscriptionSection.vue";
 import FinanceSection from "@/components//home/FinanceSection.vue";
 import BannerSlider from "@/components/home/BannerSlider.vue";
 import TypeFilter from "@/components/home/TypeFilterSection.vue"
+import Datasource from "@/components/home/Datasource.vue";
 
 const router = useRouter();
 
@@ -45,12 +46,13 @@ const handleFilterApplied = () => {
     <SubscriptionSection class="mb-20" />
     <FinanceSection class="mb-20" />
   </div>
+  <Datasource></Datasource>
 </template>
 
 <style scoped>
 .homepage {
   padding: 1rem;
-  max-width: 1350px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 

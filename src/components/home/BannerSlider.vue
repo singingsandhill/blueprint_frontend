@@ -43,7 +43,7 @@ const modules = [Autoplay, Pagination];
       disableOnInteraction: false
     }"
     :pagination="{ clickable: true }"
-    loop="true"
+    :loop="true"
     class="mySwiper"
   >
     <swiper-slide
@@ -71,7 +71,7 @@ const modules = [Autoplay, Pagination];
 .mySwiper {
   width: 100%;
   max-width: 100%;
-  height: 350px;
+  height: 450px;
   margin: 0;
 }
 .swiper-slide {
