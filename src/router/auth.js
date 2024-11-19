@@ -24,4 +24,14 @@ export default [
         name: "findPassword",
         component: () => import("../views/auth/FindPassword.vue"),
     },
+    {
+        path: "/member/myService",
+        name: "myService",
+        component: () => import("../views/auth/MyService.vue"),
+    },
+    {
+        path: "/notification/summary",
+        name: "notificationSummary",
+        component: () => import("../views/auth/NotificationSummary.vue"),
+    },
 ];

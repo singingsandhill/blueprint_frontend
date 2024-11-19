@@ -93,7 +93,7 @@ const slidePrev = () => {
 
 <template>
   <section class="mt-8 relative">
-    <h2 class="text-2xl font-bold mb-12 text-center">정책 정보</h2>
+    <h2 class="text-2xl font-bold mb-8 text-center">정책 정보</h2>
     <div class="flex items-center">
       <button 
         @click="slidePrev" 
@@ -137,7 +137,7 @@ const slidePrev = () => {
       </button>
     </div>
 
-    <div class="flex justify-center mt-6">
+    <div class="flex justify-end mt-6">
       <button 
         @click="router.push('/policy')" 
         class="px-4 py-2 rounded-lg hover:bg-blue-200 hover:transition duration-200 font-semibold border"
@@ -150,11 +150,11 @@ const slidePrev = () => {
 
 <style scoped>
 .card {
-  min-width: 250px;
-  min-height: 200px;
+  min-width: 200px;
+  min-height: 230px;
   flex-shrink: 0;
   scroll-snap-align: start;
-  border: 1px solid #d1d5db;
+  border: 2px solid #aaaeb4c7;
   transition: transform 0.3s;
   text-align: center;
 }

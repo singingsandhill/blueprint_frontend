@@ -19,7 +19,7 @@ const banners = ref([
     subtitle: "AI로 더 빠르고 똑똑하게 정책 확인",
     title: "청사진",
     link: "#",
-    backgroundColor: 'bg-yellow-500',
+    backgroundColor: 'bg-yellow-400',
   },
   {
     subtitle: "자산 관리 서비스",
@@ -43,7 +43,7 @@ const modules = [Autoplay, Pagination];
       disableOnInteraction: false
     }"
     :pagination="{ clickable: true }"
-    loop="true"
+    :loop="true"
     class="mySwiper"
   >
     <swiper-slide
@@ -71,7 +71,7 @@ const modules = [Autoplay, Pagination];
 .mySwiper {
   width: 100%;
   max-width: 100%;
-  height: 300px;
+  height: 450px;
   margin: 0;
 }
 .swiper-slide {

@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
-import axiosInstance from '@/util/axiosInstance';
+import axiosInstance from "@/util/axiosInstance";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -22,16 +22,32 @@ const login = async () => {
   isLoading.value = true;
   try {
     const response = await auth.login(member.memberId, member.password);
-    console.log('로그인 응답:', response);
-    
+    console.log("로그인 응답:", response);
+
     if (response.success) {
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`;
+      localStorage.removeItem("selectedCity");
+      localStorage.removeItem("district");
+      localStorage.removeItem("selectedPolicyType");
+      localStorage.removeItem("selectedAge");
+      localStorage.removeItem("selectedJob");
+      localStorage.removeItem("selectedName");
+      localStorage.removeItem("page");
+
+      localStorage.setItem("selectedCity", null);
+      localStorage.setItem("district", "");
+      localStorage.setItem("selectedPolicyType", null);
+      localStorage.setItem("selectedAge", "");
+      localStorage.setItem("selectedJob", null);
+      localStorage.setItem("selectedName", "");
+      axiosInstance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${auth.token}`;
       router.push(auth.member?.auth === "ROLE_ADMIN" ? "/admin" : "/");
     } else {
       error.value = response.error;
     }
   } catch (err) {
-    console.error('로그인 오류:', err.response ? err.response : err);
+    console.error("로그인 오류:", err.response ? err.response : err);
     error.value = "로그인 중 오류가 발생했습니다.";
   } finally {
     isLoading.value = false;
@@ -50,10 +66,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center h-[60vh] font-pretendard-regular bg-gray-100 p-4 sm:p-6">
-    <form class="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white p-6 rounded-lg shadow-lg mx-auto" @submit.prevent="login">
+  <div
+    class="flex flex-col items-center justify-center h-[60vh] font-pretendard-regular bg-gray-100 p-4 sm:p-6"
+  >
+    <form
+      class="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-white p-6 rounded-lg shadow-lg mx-auto"
+      @submit.prevent="login"
+    >
       <div class="mb-6">
-        <label for="memberId" class="block text-gray-700 font-semibold mb-2">아이디</label>
+        <label for="memberId" class="block text-gray-700 font-semibold mb-2"
+          >아이디</label
+        >
         <div class="relative">
           <input
             type="text"
@@ -64,12 +87,17 @@ onMounted(() => {
             aria-label="아이디 입력"
             required
           />
-          <font-awesome-icon icon="user" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <font-awesome-icon
+            icon="user"
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          />
         </div>
       </div>
 
       <div class="mb-6">
-        <label for="password" class="block text-gray-700 font-semibold mb-2">비밀번호</label>
+        <label for="password" class="block text-gray-700 font-semibold mb-2"
+          >비밀번호</label
+        >
         <div class="relative">
           <input
             :type="showPassword ? 'text' : 'password'"
@@ -80,13 +108,18 @@ onMounted(() => {
             aria-label="비밀번호 입력"
             required
           />
-          <font-awesome-icon icon="lock" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <font-awesome-icon
+            icon="lock"
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          />
           <button
             type="button"
             @click="togglePassword"
             class="absolute inset-y-0 right-4 text-gray-500 focus:outline-none"
           >
-            <font-awesome-icon :icon="showPassword ? ['fas', 'eye-slash'] : ['fas', 'eye']" />
+            <font-awesome-icon
+              :icon="showPassword ? ['fas', 'eye-slash'] : ['fas', 'eye']"
+            />
           </button>
         </div>
         <div v-if="error" class="text-red-500 text-sm mt-2">{{ error }}</div>
@@ -101,13 +134,24 @@ onMounted(() => {
       </button>
 
       <div class="text-[#002842] text-center mb-6 mt-4">
-        <router-link to="/member/find/memberId" class="text-sm hover:underline hover:text-[#0E429D]">아이디 찾기</router-link>
+        <router-link
+          to="/member/find/memberId"
+          class="text-sm hover:underline hover:text-[#0E429D]"
+          >아이디 찾기</router-link
+        >
         <span class="mx-2 text-gray-400">|</span>
-        <router-link to="/member/find/password" class="text-sm hover:underline hover:text-[#0E429D]">비밀번호 찾기</router-link>
+        <router-link
+          to="/member/find/password"
+          class="text-sm hover:underline hover:text-[#0E429D]"
+          >비밀번호 찾기</router-link
+        >
       </div>
       <div class="text-[#002842] text-center mt-6">
         <span class="text-gray-500">아직 계정이 없나요?</span>
-        <router-link to="/member/register" class="text-base font-semibold hover:underline hover:text-[#0E429D] ml-1">
+        <router-link
+          to="/member/register"
+          class="text-base font-semibold hover:underline hover:text-[#0E429D] ml-1"
+        >
           회원가입
         </router-link>
       </div>
@@ -117,7 +161,7 @@ onMounted(() => {
 
 <style scoped>
 body {
-  font-family: 'pretendard', sans-serif;
+  font-family: "pretendard", sans-serif;
   background-color: #f8f9fa;
   display: flex;
   justify-content: center;
