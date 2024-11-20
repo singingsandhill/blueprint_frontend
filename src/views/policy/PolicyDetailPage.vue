@@ -103,7 +103,7 @@ const formatPolicySubject = (text) => {
   if (!text) return "";
 
   const segments = text
-    .split(/[\u2022\u25E6\u25A1\*\u25CB\u261E](?!\d-\d)|(?<!\d)-(?=\D)/)
+    .split(/[\u2022\u25E6\u25A1\*\u25CB\u261E](?!\d-\d)|(?<!\d)-(?=\D)|\/|\n/)
     .filter(Boolean);
 
   return segments
@@ -128,7 +128,7 @@ const formatPolicySubject = (text) => {
 
       return subSegments.join("");
     })
-    .join("<br>");
+    .join("<br><br>");
 };
 </script>
 
@@ -177,7 +177,7 @@ const formatPolicySubject = (text) => {
         <span
           class="inline-block text-sm font-bold text-white bg-blue-300 px-4 py-2 rounded-full"
         >
-          # {{ policyDetail?.job || "직업 상관없음" }}
+          # 직업: {{ policyDetail?.job || "직업 상관없음" }}
         </span>
       </div>
     </div>
@@ -257,11 +257,12 @@ const formatPolicySubject = (text) => {
         </h3>
         <div class="content-section mb-10">
           <div class="content-row mb-4">
-            <span class="title-cell">나이</span>
-            <span class="content-cell"
-              >{{ policyDetail?.minAge }} ~ {{ policyDetail?.maxAge }}</span
-            >
-          </div>
+          <span class="title-cell">나이</span>
+          <span class="content-cell">
+            {{ policyDetail?.minAge === 0 && policyDetail?.maxAge === 0 ? "상관없음" : `${policyDetail?.minAge} ~ ${policyDetail?.maxAge}` }}
+          </span>
+        </div>
+
           <div class="content-row mb-4">
             <span class="title-cell">거주지</span>
             <span class="content-cell"

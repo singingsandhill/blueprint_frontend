@@ -16,7 +16,7 @@ const banners = ref([
     subtitle: "AI로 더 빠르고 똑똑하게 정책 확인",
     title: "[나만의 서비스] 지금 바로 맞춤형 정책을 확인하세요!",
     link: "/frontend/member/myService",
-    backgroundColor: "bg-yellow-400",
+    backgroundColor: "bg-yellow-500",
   },
   {
     subtitle:
@@ -70,7 +70,7 @@ const modules = [Autoplay, Pagination];
 
       <div class="text" :class="{ 'text-red-500': banner.backgroundImage }">
         <em class="block text-lg mb-2">{{ banner.subtitle }}</em>
-        <strong class="block text-4xl font-bold mb-4">{{
+        <strong class="block text-2xl font-bold mb-4">{{
           banner.title
         }}</strong>
         <a
