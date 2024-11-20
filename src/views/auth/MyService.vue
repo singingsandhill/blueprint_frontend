@@ -159,22 +159,28 @@ onMounted(async () => {
         >
           정책
         </p>
-        <div class="flex border-t-4 border-darkBlue py-6"></div>
+        <div class="flex border-t-4 border-darkBlue py-4"></div>
         <div
           v-if="policyList.length === 0"
           class="text-xl font-semibold text-center"
         >
-          {{ memberName }}님의 조건에 해당하는 정책이 없습니다. <br/>
-          또래 청약을 보여드릴게요!
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
+          <div class="text-xl font-semibold text-center">조건에 해당하는 정책이 없습니다.</div>
+          <div class="text-xl font-semibold text-center mt-2">{{ memberName }}님의 또래가 선호하는 정책을 보여드릴게요!</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center mt-4">
             <div
               v-for="peerPolicy in peerPolicyList"
               :key="peerPolicy"
               :value="peerPolicy"
-              class="relative bg-white p-6 rounded-lg shadow-md sm:max-w-sm lg:w-[500px]"
+              class="bg-pink-100 relative bg-white p-6 rounded-lg shadow-md sm:max-w-sm lg:w-[500px]"
             >
               <p class="text-xl font-bold mb-4 text-center">
                 {{ peerPolicy.name }}
+              </p>
+              <p class="text-xl font-bold mb-4 text-center">
+                {{ peerPolicy.type }}
+              </p>
+              <p class="text-xl font-bold mb-4 text-center">
+                {{ formatDate(peerPolicy.applyStartDate) }} ~ {{ formatDate(peerPolicy.applyEndDate) }}
               </p>
             </div>
           </div>

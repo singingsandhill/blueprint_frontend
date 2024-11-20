@@ -2,7 +2,8 @@ import axios from "axios";
 import router from "@/router";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_APP_API_URL,
+  // baseURL: import.meta.env.VITE_APP_API_URL,
+  baseURL: "http://localhost:8080/",
   headers: {
     Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
   },
