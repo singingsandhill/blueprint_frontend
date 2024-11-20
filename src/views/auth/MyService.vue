@@ -18,6 +18,7 @@ const policyList = ref([]);
 const subscriptionList = ref([]);
 const filterSavings = ref([]);
 const filterLoan = ref([]);
+const peerPolicyList = ref([]);
 const cities = ref(null);
 const districts = ref(null);
 const locals = ref(null);
@@ -117,6 +118,12 @@ const fetchLoan = async () => {
   filterLoan.value = financeStore.LoanList;
 };
 
+const fetchPeerPolicy = async () => {
+  await policyStore.getPeerPolicy();
+  peerPolicyList.value = policyStore.PeerPolicyList;
+  console.log(peerPolicyList.value);
+};
+
 onMounted(async () => {
   if (!token) {
     isLogin.value = false;
@@ -128,6 +135,7 @@ onMounted(async () => {
   await fetchLoan();
   await myPageStore.getMyPageInfo();
   await fetchCity();
+  await fetchPeerPolicy();
 });
 </script>
 
@@ -156,7 +164,20 @@ onMounted(async () => {
           v-if="policyList.length === 0"
           class="text-xl font-semibold text-center"
         >
-          {{ memberName }}님의 조건에 해당하는 정책이 없습니다.
+          {{ memberName }}님의 조건에 해당하는 정책이 없습니다. <br/>
+          또래 청약을 보여드릴게요!
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
+            <div
+              v-for="peerPolicy in peerPolicyList"
+              :key="peerPolicy"
+              :value="peerPolicy"
+              class="relative bg-white p-6 rounded-lg shadow-md sm:max-w-sm lg:w-[500px]"
+            >
+              <p class="text-xl font-bold mb-4 text-center">
+                {{ peerPolicy.name }}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div v-else class="overflow-x-auto">

@@ -140,6 +140,32 @@ onMounted(() => {
       <strong class="text-sm">정책 검색</strong>
     </div>
 
+    <!-- 정책 유형 필터 -->
+    <div
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
+    >
+      <select
+        v-model="selectedPolicyType"
+        class="bg-transparent w-full focus:outline-none text-sm md:text-sm"
+      >
+        <option
+          value="null"
+          class="text-center font-bold bg-gray-200"
+          :class="{ 'font-bold': selectedJob === 'null' }"
+        >
+          정책 유형
+        </option>
+        <option
+          v-for="type in policyTypes"
+          :key="type"
+          :value="type"
+          class="text-center"
+        >
+          {{ type }}
+        </option>
+      </select>
+    </div>
+
     <!-- 시/도 필터 -->
     <div
       class="flex items-center space-x-2 bg-white text-black px-4 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
@@ -148,12 +174,19 @@ onMounted(() => {
         v-model="selectedCity"
         class="bg-transparent w-full focus:outline-none text-sm md:text-sm"
       >
-      <option
-      value="null"
-      class="text-center font-bold bg-gray-200"
-      :class="{ 'font-bold': selectedJob === 'null' }"
-    >시 / 도</option>
-        <option v-for="city in cities" :key="city" :value="city" class="text-center">
+        <option
+          value="null"
+          class="text-center font-bold bg-gray-200"
+          :class="{ 'font-bold': selectedJob === 'null' }"
+        >
+          시 / 도
+        </option>
+        <option
+          v-for="city in cities"
+          :key="city"
+          :value="city"
+          class="text-center"
+        >
           {{ city }}
         </option>
       </select>
@@ -173,32 +206,31 @@ onMounted(() => {
     </div>
 
     <!-- 직업 필터 -->
-<div
-  class="flex items-center space-x-2 bg-white text-black px-4 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
->
-  <select
-    v-model="selectedJob"
-    class="bg-transparent w-full text-center focus:outline-none text-sm md:text-sm"
-  >
-    <option
-      value="null"
-      class="text-center font-bold bg-gray-200"
-      :class="{ 'font-bold': selectedJob === 'null' }"
+    <div
+      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
     >
-      직업
-    </option>
-    <option value="학생">학생</option>
-    <option value="무직">무직</option>
-    <option value="직장인">직장인</option>
-    <option value="자영업">자영업</option>
-    <option value="프리랜서">프리랜서</option>
-    <option value="(예비)창업자">(예비)창업자</option>
-    <option value="일용근로자">일용근로자</option>
-    <option value="단기근로자">단기근로자</option>
-    <option value="영농종사자">영농종사자</option>
-  </select>
-</div>
-
+      <select
+        v-model="selectedJob"
+        class="bg-transparent w-full text-center focus:outline-none text-sm md:text-sm"
+      >
+        <option
+          value="null"
+          class="text-center font-bold bg-gray-200"
+          :class="{ 'font-bold': selectedJob === 'null' }"
+        >
+          직업
+        </option>
+        <option value="학생">학생</option>
+        <option value="무직">무직</option>
+        <option value="직장인">직장인</option>
+        <option value="자영업">자영업</option>
+        <option value="프리랜서">프리랜서</option>
+        <option value="(예비)창업자">(예비)창업자</option>
+        <option value="일용근로자">일용근로자</option>
+        <option value="단기근로자">단기근로자</option>
+        <option value="영농종사자">영농종사자</option>
+      </select>
+    </div>
 
     <!-- 나이 필터 -->
     <div
@@ -211,26 +243,6 @@ onMounted(() => {
         placeholder="나이"
         class="bg-transparent w-full text-center focus:outline-none text-sm md:text-sm"
       />
-    </div>
-
-    <!-- 정책 유형 필터 -->
-    <div
-      class="flex items-center space-x-2 bg-white text-black px-4 py-3 border-2 border-darkBlue rounded-md w-full lg:w-80"
-    >
-      <select
-        v-model="selectedPolicyType"
-        class="bg-transparent w-full focus:outline-none text-sm md:text-sm"
-      >
-      <option
-      value="null"
-      class="text-center font-bold bg-gray-200"
-      :class="{ 'font-bold': selectedJob === 'null' }"
-    > 정책 유형
-        </option>
-        <option v-for="type in policyTypes" :key="type" :value="type" class="text-center">
-          {{ type }}
-        </option>
-      </select>
     </div>
 
     <!-- 정책명 입력 -->
@@ -263,9 +275,9 @@ section {
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
-  padding: 0.5rem
+  padding: 0.5rem;
 }
 
 .flex {
@@ -274,14 +286,14 @@ section {
 
 select {
   position: relative;
-  appearance: none; 
+  appearance: none;
   background: transparent;
   outline: none;
   cursor: pointer;
 }
 
 select:focus {
-  outline: none; 
+  outline: none;
 }
 
 option {
@@ -298,13 +310,13 @@ select::-ms-expand {
 select {
   box-shadow: none;
   text-indent: 0.01px;
-  text-overflow: '';
+  text-overflow: "";
   z-index: 5;
 }
 
 @media (min-width: 1024px) {
   section {
-    flex-wrap: nowrap; 
+    flex-wrap: nowrap;
   }
 }
 
@@ -314,14 +326,14 @@ select {
   }
 
   .flex {
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
     gap: 16px;
   }
 
   .flex > div,
   .flex > button {
-    width: 100%; 
+    width: 100%;
     max-width: none;
   }
 
@@ -331,6 +343,3 @@ select {
   }
 }
 </style>
-
-
-
