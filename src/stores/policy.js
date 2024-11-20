@@ -6,6 +6,7 @@ export const usePolicyStore = defineStore("policy", {
   state: () => ({
     PolicyInfoList: [],
     RecommedPolicyList: [],
+    PeerPolicyList: [],
     filterCondition: {
       city: null,
       district: null,
@@ -24,9 +25,14 @@ export const usePolicyStore = defineStore("policy", {
       way: null,
       document: null,
       url: null,
+      target: null,
       minAge: null,
       maxAge: null,
       job: null,
+      income: null,
+      exclusion: null,
+      applicationSite: null,
+      location: null,
     },
   }),
 
@@ -67,9 +73,14 @@ export const usePolicyStore = defineStore("policy", {
           way: policy.way,
           document: policy.document,
           url: policy.url,
+          target: policy.target,
           minAge: policy.minAge,
           maxAge: policy.maxAge,
           job: policy.job,
+          income: policy.income,
+          exclusion: policy.exclusion,
+          applicationSite: policy.applicationSite,
+          location: policy.location,
         };
       } catch (error) {
         console.error("Failed to fetch Policy Detail: ", error);
@@ -101,6 +112,21 @@ export const usePolicyStore = defineStore("policy", {
         this.RecommedPolicyList = response.data.response.data;
       } catch (error) {
         console.error("Failed to recommend policy : ", error);
+        throw error;
+      }
+    },
+
+    async getPeerPolicy() {
+      try {
+        const token = useAuthStore().token;
+        const response = await axiosInstance.get("/policy/peer", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        this.PeerPolicyList = response.data.response.data;
+      } catch (error) {
+        console.error("Failed to fetch peer policy list : ", error);
         throw error;
       }
     },

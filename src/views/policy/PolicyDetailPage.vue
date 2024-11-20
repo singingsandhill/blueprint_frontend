@@ -18,6 +18,11 @@ const activeSection = ref(null);
 
 const formatDate = (date) => {
   if (!date) return "";
+  const getDate = new Date(date);
+  const year = getDate.getFullYear();
+  if (year > 2030) {
+    return "예산 소진 시까지";
+  }
   return new Date(date).toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "2-digit",
@@ -63,7 +68,7 @@ const rightNavPosition = ref(0);
 
 const handleScroll = () => {
   const scrollPosition = window.scrollY;
-  const navOffset = 20; // 원하는 추가 오프셋
+  const navOffset = 20;
   rightNavPosition.value = scrollPosition + navOffset;
 };
 
@@ -98,7 +103,7 @@ const formatPolicySubject = (text) => {
   if (!text) return "";
 
   const segments = text
-    .split(/[\u2022\u25E6\u25A1\*\u25CB\u261E](?!\d-\d)|(?<!\d)-(?=\D)/)
+    .split(/[\u2022\u25E6\u25A1\*\u25CB\u261E](?!\d-\d)|(?<!\d)-(?=\D)|\/|\n/)
     .filter(Boolean);
 
   return segments
@@ -115,24 +120,22 @@ const formatPolicySubject = (text) => {
             return `${trimmedSub}`;
           }
 
-          if (
-            /^[가-힣]\.|^※|^\[.*?\]|^- |\b\d{1,2}\.(?!\d)/.test(trimmedSub)
-          ) {
-            return `<br>${trimmedSub}`; 
+          if (/^[가-힣]\.|^※|^\[.*?\]|^- |\b\d{1,2}\.(?!\d)/.test(trimmedSub)) {
+            return `<br>${trimmedSub}`;
           }
-          return `${trimmedSub}`; 
+          return `${trimmedSub}`;
         });
 
       return subSegments.join("");
     })
-    .join("<br>");
+    .join("<br><br>");
 };
 </script>
 
 <template>
   <div class="contentsWrap mw_wrap p-4">
     <!-- 제목 -->
-    <div class="flex justify-between items-center mb-10">
+    <div class="flex justify-between items-center mb-3">
       <h2 id="page-title" class="text-3xl font-bold">
         {{ policyListItem?.name }}
       </h2>
@@ -153,6 +156,32 @@ const formatPolicySubject = (text) => {
       </div>
     </div>
 
+    <div class="home-page p-8">
+      <!-- 지역 라벨 -->
+      <div class="flex flex-wrap gap-3">
+        <span
+          class="inline-block text-sm font-bold text-white bg-pink-300 px-4 py-2 rounded-full"
+        >
+          # {{ policyListItem?.type || "정책 유형" }}
+        </span>
+        <span
+          class="inline-block text-sm font-bold text-white bg-purple-300 px-4 py-2 rounded-full"
+        >
+          # {{ policyDetail?.target || "추천 대상" }}
+        </span>
+        <span
+          class="inline-block text-sm font-bold text-white bg-green-300 px-4 py-2 rounded-full"
+        >
+          # {{ policyListItem?.city || "지역" }}
+        </span>
+        <span
+          class="inline-block text-sm font-bold text-white bg-blue-300 px-4 py-2 rounded-full"
+        >
+          # 직업: {{ policyDetail?.job || "직업 상관없음" }}
+        </span>
+      </div>
+    </div>
+
     <!-- 전체 콘텐츠 영역 -->
     <div class="content-wrapper flex">
       <!-- 왼쪽 콘텐츠 영역 (테이블) -->
@@ -168,6 +197,10 @@ const formatPolicySubject = (text) => {
           <div class="content-row mb-4">
             <span class="title-cell">정책 유형</span>
             <span class="content-cell">{{ policyListItem?.type }}</span>
+          </div>
+          <div class="content-row mb-4">
+            <span class="title-cell">정책 대상</span>
+            <span class="content-cell">{{ policyDetail?.target }}</span>
           </div>
           <div class="content-row mb-4">
             <span class="title-cell">주관 기관</span>
@@ -190,12 +223,12 @@ const formatPolicySubject = (text) => {
           <div class="content-row mb-4">
             <span class="title-cell">사업 운영 기간</span>
             <span class="content-cell"
-              >{{ formatDate(policyListItem?.apply_start_date) }} ~
-              {{ formatDate(policyListItem?.apply_end_date) }}</span
+              >{{ formatDate(policyListItem?.start_date) }} ~
+              {{ formatDate(policyListItem?.end_date) }}</span
             >
           </div>
           <div class="content-row mb-4">
-            <span class="title-cell">지원 규모</span>
+            <span class="title-cell">사업 규모</span>
             <span class="content-cell">{{ policyDetail?.scale }}</span>
           </div>
           <div class="content-row mb-4">
@@ -209,6 +242,10 @@ const formatPolicySubject = (text) => {
               >
             </span>
           </div>
+          <div class="content-row mb-4">
+            <span class="title-cell">운영 기관</span>
+            <span class="content-cell">{{ policyListItem?.offer_inst }}</span>
+          </div>
         </div>
 
         <!-- 신청 자격 -->
@@ -216,29 +253,45 @@ const formatPolicySubject = (text) => {
           id="eligibility"
           class="section-title border-b-2 border-gray-300 pb-2 mb-4"
         >
-          신청 자격
+          자격 요건
         </h3>
         <div class="content-section mb-10">
           <div class="content-row mb-4">
-            <span class="title-cell">조건</span>
-            <span
-              class="content-cell"
-              v-html="formatPolicySubject(policyDetail?.condition)"
-            ></span>
-          </div>
+          <span class="title-cell">나이</span>
+          <span class="content-cell">
+            {{ policyDetail?.minAge === 0 && policyDetail?.maxAge === 0 ? "상관없음" : `${policyDetail?.minAge} ~ ${policyDetail?.maxAge}` }}
+          </span>
+        </div>
+
           <div class="content-row mb-4">
-            <span class="title-cell">나이</span>
+            <span class="title-cell">거주지</span>
             <span class="content-cell"
-              >{{ policyDetail?.minAge }} ~ {{ policyDetail?.maxAge }}</span
+              >{{ policyListItem?.city }} {{ policyListItem?.district }}</span
             >
           </div>
+
           <div class="content-row mb-4">
             <span class="title-cell">직업</span>
             <span class="content-cell">{{ policyDetail?.job }}</span>
           </div>
           <div class="content-row mb-4">
-            <span class="title-cell">자격</span>
-            <span class="content-cell">{{ policyDetail?.enquiry }}</span>
+            <span class="title-cell">소득</span>
+            <span class="content-cell">{{ policyDetail?.income }}</span>
+          </div>
+          <div class="content-row mb-4">
+            <span class="title-cell">신청 기간</span>
+            <span class="content-cell"
+              >{{ formatDate(policyListItem?.apply_start_date) }} ~
+              {{ formatDate(policyListItem?.apply_end_date) }}</span
+            >
+          </div>
+          <div class="content-row mb-4">
+            <span class="title-cell">조건</span>
+            <span class="content-cell">{{ policyDetail?.condition }}</span>
+          </div>
+          <div class="content-row mb-4">
+            <span class="title-cell">제외 조건</span>
+            <span class="content-cell">{{ policyDetail?.exclusion }}</span>
           </div>
         </div>
 
@@ -249,7 +302,14 @@ const formatPolicySubject = (text) => {
         >
           신청 방법
         </h3>
-        <p class="py-3 px-4 mb-10">{{ policyDetail?.way }}</p>
+        <div class="content-row mb-4">
+          <span class="title-cell">신청 절차</span>
+          <span class="content-cell">{{ policyDetail?.way }}</span>
+        </div>
+        <div class="content-row mb-4">
+          <span class="title-cell">신청 사이트</span>
+          <span class="content-cell">{{ policyDetail?.applicationSite }}</span>
+        </div>
 
         <!-- 제출 서류 -->
         <h3
@@ -258,11 +318,26 @@ const formatPolicySubject = (text) => {
         >
           제출 서류
         </h3>
-        <ul class="list-disc pl-6 mb-10">
-          <li v-for="doc in policyDetail?.requiredDocuments" :key="doc">
-            {{ doc }}
-          </li>
-        </ul>
+        <div class="content-row mb-4">
+          <span class="content-cell">{{ policyDetail?.document }}</span>
+        </div>
+
+        <!-- 기타 -->
+        <h3
+          id="required-documents"
+          class="section-title border-b-2 border-gray-300 pb-2 mb-4"
+        >
+          기타
+        </h3>
+
+        <div class="content-row mb-4">
+          <span class="title-cell">시행 장소</span>
+          <span class="content-cell">{{ policyDetail?.location }}</span>
+        </div>
+        <div class="content-row mb-4">
+          <span class="title-cell">문의</span>
+          <span class="content-cell">{{ policyDetail?.enquiry }}</span>
+        </div>
 
         <!-- 뒤로 가기 링크 -->
         <router-link to="/policy" class="text-blue-500 mt-4 inline-block"
@@ -354,8 +429,8 @@ const formatPolicySubject = (text) => {
 }
 
 .right-nav {
-  position: absolute;
-  top: 0;
+  position: sticky;
+  top: 50;
   right: 0;
   width: 20%;
   z-index: 10;
