@@ -20,7 +20,7 @@ const getBankImage = (bankName) => {
     '동양생명보험주식회사': new URL('@/assets/bank/dongyang.png', import.meta.url).href,
     '삼성화재해상보험주식회사': new URL('@/assets/bank/samsung-fire.png', import.meta.url).href,
     '현대해상화재보험주식회사': new URL('@/assets/bank/hyundai.png', import.meta.url).href,
-    '주식회사KB손해보험': new URL('@/assets/bank/kb.png', import.meta.url).href,
+    '주식회사KB손해보험': new URL('@/assets/bank/kb.jpg', import.meta.url).href,
     '푸본현대생명보험주식회사': new URL('@/assets/bank/fubon.png', import.meta.url).href,
     '농협생명보험주식회사': new URL('@/assets/bank/nh.png', import.meta.url).href,
     '농협손해보험주식회사': new URL('@/assets/bank/nh.png', import.meta.url).href,
@@ -35,14 +35,14 @@ const getBankImage = (bankName) => {
     '전북은행': new URL('@/assets/bank/jbbank.png', import.meta.url).href,
     '경남은행': new URL('@/assets/bank/bnk.png', import.meta.url).href,
     '중소기업은행': new URL('@/assets/bank/ibk.png', import.meta.url).href,
-    '한국산업은행': new URL('@/assets/bank/kdb.png', import.meta.url).href,
+    '한국산업은행': new URL('@/assets/bank/kdb.jpg', import.meta.url).href,
     '국민은행': new URL('@/assets/bank/kb.jpg', import.meta.url).href,
     '신한은행': new URL('@/assets/bank/shinhan.png', import.meta.url).href,
     '농협은행주식회사': new URL('@/assets/bank/nh.png', import.meta.url).href,
     '하나은행': new URL('@/assets/bank/hana.png', import.meta.url).href,
-    '케이뱅크': new URL('@/assets/bank/kbank.png', import.meta.url).href,
-    '수협은행주식회사': new URL('@/assets/bank/sh.png', import.meta.url).href,
-    '카카오뱅크': new URL('@/assets/bank/kakao.png', import.meta.url).href,
+    '주식회사 케이뱅크': new URL('@/assets/bank/kbank.png', import.meta.url).href,
+    '수협은행': new URL('@/assets/bank/sh.png', import.meta.url).href,
+    '주식회사 카카오뱅크': new URL('@/assets/bank/kakao.png', import.meta.url).href,
     '토스뱅크 주식회사': new URL('@/assets/bank/toss.png', import.meta.url).href
   };
 
