@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
   headers: {
     Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
   },
-  withCredentials: true
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
@@ -28,8 +28,11 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("authToken");
-      router.push({ name: "login" });
+      const currentPath = router.currentRoute.value.path;
+      if (currentPath !== "/") {
+        localStorage.removeItem("authToken");
+        router.push({ name: "login" });
+      }
     }
     return Promise.reject(error);
   }
