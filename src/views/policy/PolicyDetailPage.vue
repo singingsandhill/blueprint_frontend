@@ -165,6 +165,11 @@ const formatPolicySubject = (text) => {
           # {{ policyListItem?.type || "정책 유형" }}
         </span>
         <span
+          class="inline-block text-sm font-bold text-white bg-purple-300 px-4 py-2 rounded-full"
+        >
+          # {{ policyDetail?.target || "추천 대상" }}
+        </span>
+        <span
           class="inline-block text-sm font-bold text-white bg-green-300 px-4 py-2 rounded-full"
         >
           # {{ policyListItem?.city || "지역" }}
@@ -172,17 +177,7 @@ const formatPolicySubject = (text) => {
         <span
           class="inline-block text-sm font-bold text-white bg-blue-300 px-4 py-2 rounded-full"
         >
-          # {{ policyListItem?.job || "직업" }}
-        </span>
-        <span
-          class="inline-block text-sm font-bold text-white bg-purple-300 px-4 py-2 rounded-full"
-        >
-          # {{ policyListItem?.type || "정책 유형" }}
-        </span>
-        <span
-          class="inline-block text-sm font-bold text-white bg-orange-300 px-4 py-2 rounded-full"
-        >
-          # {{ policyListItem?.type || "정책 유형" }}
+          # {{ policyDetail?.job || "직업 상관없음" }}
         </span>
       </div>
     </div>
@@ -434,7 +429,7 @@ const formatPolicySubject = (text) => {
 
 .right-nav {
   position: sticky;
-  top: 20;
+  top: 50;
   right: 0;
   width: 20%;
   z-index: 10;
