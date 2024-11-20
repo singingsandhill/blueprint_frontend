@@ -18,6 +18,7 @@ const policyList = ref([]);
 const subscriptionList = ref([]);
 const filterSavings = ref([]);
 const filterLoan = ref([]);
+const peerPolicyList = ref([]);
 const cities = ref(null);
 const districts = ref(null);
 const locals = ref(null);
@@ -117,6 +118,12 @@ const fetchLoan = async () => {
   filterLoan.value = financeStore.LoanList;
 };
 
+const fetchPeerPolicy = async () => {
+  await policyStore.getPeerPolicy();
+  peerPolicyList.value = policyStore.PeerPolicyList;
+  console.log(peerPolicyList.value);
+};
+
 onMounted(async () => {
   if (!token) {
     isLogin.value = false;
@@ -128,6 +135,7 @@ onMounted(async () => {
   await fetchLoan();
   await myPageStore.getMyPageInfo();
   await fetchCity();
+  await fetchPeerPolicy();
 });
 </script>
 
@@ -151,12 +159,42 @@ onMounted(async () => {
         >
           정책
         </p>
-        <div class="flex border-t-4 border-darkBlue py-6"></div>
+        <div class="flex border-t-4 border-darkBlue py-4"></div>
         <div
           v-if="policyList.length === 0"
           class="text-xl font-semibold text-center"
         >
-          {{ memberName }}님의 조건에 해당하는 정책이 없습니다.
+          <div class="text-xl font-semibold text-center">
+            조건에 해당하는 정책이 없습니다.
+          </div>
+          <div class="text-xl font-semibold text-center mt-2">
+            {{ memberName }}님의 또래가 선호하는 정책을 보여드릴게요!
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-center mt-4">
+            <div
+              v-for="peerPolicy in peerPolicyList"
+              :key="peerPolicy"
+              :value="peerPolicy"
+              class="bg-pink-100 relative bg-white p-6 rounded-lg shadow-md sm:max-w-sm lg:w-[500px]"
+              @click="
+                $router.push({
+                  name: 'PolicyDetail',
+                  params: { idx: peerPolicy.idx },
+                })
+              "
+            >
+              <p class="text-xl font-bold mb-4 text-center underline">
+                {{ peerPolicy.name }}
+              </p>
+              <p class="text-xl font-bold mb-4 text-center">
+                {{ peerPolicy.type }}
+              </p>
+              <p class="text-xl font-bold mb-4 text-center">
+                {{ formatDate(peerPolicy.applyStartDate) }} ~
+                {{ formatDate(peerPolicy.applyEndDate) }}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div v-else class="overflow-x-auto">
@@ -183,7 +221,17 @@ onMounted(async () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="policy in policyList" :key="policy">
+              <tr
+                v-for="policy in policyList"
+                :key="policy"
+                class="hover:bg-gray-100 cursor-pointer"
+                @click="
+                  $router.push({
+                    name: 'PolicyDetail',
+                    params: { idx: policy.idx },
+                  })
+                "
+              >
                 <td
                   class="px-4 sm:px-6 md:px-10 py-2 sm:py-3 md:py-4 text-gray-600"
                 >
