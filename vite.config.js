@@ -6,11 +6,14 @@ import tailwindcss from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
 
 export default defineConfig({
-  base: '/frontend/',
+  base: process.env.NODE_ENV === 'production' ? '/frontend/' : '/',
   plugins: [
     vue(),
     VueDevTools(),
   ],
+  define: {
+    'import.meta.env.VITE_APP_API_URL': JSON.stringify(process.env.VITE_APP_API_URL)
+  },
   optimizeDeps: {
     include: ['jwt-decode'],
   },

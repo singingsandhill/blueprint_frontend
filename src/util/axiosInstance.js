@@ -2,10 +2,11 @@ import axios from "axios";
 import router from "@/router";
 
 const axiosInstance = axios.create({
-  // baseURL: import.meta.env.VITE_APP_API_URL,
-  baseURL: "http://localhost:8080/",
+  baseURL: import.meta.env.VITE_APP_API_URL || window.location.origin,
+
   headers: {
-    Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`
   },
   withCredentials: true,
 });
@@ -51,7 +52,8 @@ export const getRealEstateSummary = async (region, sggCdNm, umdNm) => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch real estate summary:", error);
-    throw error;
+    const errorMessage = handleApiError(error);
+    throw new Error(errorMessage);
   }
 };
 export const getRegions = async () => {
@@ -60,7 +62,8 @@ export const getRegions = async () => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch regions:", error);
-    throw error;
+    const errorMessage = handleApiError(error);
+    throw new Error(errorMessage);
   }
 };
 
@@ -74,7 +77,8 @@ export const getSggList = async (region) => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch sgg list:", error);
-    throw error;
+    const errorMessage = handleApiError(error);
+    throw new Error(errorMessage);
   }
 };
 
@@ -89,7 +93,8 @@ export const getUmdList = async (region, sggCdNm) => {
     return response.data;
   } catch (error) {
     console.error("Failed to fetch umd list:", error);
-    throw error;
+    const errorMessage = handleApiError(error);
+    throw new Error(errorMessage);
   }
 };
 
