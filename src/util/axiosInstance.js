@@ -3,6 +3,7 @@ import router from "@/router";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_URL || window.location.origin,
+
   headers: {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`

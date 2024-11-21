@@ -7,8 +7,9 @@ import PolicySection from "@/components/home/PolicySection.vue";
 import SubscriptionSection from "@/components/home/SubscriptionSection.vue";
 import FinanceSection from "@/components//home/FinanceSection.vue";
 import BannerSlider from "@/components/home/BannerSlider.vue";
-import TypeFilter from "@/components/home/TypeFilterSection.vue"
+import TypeFilter from "@/components/home/TypeFilterSection.vue";
 import Datasource from "@/components/home/Datasource.vue";
+import welcome from "@/components/home/welcome.vue";
 
 const router = useRouter();
 
@@ -26,6 +27,7 @@ const handleFilterApplied = () => {
 </script>
 
 <template>
+  <welcome />
   <div>
     <BannerSlider />
   </div>
@@ -33,9 +35,9 @@ const handleFilterApplied = () => {
     <TypeFilter />
   </div>
   <FilterSection
-      @filterChanged="handleFilterChanged"
-      @filterApplied="handleFilterApplied"
-    />
+    @filterChanged="handleFilterChanged"
+    @filterApplied="handleFilterApplied"
+  />
   <div class="homepage container mx-auto p-4">
     <FilterResult
       v-if="searchExecuted"
